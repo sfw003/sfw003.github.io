@@ -13,13 +13,6 @@ DefaultContentLanguage: zh-cn
 hasCJKLanguage: false
 
 languages:
-    en:
-        languageName: English
-        title: 石某人
-        weight: 1
-        params:
-            sidebar:
-                subtitle: 成为一名强大的程序员
     zh-cn:
         languageName: 中文
         title: 石某人

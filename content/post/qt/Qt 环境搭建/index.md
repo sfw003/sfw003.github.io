@@ -1,8 +1,8 @@
 ﻿---
-title: 【Qt 01】cmake搭建Qt VS2019开发环境
+title: 【Qt 环境搭建 01】cmake搭建Qt VS2019开发环境
 description: cmake搭建Qt VS2019开发环境
-date: 2023-09-09
-slug: qt-series_0_qt-install
+date: 2025-04-02
+slug: qt-env-setup-01
 categories:
     - Qt
 ---
