@@ -1,8 +1,8 @@
 baseurl: https://sfw003.github.io
 languageCode: en-us
 theme: hugo-theme-stack
-title: Example Site
-copyright: Example Person
+title: 石某人的博客
+copyright: 石某人
 
 # Theme i18n support
 # Available values: ar, bn, ca, de, el, en, es, fr, hu, id, it, ja, ko, nl, pt-br, th, uk, zh-cn, zh-hk, zh-tw
@@ -15,26 +15,19 @@ hasCJKLanguage: false
 languages:
     en:
         languageName: English
-        title: Example Site
+        title: 石某人
         weight: 1
         params:
             sidebar:
-                subtitle: Example description
+                subtitle: 成为一名强大的程序员
     zh-cn:
         languageName: 中文
-        title: 演示站点
+        title: 石某人
         weight: 2
         params:
             sidebar:
-                subtitle: 演示说明
-    ar:
-        languageName: عربي
-        languagedirection: rtl
-        title: موقع تجريبي
-        weight: 3
-        params:
-            sidebar:
-                subtitle: وصف تجريبي
+                subtitle: 成为一名强大的程序员
+
 
 services:
     # Change it to your Disqus shortname before using
@@ -72,7 +65,7 @@ params:
         avatar:
             enabled: true
             local: true
-            src: img/avatar.png
+            src: img/avatar.jpg
 
     article:
         math: false
@@ -84,7 +77,7 @@ params:
 
     comments:
         enabled: true
-        provider: disqus
+        provider: utterances
 
         disqusjs:
             shortname:
@@ -94,9 +87,9 @@ params:
             adminLabel:
 
         utterances:
-            repo:
-            issueTerm: pathname
-            label:
+            repo: sfw003/sfwblogtalks
+            issueTerm: title
+            theme: github-light
 
         beaudar:
             repo:
@@ -217,15 +210,22 @@ menu:
     social:
         - identifier: github
           name: GitHub
-          url: https://github.com/CaiJimmy/hugo-theme-stack
+          url: https://github.com/sfw003
           params:
-              icon: brand-github
+              icon: Github
 
-        - identifier: twitter
-          name: Twitter
-          url: https://twitter.com
+        - identifier: csdn
+          name: CSDN
+          url: https://blog.csdn.net/ProcedureStone
           params:
-              icon: brand-twitter
+              icon: csdn
+
+        - identifier: gitee
+          name: Gitee
+          url: https://gitee.com/sfw003
+          params:
+              icon: gitee
+
 
 related:
     includeNewer: true

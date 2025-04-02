@@ -7,4 +7,9 @@ menu:
             icon: user
 ---
 
-This is a test page for i18n support.
+## 关于我
+
+一个软件工程的学生，主要技术栈c++后端开发，Qt客户端开发。
+
+
+
