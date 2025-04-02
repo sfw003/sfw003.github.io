@@ -29,7 +29,7 @@ jobs:
     build:
         runs-on: ubuntu-latest
         env:
-          HUGO_VERSION: 0.113.0
+          HUGO_VERSION: 0.144.0
           TZ: America/Los_Angeles
         steps:
             - name: Checkout
@@ -42,7 +42,7 @@ jobs:
               id: pages
               uses: peaceiris/actions-hugo@v2
               with:
-                hugo-version: '0.113.0'
+                hugo-version: '0.144.0'
                 extended: true
 
             - name: Build Hugo
