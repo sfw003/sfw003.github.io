@@ -1,7 +1,7 @@
 ---
 title: Hugo建站教程
 description: hugo + github page
-date: 2023-09-09
+date: 2025-04-02
 slug: blog_hugo-series_part1
 categories:
     - Blog
