@@ -2,7 +2,7 @@
 title: "Linux 系统系列"
 description: "Linux 系统系列"
 date: 2025-04-03
-weight: 1
+weight: 3
 slug: "linux-series"
 categories:
     - System

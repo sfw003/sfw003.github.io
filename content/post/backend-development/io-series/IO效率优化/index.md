@@ -5,6 +5,7 @@ date: 2025-04-02
 slug: io_optimization
 categories:
     - Make It Fast
+    - 后端开发
 tags:
     - IO
 ---
@@ -13,7 +14,7 @@ tags:
 
 
 
-[前文]({{< ref "/post/make it fast/io-series/IO过程分析/index" >}})提到影响IO效率的2个关键点
+[前文]({{< ref "/post/backend-development/io-series/IO过程分析/index" >}})提到影响IO效率的2个关键点
 
 1. 多次上下文切换和数据拷贝
 2. 等待时间
