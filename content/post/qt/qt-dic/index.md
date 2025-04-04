@@ -14,10 +14,6 @@ categories:
 
 
 
-```mermaid
-
-```
-
 
 
 ## 文章列表
@@ -29,6 +25,14 @@ categories:
 ### Qt Core
 - [Qt Core 02 容器类和算法 ]({{< ref "/post/Qt/Qt Core/02 容器类和算法/index" >}}) - Qt 核心概念与基础功能
 - [Qt Core 03 事件机制]({{< ref "/post/Qt/Qt Core/03 事件机制/index" >}}) - 事件机制
+
+
+
+### Qt GUI
+- [Qt GUI 01 Qt 绘图框架]({{< ref "/post/Qt/Qt GUI/01 Qt 绘图框架/index" >}}) - Qt 绘图框架
+
+
+### Qt Widgets
 
 
 ## 资源推荐
