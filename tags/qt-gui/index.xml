@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Qt GUI on 石某人</title><link>https://sfw003.github.io/tags/qt-gui/</link><description>Recent content in Qt GUI on 石某人</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>石某人</copyright><lastBuildDate>Fri, 04 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://sfw003.github.io/tags/qt-gui/index.xml" rel="self" type="application/rss+xml"/><item><title>【Qt GUI 01】Qt 绘图框架</title><link>https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/</link><pubDate>Fri, 04 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/</guid><description>&lt;h2 id="qt-绘图框架">Qt 绘图框架
+&lt;/h2>&lt;p>QPainter 与 QPaintDevice 和 QPaintEngine类一起构成了 Qt绘画系统的基础.&lt;/p>
+&lt;ul>
+&lt;li>QPainter 是用于执行绘图操作的类。&lt;/li>
+&lt;li>QPaintDevice 表示可以使用QPainter绘制的设备。Qt中绘图设备的基类，它是一个抽象类，用于描述可以绘制的设备,QPainter 在 绘图设备中绘制中,常用的绘图设备 QWidget、QPixmap 、QImage&lt;/li>
+&lt;li>QPaintEngine提供了 Painter 用于在不同类型的设备上绘图的界面。&lt;strong>对程序员不不透明&lt;/strong>，提供了不同类型设备的接口,由 QPaintDevice 和 QPainter 与其进行交互&lt;/li>
+&lt;/ul>
+&lt;p>如果 Painter处于活动状态，device()返回 Painter在其上绘画的绘制设备，paintEngine ()返回 Painter 当前正在操作的绘制引擎。有关更多信息，请参阅绘制系统。&lt;/p>
+&lt;h3 id="qpaintdevice">QPaintDevice
+&lt;/h3>&lt;p>QWidget 、QImage 、QPixmap 等等绘图场景都是从 QPainterDevice 继承而来的。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Q_WIDGETS_EXPORT&lt;/span> &lt;span class="nl">QWidget&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">QObject&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">QPaintDevice&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Q_GUI_EXPORT&lt;/span> &lt;span class="nl">QImage&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">QPaintDevice&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Q_GUI_EXPORT&lt;/span> &lt;span class="nl">QPixmap&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">QPaintDevice&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/OI2IWBIAYE.png"
+width="817"
+height="342"
+srcset="https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/OI2IWBIAYE_hu_a75d766174401bc2.png 480w, https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/OI2IWBIAYE_hu_cb5b473abd451f8e.png 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="238"
+data-flex-basis="573px"
+>&lt;/p>
+&lt;h3 id="qpainter">QPainter
+&lt;/h3>&lt;p>QPainter 是用于执行绘图操作的类，需要配合辅助类来使用，常见的有以下三种&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>QPen&lt;/th>
+&lt;th>描述画笔，用户画线&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>QBrush&lt;/td>
+&lt;td>描述画刷，用于填充&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QColor&lt;/td>
+&lt;td>描述颜色&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="qt绘图事件">Qt绘图事件
+&lt;/h3>&lt;p>&lt;img src="https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/4Y2YWBIAMY.png"
+width="819"
+height="159"
+srcset="https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/4Y2YWBIAMY_hu_f5f129d91046de75.png 480w, https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/4Y2YWBIAMY_hu_bce228ade624de57.png 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="515"
+data-flex-basis="1236px"
+>&lt;/p>
+&lt;p>绘图事件处理触发时机&lt;/p>
+&lt;ul>
+&lt;li>在窗口部件第一次显示时，系统会自动产生一个绘图事件(QPaintEvent),从而强制绘制这个窗口部件&lt;/li>
+&lt;li>当重新调整窗口部件的大小时，系统也会产生一个绘制事件&lt;/li>
+&lt;li>调用 update( 或者repaint()) 函数&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void QWidget::update()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">void QWidget::repaint()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>update和repaint的区别：&lt;/p>
+&lt;ul>
+&lt;li>update是一个异步函数,它会将绘图事件添加到事件队列中,当事件循环回到主线程时，会调用组件的 paintEvent() 函数进行实际的重绘工作&lt;/li>
+&lt;li>是一个同步函数，会立即触发组件的重绘操作,不会等待事件循环&lt;/li>
+&lt;/ul>
+&lt;h2 id="qt绘图实战">Qt绘图实战
+&lt;/h2>&lt;h3 id="qpen">QPen
+&lt;/h3>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>线型风格(Qt::PenStyle)&lt;/th>
+&lt;th>&lt;img src=".assets/RX3VIBIAY4.png" alt="img" style="zoom:67%;" />&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>端点风格( Qt::PenCapStyle)&lt;/td>
+&lt;td>&lt;img src=".assets/VP3VIBIAYE.png" alt="img" style="zoom:67%;" />&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>连接风格(Qt::PenJoinStyle)&lt;/td>
+&lt;td>&lt;img src=".assets/ED4FIBIA2I.png" alt="img" style="zoom: 67%;" />&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>使用案例&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QPainter&lt;/span> &lt;span class="nf">painter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QPen&lt;/span> &lt;span class="n">pen&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pen&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setStyle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Qt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">DashDotLine&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">//设置线性风格
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">pen&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setWidth&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pen&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setBrush&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Qt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">green&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">//设置刷子
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">pen&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setCapStyle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Qt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">RoundCap&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">//设置端点风格
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">pen&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setJoinStyle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Qt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">RoundJoin&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">//设置连接风格
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">painter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setPen&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pen&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="qbrush">QBrush
+&lt;/h3>&lt;p>QBrush用于描述画刷，Qt中用于描述绘图区域填充样式的类。它可以用于指定绘图区域的背景色、渐变色、纹理、图片等&lt;/p>
+&lt;img src="image/PC7OUWAYAAADC.png" alt="img" />
+&lt;h3 id="qcolor">QColor
+&lt;/h3>&lt;p>QColor 是Qt中用于表示颜色的类。它可以用于描述RGB颜色、RGBA颜色、HSL颜色、HSV颜色以及16进制颜色等。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QColor&lt;/span> &lt;span class="nf">color&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Qt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">red&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 使用预定义颜色
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">QColor&lt;/span> &lt;span class="nf">color&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">255&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 使用RGB值
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">QColor&lt;/span> &lt;span class="nf">color&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;#FF0000&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 使用16进制值
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setRgb&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">255&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 设置RGB颜色值
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setHsl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">255&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">127&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 设置HSL颜色值
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="qt坐标">Qt坐标
+&lt;/h3>&lt;p>QPainter 使用的坐标系是组件自身坐标系，如果通过 geometry() 函数与 pos() 函数获取的坐标是基于父组件的坐标系&lt;/p>
+&lt;p>相对于父组件的坐标可以通过 mapFromParent 函数进行转换，得到想的自己的坐标系&lt;/p>
+&lt;img src="image/TNKYYBIADM.png" alt="img" style="zoom:67%;" />
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//获得相对父控件的坐标
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">QPoint&lt;/span> &lt;span class="n">centerPointFromParent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">geometry&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="n">center&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//获得相对自身的坐标
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">QPoint&lt;/span> &lt;span class="n">centerPoint&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">mapFromParent&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">centerPointFromParent&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="qt图形变换">Qt图形变换
+&lt;/h3>&lt;p>在图形变换操作时,是对坐标系进行变换&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="n">QPainter&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">scale&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">qreal&lt;/span> &lt;span class="n">sx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">qreal&lt;/span> &lt;span class="n">sy&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 缩放
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="n">QPainter&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">rotate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">qreal&lt;/span> &lt;span class="n">angle&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 旋转
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="n">QPainter&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">shear&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">qreal&lt;/span> &lt;span class="n">sh&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">qreal&lt;/span> &lt;span class="n">sv&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 扭曲
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="n">QPainter&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">translate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">qreal&lt;/span> &lt;span class="n">dx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">qreal&lt;/span> &lt;span class="n">dy&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 平移
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/OSRFRJIYACQBM.png"
+width="651"
+height="170"
+srcset="https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/OSRFRJIYACQBM_hu_9e0653914bce9f9f.png 480w, https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/OSRFRJIYACQBM_hu_84e3a0d676e8b925.png 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="382"
+data-flex-basis="919px"
+>&lt;/p></description></item></channel></rss>

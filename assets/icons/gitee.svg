@@ -1,7 +1,0 @@
-<?xml version="1.0" standalone="no"?>
-<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-gitee" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10 -10 10s-10 -4.477 -10 -10s4.477 -10 10 -10z" />
-  <path d="M12 6c-3.314 0 -6 2.686 -6 6s2.686 6 6 6s6 -2.686 6 -6s-2.686 -6 -6 -6z" />
-  <path d="M12 10c-1.105 0 -2 0.895 -2 2s0.895 2 2 2s2 -0.895 2 -2s-0.895 -2 -2 -2z" />
-</svg>

@@ -1,0 +1,1103 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="从入门到精通的 Linux 进程"><title>Linux 进程</title>
+<link rel=canonical href=https://sfw003.github.io/p/linux-process/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="Linux 进程"><meta property='og:description' content="从入门到精通的 Linux 进程"><meta property='og:url' content='https://sfw003.github.io/p/linux-process/'><meta property='og:site_name' content='石某人'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2025-04-03T00:00:00+00:00'><meta property='article:modified_time' content='2025-04-03T00:00:00+00:00'><meta name=twitter:title content="Linux 进程"><meta name=twitter:description content="从入门到精通的 Linux 进程"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_a0516c4ce0480f39.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>石某人</a></h1><h2 class=site-description>成为一名强大的程序员</h2></div></header><ol class=menu-social><li><a href=https://blog.csdn.net/ProcedureStone target=_blank title=CSDN rel=me><svg class="icon icon-tabler icon-tabler-brand-csdn" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12c0 4.97 4.03 9 9 9s9-4.03 9-9-4.03-9-9-9-9 4.03-9 9z"/><path d="M12 8c-2.21.0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/><path d="M12 12m-2 0a2 2 0 104 0 2 2 0 10-4 0"/></svg></a></li><li><a href=https://gitee.com/sfw003 target=_blank title=Gitee rel=me><svg class="icon icon-tabler icon-tabler-brand-gitee" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2c5.523.0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z"/><path d="M12 6c-3.314.0-6 2.686-6 6s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6z"/><path d="M12 10c-1.105.0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2z"/></svg></a></li><li><a href=https://github.com/sfw003 target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>友情链接</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#进程间通信>进程间通信</a></li><li><a href=#一管道>一、管道</a><ol><li><a href=#匿名管道>匿名管道</a></li><li><a href=#管道特征>管道特征</a></li><li><a href=#命名管道>命名管道</a></li></ol></li><li><a href=#二system-v-共享内存>二、system V 共享内存</a><ol><li><a href=#共享内存方法>共享内存方法</a></li><li><a href=#创建共享内存>创建共享内存</a></li><li><a href=#映射到进程地址空间>映射到进程地址空间</a></li><li><a href=#控制共享内存>控制共享内存</a></li><li><a href=#共享内存特征>共享内存特征</a></li></ol></li><li><a href=#三信号>三、信号</a><ol><li><a href=#信号的产生>信号的产生</a><ol><li><a href=#通过终端按键产生信号>通过终端按键产生信号</a></li><li><a href=#调用系统函数向进程发信号>调用系统函数向进程发信号</a></li><li><a href=#软件条件产生信号>软件条件产生信号</a></li></ol></li><li><a href=#信号的保存>信号的保存</a></li></ol></li><li><a href=#信号的捕捉处理>信号的捕捉处理</a><ol><li><a href=#signal函数>signal函数</a></li><li><a href=#信号捕捉的原理>信号捕捉的原理</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/system/ style=background-color:#2a9d8f;color:#fff>System
+</a><a href=/categories/linux/>Linux</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/linux-process/>Linux 进程</a></h2><h3 class=article-subtitle>从入门到精通的 Linux 进程</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Apr 03, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 18 分钟</time></div></footer></div></header><section class=article-content><h2 id=进程间通信>进程间通信</h2><blockquote><p>进程间通信（Inter-Process Communication，IPC）是指在操作系统中，不同的进程之间进行数据交换、信息传递和同步操作的机制。在多任务操作系统中，不同的进程可能同时运行，它们之间可能需要进行数据共享、协作完成某项任务等操作，这就需要进程间通信。
+进程间通信目的：</p><ol><li>数据传输：一个进程需要将它的数据发送给另一个进程</li><li>资源共享：多个进程之间共享同样的资源。</li><li>通知事件：一个进程需要向另一个或一组进程发送消息，通知它（它们）发生了某种事件（如进程终止时要通知父进程）。</li><li>进程控制：有些进程希望完全控制另一个进程的执行（如Debug进程），此时控制进程希望能够拦截另一个进程的所有陷入和异常，并能够及时知道它的状态改变</li></ol></blockquote><p>如何理解进程间通信：<strong>本质是让不同的进程看到同一份资源</strong>。</p><ol><li>那如何让不同进程看到同一份资源呢？</li><li>资源又是什么呢？</li></ol><p>怀着这2个问题，我们来看看进程通信模块：
+一般操作系统会有一个独立的通信模块，隶属于文件系统, 即IPC通信模块。
+在linux内核刚被设计时，不支持通信，后来发现通信很重要，于是很多开发人员开始设计通信模块。当时的设计一个通信模块并不难，很多人提出了不同设计思路，谁也不服谁，为了统一，制定了标准。
+最后落地了2套标准：system V && posix</p><p>进程间通信的分类：</p><blockquote><p>管道</p><ol><li>匿名管道pipe</li><li>命名管道</li></ol><p>System V IPC</p><ol><li>System V 消息队列</li><li>System V 共享内存
+3 .System V 信号量</li></ol><p>POSIX IPC</p><ol><li>消息队列</li><li>共享内存</li><li>信号量</li><li>互斥量</li><li>条件变量</li><li>读写锁</li></ol></blockquote><h2 id=一管道>一、管道</h2><p>管道是Unix中最古老的进程间通信的形式，所谓的“管道”，指的是从一个进程连接到另一个进程的一个<strong>数据流</strong>。
+<img src=/p/linux-process/image/a35011761fb8cfc92254fe7fe1f731eb.png width=631 height=348 srcset="/p/linux-process/image/a35011761fb8cfc92254fe7fe1f731eb_hu_159523a2ce588721.png 480w, /p/linux-process/image/a35011761fb8cfc92254fe7fe1f731eb_hu_6860cedc6bf005d6.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=181 data-flex-basis=435px>
+如何理解？
+对于一个文件，我们普遍印象如下图，进程打开文件，通过写(读)操作，写入(读取）文件缓冲区，再由文件缓冲区刷新到磁盘里。
+<img src=/p/linux-process/image/3dd36c7b3bfa8faa9b9ddae8fa324858.png width=1964 height=623 srcset="/p/linux-process/image/3dd36c7b3bfa8faa9b9ddae8fa324858_hu_8f5bfa47222ac427.png 480w, /p/linux-process/image/3dd36c7b3bfa8faa9b9ddae8fa324858_hu_bed79ac9bdb2450e.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=315 data-flex-basis=756px>
+现在有一类文件，它抛弃了最后一步，即将缓冲区的内容刷新到磁盘上，所有操作仅在内存上完成。这一类文件即是<strong>内存级文件</strong>。
+假如现在该进程创建了一个子进程，子进程会继承父进程的file_struct，故都指向了一个内存级文件，现在我们便实现了<strong>让不同的进程看到同一份资源</strong>。然后我们让父进程和子进程一个只读，一个只写，不就可以实现两者进行<strong>单向通信</strong>了吗？而<strong>这种特殊的文件就是管道</strong>。这也符合linux下一切皆文件的观点。
+<img src=/p/linux-process/image/654e2220c51d242b935e072407ac6b88.png width=1988 height=1226 srcset="/p/linux-process/image/654e2220c51d242b935e072407ac6b88_hu_8138865fbfc57aa2.png 480w, /p/linux-process/image/654e2220c51d242b935e072407ac6b88_hu_aa347ceb7bece29c.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=162 data-flex-basis=389px>
+管道有两种，匿名管道和命名管道。
+匿名管道应用于具有血缘关系的进程
+命名管道应用于无血缘关系的进程</p><h3 id=匿名管道>匿名管道</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=err>功能</span><span class=o>:</span><span class=err>创建匿名管道</span>
+</span></span><span class=line><span class=cl><span class=err>原型</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=n>pipe</span><span class=p>(</span><span class=kt>int</span> <span class=n>pipefd</span><span class=p>[</span><span class=mi>2</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl><span class=err>参数</span>
+</span></span><span class=line><span class=cl><span class=n>pipefd</span><span class=err>：文件描述符数组</span><span class=p>,</span><span class=err>输出型参数，其中</span><span class=n>pipefd</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=err>存放读端的文件描述符</span><span class=p>,</span> <span class=n>pipefd</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=err>存放读端的文件描述符</span>
+</span></span><span class=line><span class=cl><span class=err>返回值</span><span class=o>:</span><span class=err>成功返回</span><span class=mi>0</span><span class=err>，失败返回错误代码</span>
+</span></span></code></pre></td></tr></table></div></div><p>管道通常是<strong>单向通信</strong>，主要是为了简化设计。如果要进行双向通信，那就创造两个管道。
+<img src=/p/linux-process/image/e7a92bfb9c5e2004ff90217301b04c91.png width=531 height=638 srcset="/p/linux-process/image/e7a92bfb9c5e2004ff90217301b04c91_hu_966c08cf36ab7829.png 480w, /p/linux-process/image/e7a92bfb9c5e2004ff90217301b04c91_hu_84a82c9a7f6451b2.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=83 data-flex-basis=199px></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;cassert&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//创建管道，让父进程写，子进程读
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>pipefd</span><span class=p>[</span><span class=mi>2</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>pipe</span><span class=p>(</span><span class=n>pipefd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>assert</span><span class=p>(</span><span class=n>n</span> <span class=o>!=</span> <span class=o>-</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>pid_t</span> <span class=n>id</span> <span class=o>=</span> <span class=n>fork</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>id</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>//子进程 -- 读取管道
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>close</span><span class=p>(</span><span class=n>pipefd</span><span class=p>[</span><span class=mi>1</span><span class=p>]);</span><span class=c1>//关闭写端,留下读端
+</span></span></span><span class=line><span class=cl><span class=c1></span>        
+</span></span><span class=line><span class=cl>        <span class=c1>//……子进程接受数据
+</span></span></span><span class=line><span class=cl><span class=c1></span> 
+</span></span><span class=line><span class=cl>        <span class=n>close</span><span class=p>(</span><span class=n>pipefd</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>        <span class=n>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span> <span class=k>if</span><span class=p>(</span><span class=n>id</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>//父进程 -- 写入管道
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>close</span><span class=p>(</span><span class=n>pipefd</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span><span class=c1>//关闭读端，留下写端
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>        <span class=c1>//……父进程写入数据 
+</span></span></span><span class=line><span class=cl><span class=c1></span>        
+</span></span><span class=line><span class=cl>        <span class=n>close</span><span class=p>(</span><span class=n>pipefd</span><span class=p>[</span><span class=mi>1</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>下面给一个完整的代码：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;cassert&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;cstdlib&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/wait.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;string&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=n>ssize_t</span> <span class=nf>SendMessage</span><span class=p>(</span><span class=kt>int</span> <span class=n>fd</span><span class=p>,</span> <span class=n>std</span><span class=o>::</span><span class=n>string</span><span class=o>&amp;</span> <span class=n>message</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>write</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=p>(</span><span class=kt>char</span><span class=o>*</span><span class=p>)</span><span class=n>message</span><span class=p>.</span><span class=n>c_str</span><span class=p>(),</span> <span class=n>message</span><span class=p>.</span><span class=n>size</span><span class=p>());</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>ssize_t</span> <span class=nf>ReceiveMessage</span><span class=p>(</span><span class=kt>int</span> <span class=n>fd</span><span class=p>,</span> <span class=n>std</span><span class=o>::</span><span class=n>string</span><span class=o>*</span> <span class=n>message</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>char</span> <span class=n>buf</span><span class=p>[</span><span class=mi>1024</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>read</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=k>sizeof</span> <span class=n>buf</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>n</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>n</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>buf</span><span class=p>[</span><span class=n>n</span><span class=p>]</span> <span class=o>=</span> <span class=sc>&#39;\0&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>*</span><span class=n>message</span> <span class=o>=</span> <span class=n>buf</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>n</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//创建管道，让父进程写，子进程读
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>pipefd</span><span class=p>[</span><span class=mi>2</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>pipe</span><span class=p>(</span><span class=n>pipefd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>assert</span><span class=p>(</span><span class=n>n</span> <span class=o>!=</span> <span class=o>-</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>pid_t</span> <span class=n>id</span> <span class=o>=</span> <span class=n>fork</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>id</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>//子进程 -- 读取管道
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>close</span><span class=p>(</span><span class=n>pipefd</span><span class=p>[</span><span class=mi>1</span><span class=p>]);</span><span class=c1>//关闭写端,留下读端
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>        <span class=c1>//子进程接受数据
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>ssize_t</span> <span class=n>n</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>do</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>message</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>n</span> <span class=o>=</span> <span class=n>ReceiveMessage</span><span class=p>(</span><span class=n>pipefd</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=o>&amp;</span><span class=n>message</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;child process receive: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>message</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>         
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>while</span> <span class=p>(</span><span class=n>n</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>close</span><span class=p>(</span><span class=n>pipefd</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>        <span class=n>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span> <span class=k>if</span><span class=p>(</span><span class=n>id</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>//父进程 -- 写入管道
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>close</span><span class=p>(</span><span class=n>pipefd</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span><span class=c1>//关闭读端，留下写端
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>        <span class=c1>//父进程写入数据 
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>while</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>message</span> <span class=o>=</span> <span class=s>&#34;66666&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;father send message: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>message</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl>            <span class=n>n</span> <span class=o>=</span> <span class=n>SendMessage</span><span class=p>(</span><span class=n>pipefd</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span> <span class=n>message</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>sleep</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>close</span><span class=p>(</span><span class=n>pipefd</span><span class=p>[</span><span class=mi>1</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//进程等待
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>status</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>pid_t</span> <span class=n>pid</span> <span class=o>=</span> <span class=n>waitpid</span><span class=p>(</span><span class=n>id</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>status</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;pid = &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>pid</span> <span class=o>&lt;&lt;</span> <span class=s>&#34; return: &#34;</span> <span class=o>&lt;&lt;</span> <span class=p>((</span><span class=n>status</span> <span class=o>&gt;&gt;</span> <span class=mi>8</span><span class=p>)</span> <span class=o>&amp;</span> <span class=mh>0x7f</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=管道特征>管道特征</h3><ol><li>管道是面向字节流</li><li>管道生命周期随文件</li></ol><p>管道的4种情况：</p><ol><li>读写端正常，管道如果为空，读写端阻塞</li><li>读写端正常，写端一直写，读端不读，当管道满了，写端被阻塞</li><li>读写端不正常，写端关闭，读端read会返回0，表明读到了文件结尾，不会阻塞</li><li>读写端不正常，读端关闭，写端写入则操作系统会杀掉正在写入的进程，即发生信号SIGPIPE</li></ol><h3 id=命名管道>命名管道</h3><p>上面讲到的匿名管道应用于具有血缘关系的管道，如果我们要让俩个不相干的进程进行通信，就要使用命名管道。</p><p>linux下有个命令<code>mkfifo</code>，它的作用是创造一个文件类型为p的文件。使用时：<code>mkfifo filename</code> 如下图：</p><p><img src=/p/linux-process/image/99fcc9689e9c9672cd4933503095c06e.png width=604 height=120 srcset="/p/linux-process/image/99fcc9689e9c9672cd4933503095c06e_hu_a1cdc485943424d.png 480w, /p/linux-process/image/99fcc9689e9c9672cd4933503095c06e_hu_1a121e9474037758.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=503 data-flex-basis=1208px>
+命名管道和匿名管道的性质一样，是一种特殊的文件形式，不存储数据，只传递数据。
+因此它的文件大小一直显示为0。
+使用如下：
+<img src=/p/linux-process/image/3c95bbe3d0b3f7135fd8a8e617927838.png width=1980 height=138 srcset="/p/linux-process/image/3c95bbe3d0b3f7135fd8a8e617927838_hu_5ff6fef65ed5baae.png 480w, /p/linux-process/image/3c95bbe3d0b3f7135fd8a8e617927838_hu_8892ffe6cdeecb3e.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=1434 data-flex-basis=3443px></p><p>linux也提供了mkfifo的系统接口，如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=n>NAME</span>
+</span></span><span class=line><span class=cl>       <span class=n>mkfifo</span><span class=p>,</span> <span class=n>mkfifoat</span> <span class=o>-</span> <span class=n>make</span> <span class=n>a</span> <span class=n>FIFO</span> <span class=n>special</span> <span class=n>file</span> <span class=p>(</span><span class=n>a</span> <span class=n>named</span> <span class=n>pipe</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>SYNOPSIS</span>
+</span></span><span class=line><span class=cl>       <span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>       <span class=cp>#include</span> <span class=cpf>&lt;sys/stat.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=n>mkfifo</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>pathname</span><span class=p>,</span> <span class=n>mode_t</span> <span class=n>mode</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=err>参数：</span><span class=n>mode即文件权限</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=err>生成命名管道后，用文件的操作函数来操作</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=err>命名管道的打开规则</span>
+</span></span><span class=line><span class=cl><span class=err>如果当前打开操作是为读而打开</span><span class=n>FIFO时</span>
+</span></span><span class=line><span class=cl><span class=n>O_NONBLOCK</span> <span class=n>disable</span><span class=err>：阻塞直到有相应进程为写而打开该</span><span class=n>FIFO</span>
+</span></span><span class=line><span class=cl><span class=n>O_NONBLOCK</span> <span class=n>enable</span><span class=err>：立刻返回成功</span>
+</span></span><span class=line><span class=cl><span class=err>如果当前打开操作是为写而打开</span><span class=n>FIFO时</span>
+</span></span><span class=line><span class=cl><span class=n>O_NONBLOCK</span> <span class=n>disable</span><span class=err>：阻塞直到有相应进程为读而打开该</span><span class=n>FIFO</span>
+</span></span><span class=line><span class=cl><span class=n>O_NONBLOCK</span> <span class=n>enable</span><span class=err>：立刻返回失败，错误码为</span><span class=n>ENXIO</span>
+</span></span></code></pre></td></tr></table></div></div><p>下面是一个简单演示：</p><p>common.hpp</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;cstring&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;cstdlib&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;cerrno&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/stat.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;fcntl.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=cp>#define FIFO_PATH &#34;./myfifo&#34;
+</span></span></span><span class=line><span class=cl><span class=cp>#define MODE 0664
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>enum</span> <span class=nc>sfw</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>FIFO_MKFIFO</span> <span class=o>=</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>FIFO_OPEN</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>FIFO_READ</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>FIFO_UNLINK</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>client.cc</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;common.hpp&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=k>namespace</span> <span class=n>std</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>fd</span> <span class=o>=</span> <span class=n>open</span><span class=p>(</span><span class=n>FIFO_PATH</span><span class=p>,</span> <span class=n>O_WRONLY</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>fd</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>perror</span><span class=p>(</span><span class=s>&#34;open&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>exit</span><span class=p>(</span><span class=n>FIFO_OPEN</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>string</span> <span class=n>line</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;clien sent# &#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>getline</span><span class=p>(</span><span class=n>cin</span><span class=p>,</span> <span class=n>line</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>write</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>line</span><span class=p>.</span><span class=n>c_str</span><span class=p>(),</span> <span class=n>line</span><span class=p>.</span><span class=n>size</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>server.cc</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;common.hpp&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=k>namespace</span> <span class=n>std</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=c1>//创建管道
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>mkfifo</span><span class=p>(</span><span class=n>FIFO_PATH</span><span class=p>,</span> <span class=n>MODE</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>n</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>perror</span><span class=p>(</span><span class=s>&#34;mkfifo&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>exit</span><span class=p>(</span><span class=n>FIFO_MKFIFO</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>//打开管道
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>int</span> <span class=n>fd</span> <span class=o>=</span> <span class=n>open</span><span class=p>(</span><span class=n>FIFO_PATH</span><span class=p>,</span> <span class=n>O_RDONLY</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>fd</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>perror</span><span class=p>(</span><span class=s>&#34;open&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>exit</span><span class=p>(</span><span class=n>FIFO_OPEN</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>while</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>char</span> <span class=n>buffer</span><span class=p>[</span><span class=mi>1024</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>x</span> <span class=o>=</span> <span class=n>read</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>buffer</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>buffer</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span><span class=p>(</span><span class=n>x</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>buffer</span><span class=p>[</span><span class=n>x</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;clien say@ &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>buffer</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span> <span class=k>if</span><span class=p>(</span><span class=n>x</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;client quit&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span> 
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>perror</span><span class=p>(</span><span class=s>&#34;read&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>exit</span><span class=p>(</span><span class=n>FIFO_READ</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>x</span> <span class=o>=</span> <span class=n>unlink</span><span class=p>(</span><span class=n>FIFO_PATH</span><span class=p>);</span><span class=c1>//删除管道
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>if</span><span class=p>(</span><span class=n>x</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>perror</span><span class=p>(</span><span class=s>&#34;unlink&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>exit</span><span class=p>(</span><span class=n>FIFO_UNLINK</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;server quit&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=二system-v-共享内存>二、system V 共享内存</h2><p>共享内存区是最快的IPC形式。一旦这样的内存映射到共享它的进程的地址空间，这些进程间数据传递不再涉及到内核，换句话说是进程不再通过执行进入内核的系统调用来传递彼此的数据
+<img src=/p/linux-process/image/45007faa41cb4e32934f45a41640af59.png width=953 height=588 srcset="/p/linux-process/image/45007faa41cb4e32934f45a41640af59_hu_43d280e281912f75.png 480w, /p/linux-process/image/45007faa41cb4e32934f45a41640af59_hu_728e9896e3fe8e68.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=162 data-flex-basis=388px></p><h3 id=共享内存方法>共享内存方法</h3><p>我们想使用共享内存，首先要在物理内存上开一个空间，然后要将物理内存上的空间映射到不同的进程上，之后就可以使用了。</p><h3 id=创建共享内存>创建共享内存</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=err>功能：用来创建共享内存</span>
+</span></span><span class=line><span class=cl><span class=err>原型</span>
+</span></span><span class=line><span class=cl> <span class=kt>int</span> <span class=n>shmget</span><span class=p>(</span><span class=n>key_t</span> <span class=n>key</span><span class=p>,</span> <span class=n>size_t</span> <span class=n>size</span><span class=p>,</span> <span class=kt>int</span> <span class=n>shmflg</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=err>参数</span>
+</span></span><span class=line><span class=cl> 	<span class=nl>key</span><span class=p>:</span><span class=err>这个共享内存段名字</span>
+</span></span><span class=line><span class=cl> 	<span class=nl>size</span><span class=p>:</span><span class=err>共享内存大小</span>
+</span></span><span class=line><span class=cl> 	<span class=nl>shmflg</span><span class=p>:</span><span class=err>由九个权限标志构成，它们的用法和创建文件时使用的</span><span class=n>mode模式标志是一样的</span>
+</span></span><span class=line><span class=cl> 	
+</span></span><span class=line><span class=cl> 	<span class=n>IPC_CREAT</span><span class=err>：</span><span class=n>Create</span> <span class=n>a</span> <span class=k>new</span> <span class=n>segment</span><span class=p>.</span>  <span class=n>If</span> <span class=k>this</span> <span class=n>flag</span> <span class=n>is</span> <span class=n>not</span> <span class=n>used</span><span class=p>,</span> <span class=n>then</span> <span class=n>shmget</span><span class=p>()</span> <span class=n>will</span> <span class=n>find</span> <span class=n>the</span> <span class=n>segment</span> <span class=n>associated</span> <span class=n>with</span> <span class=n>key</span> <span class=n>and</span> <span class=n>check</span> <span class=n>to</span> <span class=n>see</span> <span class=k>if</span> <span class=n>the</span> <span class=n>user</span> <span class=n>has</span> <span class=n>permission</span> <span class=n>to</span> <span class=n>access</span> <span class=n>the</span> <span class=n>segment</span><span class=p>.</span>
+</span></span><span class=line><span class=cl> 	<span class=n>IPC_EXCL</span><span class=err>：</span><span class=n>This</span> <span class=n>flag</span> <span class=n>is</span> <span class=n>used</span> <span class=n>with</span> <span class=n>IPC_CREAT</span> <span class=n>to</span> <span class=n>ensure</span> <span class=n>that</span> <span class=k>this</span> <span class=n>call</span> <span class=n>creates</span> <span class=n>the</span> <span class=n>segment</span><span class=p>.</span>  <span class=n>If</span> <span class=n>the</span> <span class=n>segment</span> <span class=n>already</span> <span class=n>exists</span><span class=p>,</span> <span class=n>the</span> <span class=n>call</span> <span class=n>fails</span>
+</span></span><span class=line><span class=cl><span class=err>返回值：成功返回一个非负整数，即该共享内存段的标识码；失败返回</span><span class=o>-</span><span class=mi>1</span>
+</span></span></code></pre></td></tr></table></div></div><p>理解：
+key这个参数是什么东西？我们要想进程看到共享内存（记作A），首先要找到A。同一时间，物理内存里可能有很多共享内存，因此，查找的过程中，我们要还要区分A与其他共享内存。这一切都导致共享内存需要有一个唯一的标志，即参数key
+那参数key传什么？我随便传个数字，可以吗？当然可以，但这有个问题：如果你传的数字和系统中某个共享内存的key冲突了，怎么办？显然自己手动设置key，不妥。系统为我们提供了一个生成key的函数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=n>NAME</span>
+</span></span><span class=line><span class=cl>       <span class=n>ftok</span> <span class=o>-</span> <span class=n>convert</span> <span class=n>a</span> <span class=n>pathname</span> <span class=n>and</span> <span class=n>a</span> <span class=n>project</span> <span class=n>identifier</span> <span class=n>to</span> <span class=n>a</span> <span class=n>System</span> <span class=n>V</span> <span class=n>IPC</span> <span class=n>key</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>SYNOPSIS</span>
+</span></span><span class=line><span class=cl>       <span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>       <span class=cp>#include</span> <span class=cpf>&lt;sys/ipc.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl>       <span class=n>key_t</span> <span class=n>ftok</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>pathname</span><span class=p>,</span> <span class=kt>int</span> <span class=n>proj_id</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>       
+</span></span><span class=line><span class=cl><span class=n>ftok根据路径名</span><span class=err>，提取文件信息，再根据这些文件信息及</span><span class=n>project</span> <span class=n>ID合成key</span><span class=err>，</span>
+</span></span><span class=line><span class=cl><span class=n>pathname和proj_id由用户自己约定</span>
+</span></span></code></pre></td></tr></table></div></div><p>size，单位为字节，假如我们传入4097，那么共享内存的大小应该是4097，但实际上，共享内存大小是4096 * 2，但只允许你使用其中的4097。操作系统在分配共享内存大小时是以<strong>4096的整数倍</strong>分配。</p><p>shmflg， 这里的标志位最常用是什么组合：
+创建共享内存：传 <code>IPC_CREAT | IPC_EXCL | 0666</code>
+获取共享内存：传<code>IPC_CREAT</code></p><p>使用:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/ipc.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/shm.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=cp>#define PATHNAME &#34;./main&#34;
+</span></span></span><span class=line><span class=cl><span class=cp>#define PROJ_ID 0x8848
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=n>key_t</span> <span class=nf>CreateKey</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=n>key_t</span> <span class=n>key</span> <span class=o>=</span> <span class=n>ftok</span><span class=p>(</span><span class=n>PATHNAME</span><span class=p>,</span> <span class=n>PROJ_ID</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>key</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>cerr</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;ftok fail&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>key</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>ComMem</span><span class=p>(</span><span class=n>key_t</span> <span class=n>key</span><span class=p>,</span> <span class=n>size_t</span> <span class=n>size</span><span class=p>,</span> <span class=kt>int</span> <span class=n>shmflg</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>shmid</span> <span class=o>=</span> <span class=n>shmget</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>size</span><span class=p>,</span> <span class=n>shmflg</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>shmid</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>cerr</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;shmget fali&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>shmid</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>CreateComMem</span><span class=p>(</span><span class=n>key_t</span> <span class=n>key</span><span class=p>,</span> <span class=n>size_t</span> <span class=n>size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>ComMem</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>size</span><span class=p>,</span> <span class=n>IPC_CREAT</span> <span class=o>|</span> <span class=n>IPC_EXCL</span> <span class=o>|</span> <span class=mo>0666</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>GetComMem</span><span class=p>(</span><span class=n>key_t</span> <span class=n>key</span><span class=p>,</span> <span class=n>size_t</span> <span class=n>size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>ComMem</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>size</span><span class=p>,</span> <span class=n>IPC_CREAT</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=映射到进程地址空间>映射到进程地址空间</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=err>功能：将共享内存段连接到进程地址空间</span>
+</span></span><span class=line><span class=cl><span class=err>原型</span>
+</span></span><span class=line><span class=cl> <span class=kt>void</span> <span class=o>*</span><span class=n>shmat</span><span class=p>(</span><span class=kt>int</span> <span class=n>shmid</span><span class=p>,</span> <span class=k>const</span> <span class=kt>void</span> <span class=o>*</span><span class=n>shmaddr</span><span class=p>,</span> <span class=kt>int</span> <span class=n>shmflg</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=err>参数</span>
+</span></span><span class=line><span class=cl> <span class=nl>shmid</span><span class=p>:</span> <span class=err>共享内存标识</span>
+</span></span><span class=line><span class=cl> <span class=nl>shmaddr</span><span class=p>:</span><span class=err>指定连接的地址</span>
+</span></span><span class=line><span class=cl> <span class=nl>shmflg</span><span class=p>:</span><span class=err>它的两个可能取值是</span><span class=n>SHM_RND和SHM_RDONLY</span>
+</span></span><span class=line><span class=cl><span class=err>返回值：成功返回一个指针，指向共享内存第一个节；失败返回</span><span class=o>-</span><span class=mi>1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>shmaddr为NULL</span><span class=err>，核心自动选择一个地址</span>
+</span></span><span class=line><span class=cl><span class=n>shmaddr不为NULL且shmflg无SHM_RND标记</span><span class=err>，则以</span><span class=n>shmaddr为连接地址</span><span class=err>。</span>
+</span></span><span class=line><span class=cl><span class=n>shmaddr不为NULL且shmflg设置了SHM_RND标记</span><span class=err>，则连接的地址会自动向下调整为</span><span class=n>SHMLBA的整数倍</span><span class=err>。公式：</span><span class=n>shmaddr</span> <span class=o>-</span> 
+</span></span><span class=line><span class=cl><span class=p>(</span><span class=n>shmaddr</span> <span class=o>%</span> <span class=n>SHMLBA</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>shmflg</span><span class=o>=</span><span class=n>SHM_RDONLY</span><span class=err>，表示连接操作用来只读共享内存</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=err>功能：将共享内存段与当前进程脱离</span>
+</span></span><span class=line><span class=cl><span class=err>原型</span>
+</span></span><span class=line><span class=cl> <span class=kt>int</span> <span class=n>shmdt</span><span class=p>(</span><span class=k>const</span> <span class=kt>void</span> <span class=o>*</span><span class=n>shmaddr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=err>参数</span>
+</span></span><span class=line><span class=cl> <span class=nl>shmaddr</span><span class=p>:</span> <span class=err>由</span><span class=n>shmat所返回的指针</span>
+</span></span><span class=line><span class=cl><span class=err>返回值：成功返回</span><span class=mi>0</span><span class=err>；失败返回</span><span class=o>-</span><span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=err>注意：将共享内存段与当前进程脱离不等于删除共享内存段</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=控制共享内存>控制共享内存</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=err>功能：用于控制共享内存</span>
+</span></span><span class=line><span class=cl><span class=err>原型</span>
+</span></span><span class=line><span class=cl> <span class=kt>int</span> <span class=n>shmctl</span><span class=p>(</span><span class=kt>int</span> <span class=n>shmid</span><span class=p>,</span> <span class=kt>int</span> <span class=n>cmd</span><span class=p>,</span> <span class=k>struct</span> <span class=nc>shmid_ds</span> <span class=o>*</span><span class=n>buf</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=err>参数</span>
+</span></span><span class=line><span class=cl> <span class=nl>shmid</span><span class=p>:</span><span class=err>由</span><span class=n>shmget返回的共享内存标识码</span>
+</span></span><span class=line><span class=cl> <span class=nl>cmd</span><span class=p>:</span><span class=err>将要采取的动作（有三个可取值）</span>
+</span></span><span class=line><span class=cl> <span class=nl>buf</span><span class=p>:</span><span class=err>指向一个保存着共享内存的模式状态和访问权限的数据结构</span>
+</span></span><span class=line><span class=cl><span class=err>返回值：成功返回</span><span class=mi>0</span><span class=err>；失败返回</span><span class=o>-</span><span class=mi>1</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=k>struct</span> <span class=nc>shmid_ds</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl> <span class=k>struct</span> <span class=nc>ipc_perm</span> <span class=n>shm_perm</span><span class=p>;</span> <span class=cm>/* operation perms */</span>
+</span></span><span class=line><span class=cl> <span class=kt>int</span> <span class=n>shm_segsz</span><span class=p>;</span> <span class=cm>/* size of segment (bytes) */</span>
+</span></span><span class=line><span class=cl> <span class=n>__kernel_time_t</span> <span class=n>shm_atime</span><span class=p>;</span> <span class=cm>/* last attach time */</span>
+</span></span><span class=line><span class=cl> <span class=n>__kernel_time_t</span> <span class=n>shm_dtime</span><span class=p>;</span> <span class=cm>/* last detach time */</span>
+</span></span><span class=line><span class=cl> <span class=n>__kernel_time_t</span> <span class=n>shm_ctime</span><span class=p>;</span> <span class=cm>/* last change time */</span>
+</span></span><span class=line><span class=cl> <span class=n>__kernel_ipc_pid_t</span> <span class=n>shm_cpid</span><span class=p>;</span> <span class=cm>/* pid of creator */</span>
+</span></span><span class=line><span class=cl> <span class=n>__kernel_ipc_pid_t</span> <span class=n>shm_lpid</span><span class=p>;</span> <span class=cm>/* pid of last operator */</span>
+</span></span><span class=line><span class=cl> <span class=kt>unsigned</span> <span class=kt>short</span> <span class=n>shm_nattch</span><span class=p>;</span> <span class=cm>/* no. of current attaches */</span>
+</span></span><span class=line><span class=cl> <span class=kt>unsigned</span> <span class=kt>short</span> <span class=n>shm_unused</span><span class=p>;</span> <span class=cm>/* compatibility */</span>
+</span></span><span class=line><span class=cl> <span class=kt>void</span> <span class=o>*</span><span class=n>shm_unused2</span><span class=p>;</span> <span class=cm>/* ditto - used by DIPC */</span>
+</span></span><span class=line><span class=cl> <span class=kt>void</span> <span class=o>*</span><span class=n>shm_unused3</span><span class=p>;</span> <span class=cm>/* unused */</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=共享内存特征>共享内存特征</h3><p>理解：key VS shmid?</p><p>共享内存的生命周期随内核，用户不主动关闭，共享内存不释放, 直到内核重启</p><h2 id=三信号>三、信号</h2><blockquote><p>定义：在Linux中，信号是一种用于进程间通信的机制，用于通知进程发生了特定的事件。信号可以由操作系统、其他进程或进程自身发送，而接收信号的进程可以选择如何处理收到的信号。</p></blockquote><p>linux下的信号有62个，通过<code>kill -l</code>可以查看所有信号
+<img src=/p/linux-process/image/eff15069da6eaafe070a449cf181e3b5.png width=1118 height=412 srcset="/p/linux-process/image/eff15069da6eaafe070a449cf181e3b5_hu_93fd332fb1fff51f.png 480w, /p/linux-process/image/eff15069da6eaafe070a449cf181e3b5_hu_44a45073d746b28a.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=271 data-flex-basis=651px>
+1-31为普通信号</p><blockquote><p>普通信号是传统的 Unix 信号，其范围通常为 1 到 31（包括0），使用整数值表示。
+当多个相同类型的普通信号被发送给进程时，只有一个实例会被记录，因此可能会丢失部分信号。
+普通信号是顺序交付的，即如果一个进程收到了多个相同类型的信号，它们将按照到达的顺序依次处理。</p></blockquote><p>34-64为实时信号</p><blockquote><p>实时信号引入了对于更高精度的信号处理的支持，信号的编号通常大于 31，从 32 开始直到 SIGRTMAX。
+实时信号不会丢失，即使在相同类型的实时信号连续发送给进程时，每个信号都会被记录。
+实时信号可以按照任意顺序传递，并且不会排队等待处理，而是按照优先级立即被发送给接收者。
+时信号适用于需要及时响应外部事件，且对信号处理精度和可靠性有较高要求的场景。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>1. SIGHUP（Hangup）：通常用于通知进程其终端已断开连接。
+</span></span><span class=line><span class=cl>2. SIGINT（Interrupt）：通常由用户通过键盘输入Ctrl+C发送，用于请求中断进程。
+</span></span><span class=line><span class=cl>3. SIGQUIT（Quit）：通常由用户通过键盘输入Ctrl+<span class=se>\发</span>送，用于请求终止进程并生成核心转储文件。
+</span></span><span class=line><span class=cl>4. SIGILL（Illegal instruction）：指示进程执行了非法指令。
+</span></span><span class=line><span class=cl>5. SIGTRAP（Trace/Breakpoint trap）：用于调试，例如跟踪或设置断点。
+</span></span><span class=line><span class=cl>6. SIGABRT（Abort）：由调用abort函数引发的信号，通常表示程序异常终止。
+</span></span><span class=line><span class=cl>7. SIGBUS（Bus error）：表示尝试访问无效内存区域。
+</span></span><span class=line><span class=cl>8. SIGFPE（Floating point exception）：表示浮点运算异常，如除以零或溢出。
+</span></span><span class=line><span class=cl>9. SIGKILL（Kill）：用于立即终止进程，无法被阻塞或处理。
+</span></span><span class=line><span class=cl>10. SIGUSR1（User-defined signal 1）：由用户定义，可用于进程间通信。
+</span></span><span class=line><span class=cl>11. SIGSEGV（Segmentation fault）：表示进程试图访问未分配给其的内存。
+</span></span><span class=line><span class=cl>12. SIGUSR2（User-defined signal 2）：由用户定义，可用于进程间通信。
+</span></span><span class=line><span class=cl>13. SIGPIPE（Broken pipe）：当进程尝试向已关闭的管道写入数据时触发。
+</span></span><span class=line><span class=cl>14. SIGALRM（Alarm clock）：用于定时器和闹钟功能。
+</span></span><span class=line><span class=cl>15. SIGTERM（Termination）：用于请求进程正常终止。
+</span></span><span class=line><span class=cl>16. SIGSTKFLT（Stack fault）：表示栈溢出或栈空间不足。
+</span></span><span class=line><span class=cl>17. SIGCHLD（Child status changed）：子进程状态发生变化时发送给父进程。
+</span></span><span class=line><span class=cl>18. SIGCONT（Continue）：请求继续之前暂停的进程。
+</span></span><span class=line><span class=cl>19. SIGSTOP（Stop）：用于立即停止进程，但可以被恢复。
+</span></span><span class=line><span class=cl>20. SIGTSTP（Terminal stop）：用户通过键盘输入Ctrl+Z发送，请求暂停进程。
+</span></span><span class=line><span class=cl>21. SIGTTIN（Background <span class=nb>read</span> from tty）：后台进程尝试从控制终端读取数据。
+</span></span><span class=line><span class=cl>22. SIGTTOU（Background write to tty）：后台进程尝试向控制终端写入数据。
+</span></span><span class=line><span class=cl>23. SIGURG（Urgent condition on socket）：表示套接字上发生紧急情况。
+</span></span><span class=line><span class=cl>24. SIGXCPU（CPU <span class=nb>time</span> limit exceeded）：进程已用尽CPU时间配额。
+</span></span><span class=line><span class=cl>25. SIGXFSZ（File size limit exceeded）：进程尝试写入超出文件大小限制的数据。
+</span></span><span class=line><span class=cl>26. SIGVTALRM（Virtual timer expired）：用于虚拟定时器。
+</span></span><span class=line><span class=cl>27. SIGPROF（Profiling timer expired）：用于分析和性能监视。
+</span></span><span class=line><span class=cl>28. SIGWINCH（Window size change）：当终端窗口大小改变时发送给前台进程。
+</span></span><span class=line><span class=cl>29. SIGIO（I/O now possible）：指示异步I/O操作已完成。
+</span></span><span class=line><span class=cl>30. SIGPWR（Power failure）：表示电源故障。
+</span></span><span class=line><span class=cl>31. SIGSYS: 非法系统调用信号，通常表示进程尝试执行一个非法的系统调用。
+</span></span></code></pre></td></tr></table></div></div><p>为什么没有32，33？不知道。</p><p>本文不讨论实时信号。</p><p>对于一个信号，它要经过3个阶段</p><ol><li>信号的产生：信号由谁产生 ？如何产生？</li><li>信号的保存：进程接受了信号，那信号是如何保存在进程里？</li><li>信号的捕捉处理：进程如何理解信号的含义？如何处理信号？</li></ol><p>学习信号，必须搞懂这3个阶段。</p><h3 id=信号的产生>信号的产生</h3><p>信号的产生有4种方式</p><h4 id=通过终端按键产生信号>通过终端按键产生信号</h4><p>Linux输入<code>Ctrl c</code>可以中断进程。本质上是OS把ctrl c解释为2号信号<code>SIGINT</code>，发送给<strong>前台</strong>进程。（后台进程接受不到）
+<img src=/p/linux-process/image/86da0c445f57edecaca209cb5d77de57.png width=679 height=534 srcset="/p/linux-process/image/86da0c445f57edecaca209cb5d77de57_hu_7b22801d13c9befe.png 480w, /p/linux-process/image/86da0c445f57edecaca209cb5d77de57_hu_2ad8c8b6ff0f0b83.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=127 data-flex-basis=305px>
+除了<code>Ctrl c</code>之外，还有<code>Ctrl \（SIGQUIT） Ctrl z（SIGTSTP)</code></p><h4 id=调用系统函数向进程发信号>调用系统函数向进程发信号</h4><p>kill函数可以向指定进程发送信号。
+<img src=/p/linux-process/image/45b4d16a3078cafda37c689eebad6206.png width=562 height=250 srcset="/p/linux-process/image/45b4d16a3078cafda37c689eebad6206_hu_8f65f5740b055d81.png 480w, /p/linux-process/image/45b4d16a3078cafda37c689eebad6206_hu_4d92097e6379d0f8.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=224 data-flex-basis=539px>
+kill命令就是用kill函数完成的。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kill命令: <span class=nb>kill</span> -<span class=o>[</span>signal<span class=o>]</span> <span class=o>[</span>pid<span class=o>]</span>
+</span></span><span class=line><span class=cl>kill函数：int <span class=nv>n</span> <span class=o>=</span>  kill<span class=o>(</span>pid, signal<span class=o>)</span><span class=p>;</span> 成功返回0， 失败返回-1
+</span></span></code></pre></td></tr></table></div></div><p>raise函数可以向当前进程发送信号
+<img src=/p/linux-process/image/db3dc365c154ab1f7d70ec6a37b4e141.png width=608 height=230 srcset="/p/linux-process/image/db3dc365c154ab1f7d70ec6a37b4e141_hu_c4fd4d3895a2fbe.png 480w, /p/linux-process/image/db3dc365c154ab1f7d70ec6a37b4e141_hu_344f438384d585a8.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=264 data-flex-basis=634px></p><h4 id=软件条件产生信号>软件条件产生信号</h4><p>SIGPIPE和SIGALRM是由软件条件产生的信号</p><p>SIGPIPE产生条件如下：
+<img src=/p/linux-process/image/df1e72ab9982dd377f108e86e1e62fb2.png width=592 height=323 srcset="/p/linux-process/image/df1e72ab9982dd377f108e86e1e62fb2_hu_90e2e39ad775fd11.png 480w, /p/linux-process/image/df1e72ab9982dd377f108e86e1e62fb2_hu_b2d77f040136aeb0.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=183 data-flex-basis=439px>
+SIGALRM是alrm()函数产生的。</p><h3 id=信号的保存>信号的保存</h3><p>信号产生后，就要发给进程来处理。在处理之前，首先要保存。linux下，进程的信息是task_struct来进行管理的，在task_struct里控制信号的相关信息的成员通常包括以下几个：block, pending, handler</p><p><img src=/p/linux-process/image/a0d40ef6ec9d057d41dc950f43c73a73.png width=1002 height=344 srcset="/p/linux-process/image/a0d40ef6ec9d057d41dc950f43c73a73_hu_663fb00cfbdc2808.png 480w, /p/linux-process/image/a0d40ef6ec9d057d41dc950f43c73a73_hu_1f4f7255c257058.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=291 data-flex-basis=699px>
+在解释这几个成员的含义之前，先要介绍几个概念：</p><ol><li>信号递达(Delivery)：<strong>执行信号的处理动作</strong>被称为信号递达</li><li>信号未决(Pending)：信号从产生到递达之间的状态,称为信号未决。</li><li>信号阻塞(block)：进程可以选择阻塞 (Block )某个信号。被阻塞的信号产生时将保持在未决状态,直到进程解除对此信号的阻塞,才执行递达的动作.
+注意,阻塞和忽略是不同的,只要信号被阻塞就不会递达,而忽略是在递达之后可选的一种处理动作。</li></ol><p>block和pending是用来<strong>表示信号的状态</strong>的<strong>位图</strong>。我们一般叫阻塞表和未决表
+什么意思？
+在task_struct里，block和pending的定义如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=n>sigset_t</span> <span class=n>blocked</span>
+</span></span><span class=line><span class=cl><span class=n>sigset_t</span> <span class=n>pending</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sigset_t类型的定义如下</span><span class=err>：</span>
+</span></span><span class=line><span class=cl><span class=k>typedef</span> <span class=n>__sigset_t</span> <span class=n>sigset_t</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cp># define _SIGSET_NWORDS	(1024 / (8 * sizeof (unsigned long int)))
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=k>typedef</span> <span class=k>struct</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>unsigned</span> <span class=kt>long</span> <span class=kt>int</span> <span class=n>__val</span><span class=p>[</span><span class=n>_SIGSET_NWORDS</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=n>__sigset_t</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><p>sigset_t是一个结构体，结构体成员是一个类型unsigned long int的数组。假设在32位机器，则数组的大小为4*32 = 128 字节。数组下标1-31对应1-31号信号，数组成员的值只有0和1。
+在block中，0表示未被阻塞，1表示阻塞
+在pending中，0表示未收到，1表示未决</p><p>首先介绍2类系统调用接口：
+与block相关：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=n>NAME</span>
+</span></span><span class=line><span class=cl>       <span class=n>sigemptyset</span><span class=p>,</span> <span class=n>sigfillset</span><span class=p>,</span> <span class=n>sigaddset</span><span class=p>,</span> <span class=n>sigdelset</span><span class=p>,</span> <span class=n>sigismember</span> <span class=o>-</span> <span class=n>POSIX</span> <span class=n>signal</span> <span class=n>set</span> <span class=n>operations</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>SYNOPSIS</span>
+</span></span><span class=line><span class=cl>       <span class=cp>#include</span> <span class=cpf>&lt;signal.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=n>sigemptyset</span><span class=p>(</span><span class=n>sigset_t</span> <span class=o>*</span><span class=n>set</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=nf>sigfillset</span><span class=p>(</span><span class=n>sigset_t</span> <span class=o>*</span><span class=n>set</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=nf>sigaddset</span><span class=p>(</span><span class=n>sigset_t</span> <span class=o>*</span><span class=n>set</span><span class=p>,</span> <span class=kt>int</span> <span class=n>signum</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=nf>sigdelset</span><span class=p>(</span><span class=n>sigset_t</span> <span class=o>*</span><span class=n>set</span><span class=p>,</span> <span class=kt>int</span> <span class=n>signum</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=nf>sigismember</span><span class=p>(</span><span class=k>const</span> <span class=n>sigset_t</span> <span class=o>*</span><span class=n>set</span><span class=p>,</span> <span class=kt>int</span> <span class=n>signum</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sigaddset</span> <span class=o>--</span> <span class=err>将</span><span class=n>set里signum信号对应的元素设为1</span><span class=err>（阻塞）</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl>       <span class=cp>#include</span> <span class=cpf>&lt;signal.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl>       <span class=cm>/* Prototype for the glibc wrapper function */</span>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=nf>sigprocmask</span><span class=p>(</span><span class=kt>int</span> <span class=n>how</span><span class=p>,</span> <span class=k>const</span> <span class=n>sigset_t</span> <span class=o>*</span><span class=n>set</span><span class=p>,</span> <span class=n>sigset_t</span> <span class=o>*</span><span class=n>oldset</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sigprocmask</span> <span class=o>--</span> <span class=err>检查或者改变进程的</span><span class=n>block表</span><span class=err>（改变，即将</span><span class=n>block的内容先保存到oldset</span><span class=err>，再替换为</span><span class=n>set</span><span class=err>）。</span>
+</span></span></code></pre></td></tr></table></div></div><blockquote><p>调用函数sigprocmask可以读取或更改进程的信号屏蔽字(阻塞信号集)。
+如果oset是非空指针,则读取进程的当前信号屏蔽字通过oset参数传出。如果set是非空指针,则 更改进程的信号屏蔽字,参数how指示如何更改。如果oset和set都是非空指针,则先将原来的信号 屏蔽字备份到oset里,然后根据set和how参数更改信号屏蔽字。假设当前的信号屏蔽字为mask,下表说明了how参数的可选值。
+<img src=/p/linux-process/image/7b8ce61e10194da2f379d121fa39d8f9.png width=924 height=192 srcset="/p/linux-process/image/7b8ce61e10194da2f379d121fa39d8f9_hu_cd1ceba7dc213c48.png 480w, /p/linux-process/image/7b8ce61e10194da2f379d121fa39d8f9_hu_54cf50562555d1b0.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=481 data-flex-basis=1155px>
+这里的 信号屏蔽字 就是 block表， 只是换了一个说法。
+用例如下：</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl> 	<span class=n>sigset_t</span> <span class=n>bset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>sigemptyset</span><span class=p>(</span><span class=o>&amp;</span><span class=n>bset</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//bset: 0000 0000 0000 0000 0000 0000 0000 0000 
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>sigaddset</span><span class=p>(</span><span class=o>&amp;</span><span class=n>bset</span><span class=p>,</span> <span class=mi>2</span><span class=p>);</span> <span class=c1>//阻塞2号信号，对应下标2的元素值变为1
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//bset: 0000 0000 0000 0000 0000 0000 0000 0100 
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=n>sigset_t</span> <span class=n>oldset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>sigemptyset</span><span class=p>(</span><span class=o>&amp;</span><span class=n>oldset</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//oldset: 0000 0000 0000 0000 0000 0000 0000 0000 
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=n>sigprocmask</span><span class=p>(</span><span class=n>SIG_SETMASK</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>bset</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>oldset</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//原来进程里的block: 0000 0000 0000 0000 0000 0000 0000 0000
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//改变后的block: 0000 0000 0000 0000 0000 0000 0000 0100
+</span></span></span></code></pre></td></tr></table></div></div><p>与pending相关
+<img src=/p/linux-process/image/966174cbc1aa5bd556c38424cc18187a.png width=621 height=224 srcset="/p/linux-process/image/966174cbc1aa5bd556c38424cc18187a_hu_40ef9a3993ff1f3.png 480w, /p/linux-process/image/966174cbc1aa5bd556c38424cc18187a_hu_303bee7fc996fe7.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=277 data-flex-basis=665px>
+sigpending &ndash; 将系统里的pending表 赋给 set。
+用例如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=kt>void</span> <span class=nf>printpending</span><span class=p>(</span><span class=n>sigset_t</span><span class=o>&amp;</span> <span class=n>pending</span><span class=p>)</span> <span class=c1>//打印pending表
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>31</span><span class=p>;</span> <span class=n>i</span> <span class=o>&gt;=</span> <span class=mi>1</span><span class=p>;</span> <span class=n>i</span><span class=o>--</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span><span class=p>(</span><span class=n>sigismember</span><span class=p>(</span><span class=o>&amp;</span><span class=n>pending</span><span class=p>,</span> <span class=n>i</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;1&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span> 
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;0&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=n>sigset_t</span> <span class=n>pending</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	<span class=n>sigpending</span><span class=p>(</span><span class=o>&amp;</span><span class=n>pending</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=n>printpending</span><span class=p>(</span><span class=n>pending</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><p>了解完这2类系统调用接口后，下面我们来运行一段代码。</p><p>mysignal.cc</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;signal.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=k>using</span> <span class=k>namespace</span> <span class=n>std</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>printpending</span><span class=p>(</span><span class=n>sigset_t</span><span class=o>&amp;</span> <span class=n>pending</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>31</span><span class=p>;</span> <span class=n>i</span> <span class=o>&gt;=</span> <span class=mi>1</span><span class=p>;</span> <span class=n>i</span><span class=o>--</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span><span class=p>(</span><span class=n>sigismember</span><span class=p>(</span><span class=o>&amp;</span><span class=n>pending</span><span class=p>,</span> <span class=n>i</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;1&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span> 
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;0&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>sigset_t</span> <span class=n>bset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>sigemptyset</span><span class=p>(</span><span class=o>&amp;</span><span class=n>bset</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//bset: 0000 0000 0000 0000 0000 0000 0000 0000 
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>sigaddset</span><span class=p>(</span><span class=o>&amp;</span><span class=n>bset</span><span class=p>,</span> <span class=mi>2</span><span class=p>);</span> <span class=c1>//阻塞2号信号，对应下标2
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//bset: 0000 0000 0000 0000 0000 0000 0000 0100 
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=n>sigset_t</span> <span class=n>oldset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>sigemptyset</span><span class=p>(</span><span class=o>&amp;</span><span class=n>oldset</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//oldset: 0000 0000 0000 0000 0000 0000 0000 0000 
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=n>sigprocmask</span><span class=p>(</span><span class=n>SIG_SETMASK</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>bset</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>oldset</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//原来进程里的block: 0000 0000 0000 0000 0000 0000 0000 0000
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//改变后的block: 0000 0000 0000 0000 0000 0000 0000 0100
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>    <span class=n>sigset_t</span> <span class=n>pending</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>cnt</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>(</span><span class=nb>true</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>sigpending</span><span class=p>(</span><span class=o>&amp;</span><span class=n>pending</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span><span class=p>(</span><span class=n>n</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span> <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>printpending</span><span class=p>(</span><span class=n>pending</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>sleep</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>cnt</span><span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span><span class=p>(</span><span class=n>cnt</span> <span class=o>==</span> <span class=mi>10</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;unblock 2 signo&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>sigprocmask</span><span class=p>(</span><span class=n>SIG_SETMASK</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>oldset</span><span class=p>,</span> <span class=k>nullptr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/linux-process/image/852d8470820342580a0051d7f3d11f5a.png width=1178 height=664 srcset="/p/linux-process/image/852d8470820342580a0051d7f3d11f5a_hu_2428db98244aeee4.png 480w, /p/linux-process/image/852d8470820342580a0051d7f3d11f5a_hu_4214578794ad1f17.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=177 data-flex-basis=425px></p><p>由此我们可以得出以下结论：
+<img src=/p/linux-process/image/153b6323ea475173d848ba5ab568f2fb.png width=2061 height=1133 srcset="/p/linux-process/image/153b6323ea475173d848ba5ab568f2fb_hu_1f0b4e884fdbc794.png 480w, /p/linux-process/image/153b6323ea475173d848ba5ab568f2fb_hu_1fc78bb26a6f7b34.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=181 data-flex-basis=436px>
+上面的代码其实还不能说明最后一步（执行信号2的对应操作，pending的下标2的元素值会变为0），学习了signal函数之后，便可以更直观看到现象。</p><p>block和pending已经实现了信号的保存， 还剩一个handler，他是做什么的呢？</p><p>handler是一个函数指针数组，函数指针的定义如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=k>typedef</span> <span class=nf>void</span> <span class=p>(</span><span class=o>*</span><span class=n>__sighandler_t</span><span class=p>)</span> <span class=p>(</span><span class=kt>int</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//除此之外，还定义了3个宏
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=cp>#define SIG_ERR	((__sighandler_t) -1)		</span><span class=cm>/* Error return.  */</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#define SIG_DFL	((__sighandler_t) 0)		</span><span class=cm>/* Default action.  */</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#define SIG_IGN	((__sighandler_t) 1)		</span><span class=cm>/* Ignore signal.  */</span><span class=cp>
+</span></span></span></code></pre></td></tr></table></div></div><p>总结一句话：handler是负责信号的处理的，默认情况下，handler数组存储的值是SIG_DFL。
+这里可能有个疑问：比如2号信号在handler存储的是SIG_DFL, 8号信号在handler存的也是SIG_DFL。很明显，SIG_DFL和SIG_DFL是同一个地址，即0（0也不是一个合法的地址）. 那为什么2号信号和8号信号的处理的方式不同，比如2号信号是中断进程，8号信号是退出进程。</p><blockquote><p>SIG_DFL 只是一个宏，表示默认的信号处理行为，它的值是一个函数指针，指向预先定义的默认处理函数。这个宏的定义只是为了方便代码的书写，以及在代码中清晰地表示使用默认处理行为。如果某个信号对应handler是SIG_DFL, 操作系统会到内核里找到该信号的默认操作函数。</p></blockquote><p>正是通过block，pending，handler, 进程才能执行不同信号对应的的处理方式。</p><p>​</p><h2 id=信号的捕捉处理>信号的捕捉处理</h2><p>信号的捕捉是指进程通过设置信号处理函数来处理接收到的信号。当进程收到一个信号时，操作系统会中断当前的执行流程，将控制权转移到相应的信号处理函数。在信号处理函数中，进程可以执行<strong>特定的操作</strong>来处理该信号，比如清理资源、记录日志、进行错误处理等。完成信号处理后，进程可以继续执行原来的任务</p><p>那如何给某个信号设置特定的操作呢？可以通过signal函数来进行。</p><h3 id=signal函数>signal函数</h3><p>在Linux下，signal() 函数用于设置信号处理函数（Signal Handler），以便在接收到指定信号时执行特定的操作。它的原型如下：
+<img src=/p/linux-process/image/20cdb1d7415e32cab107d648c63b3d61.png width=870 height=281 srcset="/p/linux-process/image/20cdb1d7415e32cab107d648c63b3d61_hu_9a105204ee13ca00.png 480w, /p/linux-process/image/20cdb1d7415e32cab107d648c63b3d61_hu_c35d97fb9a3a0975.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=309 data-flex-basis=743px>
+当接受到<code>signum</code>后，执行<code>handler</code>函数。handler函数自定义，要求参数为int类型。
+如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;signal.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=k>using</span> <span class=k>namespace</span> <span class=n>std</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>handler</span><span class=p>(</span><span class=kt>int</span> <span class=n>signal</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;I receive SIGINT&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>signal</span><span class=p>(</span><span class=n>SIGINT</span><span class=p>,</span> <span class=n>handler</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//使用后，进程如果接受到SIGINT，便会执行handler函数，而不执行SIGINT默认的操作：中断进程
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>//和srand()函数一样，使用1次，之后都有用
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>while</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;It is running, pid: &#34;</span><span class=o>&lt;&lt;</span> <span class=n>getpid</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>sleep</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/linux-process/image/880aade37669b06dcd1d6ffa3a452ea8.png width=1967 height=767 srcset="/p/linux-process/image/880aade37669b06dcd1d6ffa3a452ea8_hu_93b4f595238710c7.png 480w, /p/linux-process/image/880aade37669b06dcd1d6ffa3a452ea8_hu_1833563817512ba9.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=256 data-flex-basis=615px></p><p>1-31 信号，9号和19号无法被signal更改操作的，因为它们是属于操作系统的强制行为。</p><h3 id=信号捕捉的原理>信号捕捉的原理</h3><p><img src=/p/linux-process/image/daa833469f6b231d6b0184b006929c9d.png width=990 height=880 srcset="/p/linux-process/image/daa833469f6b231d6b0184b006929c9d_hu_2d8d732509b048e1.png 480w, /p/linux-process/image/daa833469f6b231d6b0184b006929c9d_hu_300b373bf5b2d244.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=112 data-flex-basis=270px>
+这里有两个概念：用户态和内核态</p><blockquote><p>用户态（User Mode）：
+用户态是指程序在执行时所处的一种特权级别较低的状态，程序在此状态下只能访问受限的资源，不能直接访问底层硬件设备或执行特权指令。
+大多数应用程序在用户态下运行，例如普通的应用程序、库函数等。</p></blockquote><blockquote><p>内核态（Kernel Mode）：
+内核态是操作系统的核心运行模式，拥有最高的特权级别，可以直接访问所有系统资源和硬件设备，执行特权指令以及控制硬件。在内核态下运行的代码拥有对系统资源和硬件的直接控制权，可以执行操作系统内核的所有功能和服务，如管理进程、内存管理、文件系统等。
+内核态通常由操作系统内核代码执行，例如处理中断、系统调用等</p></blockquote><p>核心：在于能不能使用操作系统的代码和数据</p></section><footer class=article-footer><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/linux-file-command/><div class=article-details><h2 class=article-title>Linux 文件操作命令</h2></div></a></article><article><a href=/p/linux-file-system/><div class=article-details><h2 class=article-title>Linux 文件系统</h2></div></a></article><article><a href=/p/linux-series/><div class=article-details><h2 class=article-title>Linux 系统系列</h2></div></a></article><article><a href=/p/linux-thread/><div class=article-details><h2 class=article-title>Linux 线程</h2></div></a></article><article><a href=/p/linux-network-command/><div class=article-details><h2 class=article-title>Linux 网络命令</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=sfw003/sfwblogtalks issue-term=title crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2020 -
+2025 石某人</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
