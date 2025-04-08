@@ -1,0 +1,5 @@
+{{ $href := .Get "href" }}
+{{ $text := .Get "text" }}
+<a href="{{ $href }}" download class="download-btn">
+    <i class="fas fa-download"></i> {{ $text }}
+</a>

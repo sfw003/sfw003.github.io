@@ -1,0 +1,62 @@
+﻿name: deploy
+
+on:
+    push:
+      branches: ["master"]
+    workflow_dispatch:
+    # schedule:
+    #     # Runs everyday at 8:00 AM
+    #     - cron: "0 0 * * *"
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+# Default to bash
+defaults:
+  run:
+    shell: bash
+
+jobs:
+    # BUild job
+    build:
+        runs-on: ubuntu-latest
+        env:
+          HUGO_VERSION: 0.144.0
+          TZ: America/Los_Angeles
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  submodules: true  # Fetch Hugo themes (true OR recursive)
+                  fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+
+            - name: Setup Hugo
+              id: pages
+              uses: peaceiris/actions-hugo@v2
+              with:
+                hugo-version: '0.144.0'
+                extended: true
+
+            - name: Build Hugo
+              env:
+                # For maximum backward compatibility with Hugo modules
+                HUGO_ENVIRONMENT: production
+                HUGO_ENV: production
+              run: hugo --minify
+            - name: Deploy Web
+              id: deployment
+              uses: peaceiris/actions-gh-pages@v3
+              with:
+                  PERSONAL_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+                  EXTERNAL_REPOSITORY: sfw003/sfw003.github.io
+                  PUBLISH_BRANCH: master
+                  PUBLISH_DIR: ./public
+                  commit_message: ${{ github.event.head_commit.message }}
