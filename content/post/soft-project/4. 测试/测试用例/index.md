@@ -105,33 +105,18 @@ categories:
 
 #### 正交法
 
-location / {
-    #将该路径替换为您的网站根目录。
-    root   /root/workspace/myblog-source/public/;
-    #添加默认首页信息
-    index  index.html index.htm;
-}
-
-root /root/workspace/myblog-source/public; 
-
-
-
+```
 server {
+    keepalive_requests 120; #单连接请求上限次数。
+    listen       4545;   #监听端口
+    server_name  127.0.0.1;   #监听地址       
+    location  ~*^.+$ {       #请求的url过滤，正则匹配，~为区分大小写，~*为不区分大小写。
+       #root path;  #根目录
+       #index vv.txt;  #设置默认页
+       proxy_pass  http://mysvr;  #请求转向mysvr 定义的服务器列表
+       deny 127.0.0.1;  #拒绝的ip
+       allow 172.18.5.54; #允许的ip           
+    } 
+}
+```
 
-  listen 80;           # 监听HTTP默认端口
-
-  server_name _;         # 使用IP访问时保留_，若绑定域名则替换为域名
-
-  root /root/workspace/myblog-source/public;   # 替换为Hugo生成的public目录绝对路径
-
-  index index.html index.htm;   # 指定默认索引文件
-
-  
-
-  location / {
-
-​    try_files $uri $uri/ =404; # 尝试匹配文件或目录，否则返回404
-
-  }
-
-}  

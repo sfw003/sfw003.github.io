@@ -4,7 +4,7 @@ description: "设计模式"
 date: 2025-04-06
 slug: "soft-project-design-pattern"
 categories:
-    - Soft-Project
+    - 设计模式
 ---
 
 
