@@ -4,8 +4,7 @@ description: "Linux 文件操作命令"
 date: 2025-04-03
 slug: "linux-file-command"
 categories:
-    - System
-    - Linux
+    - linux
 ---
 
 相关文章链接

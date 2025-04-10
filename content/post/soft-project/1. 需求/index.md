@@ -4,7 +4,7 @@ description: "需求分析"
 date: 2025-04-06
 slug: "soft-project-needs-analysis"
 categories:
-    - Soft-Project
+    - 软件工程
 ---
 
 ## 需求

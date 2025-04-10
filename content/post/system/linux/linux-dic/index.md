@@ -5,8 +5,7 @@ date: 2025-04-03
 weight: 3
 slug: "linux-series"
 categories:
-    - System
-    - Linux
+    - linux
 ---
 
 ## 系列介绍

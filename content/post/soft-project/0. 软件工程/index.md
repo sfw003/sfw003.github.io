@@ -4,7 +4,7 @@ description: "软件工程"
 date: 2025-04-06
 slug: "soft-project"
 categories:
-    - Soft-Project
+    - 软件工程
 ---
 
 # 软件生命周期

@@ -4,8 +4,7 @@ description: "Linux 网络命令"
 date: 2025-04-03
 slug: "linux-network-command"
 categories:
-    - System
-    - Linux
+    - linux
 ---
 
 相关文章链接

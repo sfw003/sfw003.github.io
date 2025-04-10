@@ -4,7 +4,6 @@ description: "bug"
 date: 2025-04-07
 slug: "soft-project-bug"
 categories:
-    - Soft-Project
     - 软件测试
 ---
 

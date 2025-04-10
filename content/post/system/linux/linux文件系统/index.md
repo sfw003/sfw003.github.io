@@ -4,8 +4,9 @@ description: "Linux 文件系统"
 date: 2025-04-03
 slug: "linux-file-system"
 categories:
-    - System
-    - Linux
+    - linux
+tags:
+    - linux文件系统
 ---
 
 
