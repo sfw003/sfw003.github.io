@@ -1,0 +1,383 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="设计模式"><title>设计模式</title>
+<link rel=canonical href=https://sfw003.github.io/p/soft-project-design-pattern/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="设计模式"><meta property='og:description' content="设计模式"><meta property='og:url' content='https://sfw003.github.io/p/soft-project-design-pattern/'><meta property='og:site_name' content='石某人'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2025-04-06T00:00:00+00:00'><meta property='article:modified_time' content='2025-04-06T00:00:00+00:00'><meta name=twitter:title content="设计模式"><meta name=twitter:description content="设计模式"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_a0516c4ce0480f39.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>石某人</a></h1><h2 class=site-description>成为一名强大的程序员</h2></div></header><ol class=menu-social><li><a href=https://blog.csdn.net/ProcedureStone target=_blank title=CSDN rel=me><svg class="icon icon-tabler icon-tabler-brand-csdn" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12c0 4.97 4.03 9 9 9s9-4.03 9-9-4.03-9-9-9-9 4.03-9 9z"/><path d="M12 8c-2.21.0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/><path d="M12 12m-2 0a2 2 0 104 0 2 2 0 10-4 0"/></svg></a></li><li><a href=https://gitee.com/sfw003 target=_blank title=Gitee rel=me><svg class="icon icon-tabler icon-tabler-brand-gitee" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2c5.523.0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z"/><path d="M12 6c-3.314.0-6 2.686-6 6s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6z"/><path d="M12 10c-1.105.0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2z"/></svg></a></li><li><a href=https://github.com/sfw003 target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>友情链接</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#开闭原则->开闭原则 *</a></li><li><a href=#单一职责原则->单一职责原则 *</a></li><li><a href=#依赖倒转倒置原则>依赖倒转(倒置)原则</a></li><li><a href=#里氏替换原则>里氏替换原则</a></li><li><a href=#接口隔离原则>接口隔离原则</a></li><li><a href=#迪米特法则>迪米特法则</a></li><li><a href=#合成复用原则>合成复用原则</a></li></ol><ol><li><a href=#单例模式->单例模式 *</a></li><li><a href=#工厂模式->工厂模式 *</a></li><li><a href=#建造者模式>建造者模式</a></li><li><a href=#适配器模式>适配器模式</a></li><li><a href=#策略模式->策略模式 *</a></li><li><a href=#观察者模式->观察者模式 *</a></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/>设计模式</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/soft-project-design-pattern/>设计模式</a></h2><h3 class=article-subtitle>设计模式</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Apr 06, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 4 分钟</time></div></footer></div></header><section class=article-content><p>编写软件过程中，程序员面临着来自耦合性，内聚性以及可维护性，可扩展性，重用性，灵活性等多方面的挑战，设计模式是为了让程序(软件)，具有更好特性。</p><ul><li><p>代码复用性(即:相同功能的代码，不用多次编写)</p></li><li><p>可读性(即:编程规范性，便于其他程序员的阅读和理解)</p></li><li><p>可扩展性(即:当需要增加新的功能时，非常的方便，称为可维护)4)可靠性(即:当我们增加新的功能后，对原来的功能没有影响)5)使程序呈现高内聚，低耦合的特性</p></li></ul><h1 id=七大原则>七大原则</h1><ol><li>开闭原则</li><li>依赖倒转(倒置)原则</li><li>单一职责原则</li><li>接口隔离原则</li><li>里氏替换原则</li><li>迪米特法则</li><li>合成复用原则</li></ol><h2 id=开闭原则->开闭原则 *</h2><p>Open-Closed Principle, OCP</p><ul><li><strong>对扩展开放，对更改关闭。</strong></li></ul><h2 id=单一职责原则->单一职责原则 *</h2><p>Simple Responsibility Pinciple，SRP</p><ul><li><p>不要存在多余一个导致类变更的原因。一个类应该应该只负责一项职责。</p></li><li><p>每个应该实现单一职责，否则就应该把类拆分，便于后期的维护</p></li></ul><h2 id=依赖倒转倒置原则>依赖倒转(倒置)原则</h2><p>Dependence Inversion Principle,DIP</p><ul><li><p>高层模块(稳定)不应该依赖于底层模块(变化),二者都应该依赖于抽象(稳定)</p></li><li><p>抽象(稳定)不应该依赖于实现细节(变化),实现细节应该依赖于抽象(稳定).</p></li></ul><p><strong>数据库操作</strong></p><p>假设你有一个高层模块（比如用户管理模块），它需要访问数据库执行增、删、改、查操作。如果在不遵守依赖倒转原则的情况下，用户管理模块直接依赖于具体的数据库实现（例如 MySQL 操作），那么这个模块就与数据库紧密耦合，不利于扩展和测试。</p><p><strong>应用DIP：</strong></p><ul><li><strong>高层模块</strong>：用户管理模块定义一个接口 <code>IDatabase</code>，负责所有与数据库相关的操作。</li><li><strong>低层模块</strong>：具体的数据库实现类（如 <code>MySQLDatabase</code> 或 <code>PostgreSQLDatabase</code>）实现 <code>IDatabase</code> 接口。</li></ul><p><strong>支付接口集成</strong></p><p>假设你的系统支持多种支付方式（如支付宝、微信支付、银行卡支付等），如果每次增加一种支付方式都需要修改支付处理的高层逻辑，就会导致代码的耦合度增加，违反了单一职责和开闭原则。</p><p><strong>应用DIP：</strong></p><ul><li><strong>高层模块</strong>：支付处理模块定义一个 <code>IPaymentProcessor</code> 接口。</li><li><strong>低层模块</strong>：每种支付方式都实现 <code>IPaymentProcessor</code> 接口。</li></ul><h2 id=里氏替换原则>里氏替换原则</h2><p>Liskov Substitution Principle,LSP</p><ul><li>通俗的来讲就是子类可以扩展父类的功能，但不能改变父类原有的功能。【尽量不用重写父类的方法】</li></ul><p>动物类和鸟类</p><p>假设有一个 <code>Animal</code> 类，它有一个 <code>move</code> 方法，表示动物的移动方式。<code>Bird</code> 类继承自 <code>Animal</code> 类，并且需要实现 <code>move</code> 方法来表示鸟类的飞行。这里的问题是，如果我们在 <code>Bird</code> 类中强行调用 <code>move</code> 方法来表示飞行，就可能出现不符合预期的行为，尤其是当 <code>Bird</code> 类具有一些不适用于其他动物的行为时。</p><p>如果我们使用 LSP 来设计这个问题，应该将 <code>move</code> 方法根据动物的类型进行抽象，避免让所有的动物都遵循同样的 <code>move</code> 行为。我们可以将动物分为两类，<code>Flyable</code> 和 <code>Swimmable</code>，分别定义 <code>fly</code> 和 <code>swim</code> 方法。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>class Animal {
+</span></span><span class=line><span class=cl>public:
+</span></span><span class=line><span class=cl>    virtual void sound() = 0; // 动物发出声音
+</span></span><span class=line><span class=cl>};
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>class Flyable {
+</span></span><span class=line><span class=cl>public:
+</span></span><span class=line><span class=cl>    virtual void fly() = 0; // 可以飞的动物
+</span></span><span class=line><span class=cl>};
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>class Swimmable {
+</span></span><span class=line><span class=cl>public:
+</span></span><span class=line><span class=cl>    virtual void swim() = 0; // 可以游泳的动物
+</span></span><span class=line><span class=cl>};
+</span></span></code></pre></td></tr></table></div></div><h2 id=接口隔离原则>接口隔离原则</h2><p>Interface Segregation Principle,ISP</p><ul><li><p>使用多个专门的接口，而不使用单一的总接口，不应该强迫客户程序依赖它们不用的方法</p></li><li><p>接口尽量细化，同时接口中的方法尽量少并且完备</p></li></ul><p>（注：这里和"单一职责"是有区别的,单一职责强调类的职责单一，站在业务逻辑的角度，这里强调的是接口，要求接口的方法尽可能的少而完备）</p><p>符合我们常说的<strong>高内聚低耦合</strong>的设计思想，从而使得类具有很好的可读性、可扩展性和可维护性</p><h2 id=迪米特法则>迪米特法则</h2><p>迪米特原则（Law of Demeter LoD）是指一个对象应该对其他对象保持最少的了解，又叫<strong>最少知道原则</strong>（Least Knowledge Principle,LKP），尽量降低类与类之间的耦合。迪米特原则主要强调只和朋友交流，不和陌生人说话。出现在成员变量、方法的输入、输出参数中的类都可以称之为成员朋友类，而出现在方法体内部的类不属于朋友类。</p><h2 id=合成复用原则>合成复用原则</h2><p>合成复用原则的主要观点是，应该优先考虑使用组合，即将现有的类对象作为新类的成员变量，而不是继承已有的类</p><p><strong>但是组合是否优于继承完全取决实际情况。</strong></p><h1 id=设计模式>设计模式</h1><h2 id=单例模式->单例模式 *</h2><p>单例模式确保其一个类只有一个实例，而且自行实例化并向整个系统提供单个对象的模式。单例模式只应在有真正的“单一实例”的需求时才可使用。</p><p>单例模式很常用，但也特别容易用错。一定要明确 单一实例的应用场景</p><h2 id=工厂模式->工厂模式 *</h2><p>工厂模式将目的创建对象的具体过程屏蔽隔离起来，从而达到更高的灵活性，工厂模式可以分为三类：</p><ul><li>简单工厂模式(Simple Factory)</li><li>工厂方法模式(Factory Method)</li><li>抽象工厂模式(Abstract Factory)</li></ul><p>一般用一下简单工厂就可以了</p><p><strong>简单工厂</strong></p><p>简单工厂模式就是一个工厂类根据传入的参数决定创建出哪一类产品类的实例，被创建的实例具有共同的父类或接口。</p><img src=image/IKKTMBIAJQ.png alt=po_bgjgjccchbhbia style=zoom:50%><p>举例：聊天消息</p><p><strong>工厂方法</strong></p><p>工厂方法模式：它也被叫做工厂模式。工厂父类负责定义创建产品对象的公共接口，而工厂子类则负责生成具体的产品对象，这样做的目的是将产品类的实例化操作延迟到工厂子类中完成，即通过工厂子类来确定究竟应该实例化哪一个具体产品类。</p><p>工厂方法相对于简单工厂来说，就是把单一的工厂类，分成了多个具体的小厂，并抽象出一个工厂接口，这个接口只负责创建的方法，具体创建的过程由小工厂完成。</p><p><img src=/p/soft-project-design-pattern/image/2L5TOBIAYE.png width=2082 height=900 srcset="/p/soft-project-design-pattern/image/2L5TOBIAYE_hu_b17f7cf78f89a6c5.png 480w, /p/soft-project-design-pattern/image/2L5TOBIAYE_hu_cf543bea1edad16c.png 1024w" loading=lazy alt=po_bgjhabdiijghja class=gallery-image data-flex-grow=231 data-flex-basis=555px></p><p><strong>抽象工厂</strong></p><p>抽象工厂模式是工厂方法的仅一步深化，在这个模式中的工厂类不单单可以创建一个对象，而是可以创建一组对象。这是和工厂方法最大的不同点。</p><p>(这个模式最不好理解，而且在实际应用中局限性也蛮大的，因为这个模式并不符合开闭原则。实际开发还需要做好权衡。)</p><p><img src=/p/soft-project-design-pattern/image/image-20241201210035211.png width=903 height=584 srcset="/p/soft-project-design-pattern/image/image-20241201210035211_hu_1eece043011fcfdf.png 480w, /p/soft-project-design-pattern/image/image-20241201210035211_hu_7f142f060c62002f.png 1024w" loading=lazy alt=image-20241201210035211 class=gallery-image data-flex-grow=154 data-flex-basis=371px></p><h2 id=建造者模式>建造者模式</h2><p>建造者模式（Builder Pattern）是一种创建型设计模式，它允许使用多个简单的对象一步步构建成一个复杂的对象。建造者模式使得对象的创建过程独立于对象的组成部分以及如何组合它们。</p><p><strong>建造者模式的常见场景</strong>：</p><ul><li>当一个对象的构建过程中有多个步骤，且这些步骤的顺序、类型可能不同。</li><li>对象的构建过程独立于其组成部分的实现和顺序。</li></ul><p>总结：分段初始化</p><h2 id=适配器模式>适配器模式</h2><p>其实就和转接口一样</p><p><img src=/p/soft-project-design-pattern/image/image-20241201205351329.png width=542 height=353 srcset="/p/soft-project-design-pattern/image/image-20241201205351329_hu_c55cc1c37cc5a37a.png 480w, /p/soft-project-design-pattern/image/image-20241201205351329_hu_da7db42107f73906.png 1024w" loading=lazy alt=image-20241201205351329 class=gallery-image data-flex-grow=153 data-flex-basis=368px></p><h2 id=策略模式->策略模式 *</h2><p>策略模式的作用就是把具体的算法实现从业务逻辑中剥离出来，成为一些列独立算法，使得它们可以相互转换。</p><ul><li><p>当你有多个算法可以完成某项任务，而且这些算法的使用在不同的情况下是可替换的。</p></li><li><p>你希望避免使用多个条件语句（<code>if</code> 或 <code>switch</code>）来选择某个算法或行为</p></li></ul><p>支付方式选择</p><p>假设你正在开发一个在线支付系统，用户可以选择不同的支付方式（如信用卡、支付宝、微信支付）。在这种情况下，使用策略模式可以帮助你避免在每个支付方式中编写大量的条件判断。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;string&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;memory&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=c1>// 策略接口：支付方式
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>class</span> <span class=nc>PaymentStrategy</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>virtual</span> <span class=kt>void</span> <span class=n>pay</span><span class=p>(</span><span class=kt>double</span> <span class=n>amount</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>  <span class=c1>// 每种支付方式的具体实现
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>virtual</span> <span class=o>~</span><span class=n>PaymentStrategy</span><span class=p>()</span> <span class=o>=</span> <span class=k>default</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 具体策略：信用卡支付
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>class</span> <span class=nc>CreditCardPayment</span> <span class=o>:</span> <span class=k>public</span> <span class=n>PaymentStrategy</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=n>pay</span><span class=p>(</span><span class=kt>double</span> <span class=n>amount</span><span class=p>)</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Paying &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>amount</span> <span class=o>&lt;&lt;</span> <span class=s>&#34; using Credit Card.&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 具体策略：支付宝支付
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>class</span> <span class=nc>AlipayPayment</span> <span class=o>:</span> <span class=k>public</span> <span class=n>PaymentStrategy</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=n>pay</span><span class=p>(</span><span class=kt>double</span> <span class=n>amount</span><span class=p>)</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Paying &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>amount</span> <span class=o>&lt;&lt;</span> <span class=s>&#34; using Alipay.&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 具体策略：微信支付
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>class</span> <span class=nc>WeChatPayment</span> <span class=o>:</span> <span class=k>public</span> <span class=n>PaymentStrategy</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=n>pay</span><span class=p>(</span><span class=kt>double</span> <span class=n>amount</span><span class=p>)</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Paying &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>amount</span> <span class=o>&lt;&lt;</span> <span class=s>&#34; using WeChat.&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 上下文：订单类，负责选择支付方式
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>class</span> <span class=nc>Order</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 可以动态改变支付策略
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>void</span> <span class=n>setPaymentStrategy</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>shared_ptr</span><span class=o>&lt;</span><span class=n>PaymentStrategy</span><span class=o>&gt;</span> <span class=n>strategy</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>paymentStrategy</span> <span class=o>=</span> <span class=n>strategy</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 执行支付
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>void</span> <span class=nf>processPayment</span><span class=p>(</span><span class=kt>double</span> <span class=n>amount</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>paymentStrategy</span><span class=o>-&gt;</span><span class=n>pay</span><span class=p>(</span><span class=n>amount</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>private</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=n>shared_ptr</span><span class=o>&lt;</span><span class=n>PaymentStrategy</span><span class=o>&gt;</span> <span class=n>paymentStrategy</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=观察者模式->观察者模式 *</h2><p>观察者模式（Observer Pattern）是一种行为型设计模式，它定义了一种一对多的依赖关系，允许多个观察者对象同时监听某一个主题对象的状态变化。当主题对象的状态发生变化时，所有依赖于它的观察者都会得到通知并自动更新。</p><ul><li><p>当一个对象的状态变化需要同时影响到多个对象，并且这些对象之间存在松散耦合关系时。</p></li><li><p>事件驱动系统，或某个状态变化会引发其他对象的行为（例如GUI界面中的按钮点击、发布订阅系统等）。</p></li></ul><p><strong>天气预报系统</strong></p><p>假设我们正在设计一个天气预报系统，其中有多个显示屏（例如当前天气显示、统计显示、热力图显示等），当天气状态变化时，所有显示屏都需要更新自己的信息。我们可以使用观察者模式来解决这个问题。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;vector&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;string&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=c1>// 观察者接口
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>class</span> <span class=nc>Observer</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>virtual</span> <span class=kt>void</span> <span class=n>update</span><span class=p>(</span><span class=kt>float</span> <span class=n>temperature</span><span class=p>,</span> <span class=kt>float</span> <span class=n>humidity</span><span class=p>,</span> <span class=kt>float</span> <span class=n>pressure</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>virtual</span> <span class=o>~</span><span class=n>Observer</span><span class=p>()</span> <span class=o>=</span> <span class=k>default</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 被观察者接口（主题接口）
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>class</span> <span class=nc>Subject</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>virtual</span> <span class=kt>void</span> <span class=n>registerObserver</span><span class=p>(</span><span class=n>Observer</span><span class=o>*</span> <span class=n>observer</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>virtual</span> <span class=kt>void</span> <span class=nf>removeObserver</span><span class=p>(</span><span class=n>Observer</span><span class=o>*</span> <span class=n>observer</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>virtual</span> <span class=kt>void</span> <span class=nf>notifyObservers</span><span class=p>()</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>virtual</span> <span class=o>~</span><span class=n>Subject</span><span class=p>()</span> <span class=o>=</span> <span class=k>default</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 具体主题类：天气数据
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>class</span> <span class=nc>WeatherData</span> <span class=o>:</span> <span class=k>public</span> <span class=n>Subject</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=n>registerObserver</span><span class=p>(</span><span class=n>Observer</span><span class=o>*</span> <span class=n>observer</span><span class=p>)</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>observers</span><span class=p>.</span><span class=n>push_back</span><span class=p>(</span><span class=n>observer</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>removeObserver</span><span class=p>(</span><span class=n>Observer</span><span class=o>*</span> <span class=n>observer</span><span class=p>)</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>observers</span><span class=p>.</span><span class=n>erase</span><span class=p>(</span><span class=n>std</span><span class=o>::</span><span class=n>remove</span><span class=p>(</span><span class=n>observers</span><span class=p>.</span><span class=n>begin</span><span class=p>(),</span> <span class=n>observers</span><span class=p>.</span><span class=n>end</span><span class=p>(),</span> <span class=n>observer</span><span class=p>),</span> <span class=n>observers</span><span class=p>.</span><span class=n>end</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>notifyObservers</span><span class=p>()</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=n>Observer</span><span class=o>*</span> <span class=nl>observer</span> <span class=p>:</span> <span class=n>observers</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>observer</span><span class=o>-&gt;</span><span class=n>update</span><span class=p>(</span><span class=n>temperature</span><span class=p>,</span> <span class=n>humidity</span><span class=p>,</span> <span class=n>pressure</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 设置天气数据，并通知观察者
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>void</span> <span class=nf>setMeasurements</span><span class=p>(</span><span class=kt>float</span> <span class=n>temp</span><span class=p>,</span> <span class=kt>float</span> <span class=n>hum</span><span class=p>,</span> <span class=kt>float</span> <span class=n>pres</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>temperature</span> <span class=o>=</span> <span class=n>temp</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>humidity</span> <span class=o>=</span> <span class=n>hum</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>pressure</span> <span class=o>=</span> <span class=n>pres</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>notifyObservers</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>private</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=n>Observer</span><span class=o>*&gt;</span> <span class=n>observers</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>temperature</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>humidity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>pressure</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 具体观察者类：当前天气显示
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>class</span> <span class=nc>CurrentConditionsDisplay</span> <span class=o>:</span> <span class=k>public</span> <span class=n>Observer</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>CurrentConditionsDisplay</span><span class=p>(</span><span class=n>Subject</span><span class=o>*</span> <span class=n>weatherData</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=o>-&gt;</span><span class=n>weatherData</span> <span class=o>=</span> <span class=n>weatherData</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>weatherData</span><span class=o>-&gt;</span><span class=n>registerObserver</span><span class=p>(</span><span class=k>this</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>update</span><span class=p>(</span><span class=kt>float</span> <span class=n>temperature</span><span class=p>,</span> <span class=kt>float</span> <span class=n>humidity</span><span class=p>,</span> <span class=kt>float</span> <span class=n>pressure</span><span class=p>)</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=o>-&gt;</span><span class=n>temperature</span> <span class=o>=</span> <span class=n>temperature</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=o>-&gt;</span><span class=n>humidity</span> <span class=o>=</span> <span class=n>humidity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>display</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>display</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Current conditions: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>temperature</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;°C and &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>humidity</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;% humidity</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>private</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>temperature</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>humidity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>Subject</span><span class=o>*</span> <span class=n>weatherData</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 具体观察者类：统计天气显示
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>class</span> <span class=nc>StatisticsDisplay</span> <span class=o>:</span> <span class=k>public</span> <span class=n>Observer</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>StatisticsDisplay</span><span class=p>(</span><span class=n>Subject</span><span class=o>*</span> <span class=n>weatherData</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=o>-&gt;</span><span class=n>weatherData</span> <span class=o>=</span> <span class=n>weatherData</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>weatherData</span><span class=o>-&gt;</span><span class=n>registerObserver</span><span class=p>(</span><span class=k>this</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>update</span><span class=p>(</span><span class=kt>float</span> <span class=n>temperature</span><span class=p>,</span> <span class=kt>float</span> <span class=n>humidity</span><span class=p>,</span> <span class=kt>float</span> <span class=n>pressure</span><span class=p>)</span> <span class=k>override</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=o>-&gt;</span><span class=n>temperature</span> <span class=o>=</span> <span class=n>temperature</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=o>-&gt;</span><span class=n>humidity</span> <span class=o>=</span> <span class=n>humidity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>display</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>display</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Statistics: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>temperature</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;°C, &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>humidity</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;% humidity</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>private</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>temperature</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>humidity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>Subject</span><span class=o>*</span> <span class=n>weatherData</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 客户端代码
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 创建一个天气数据对象
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>WeatherData</span> <span class=n>weatherData</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 创建观察者对象
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>CurrentConditionsDisplay</span> <span class=n>currentDisplay</span><span class=p>(</span><span class=o>&amp;</span><span class=n>weatherData</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>StatisticsDisplay</span> <span class=n>statisticsDisplay</span><span class=p>(</span><span class=o>&amp;</span><span class=n>weatherData</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 模拟天气变化
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Setting new weather measurements...</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>weatherData</span><span class=p>.</span><span class=n>setMeasurements</span><span class=p>(</span><span class=mf>30.4f</span><span class=p>,</span> <span class=mf>65.0f</span><span class=p>,</span> <span class=mf>1012.0f</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;</span><span class=se>\n</span><span class=s>Setting new weather measurements...</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>weatherData</span><span class=p>.</span><span class=n>setMeasurements</span><span class=p>(</span><span class=mf>25.0f</span><span class=p>,</span> <span class=mf>70.0f</span><span class=p>,</span> <span class=mf>1010.0f</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></section><footer class=article-footer><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/soft-project-design-pattern-singleton/><div class=article-details><h2 class=article-title>单例模式</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=sfw003/sfwblogtalks issue-term=title crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2025 石某人</section><section class=powerby>本站所有文章均为原创，转载请注明出处。<br>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

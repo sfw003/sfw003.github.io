@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux线程 on 石某人</title><link>https://sfw003.github.io/tags/linux%E7%BA%BF%E7%A8%8B/</link><description>Recent content in Linux线程 on 石某人</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>石某人</copyright><lastBuildDate>Thu, 03 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://sfw003.github.io/tags/linux%E7%BA%BF%E7%A8%8B/index.xml" rel="self" type="application/rss+xml"/><item><title>Linux 线程</title><link>https://sfw003.github.io/p/linux-thread/</link><pubDate>Thu, 03 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/linux-thread/</guid><description>&lt;h2 id="线程与tcb">线程与TCB
+&lt;/h2>&lt;blockquote>
+&lt;p>线程（Thread）是进程内的一个执行分支，线程的执行粒度，要比进程更细。&lt;/p>&lt;/blockquote>
+&lt;p>如何理解？&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/linux-thread/image/image-20250410164313828.png"
+width="461"
+height="551"
+srcset="https://sfw003.github.io/p/linux-thread/image/image-20250410164313828_hu_66d962c4dc9bb428.png 480w, https://sfw003.github.io/p/linux-thread/image/image-20250410164313828_hu_fd636f545b34d674.png 1024w"
+loading="lazy"
+alt="image-20250410164313828"
+class="gallery-image"
+data-flex-grow="83"
+data-flex-basis="200px"
+>&lt;/p>
+&lt;h3 id="linux下的线程与pthread库">linux下的线程与pthread库
+&lt;/h3>&lt;p>&lt;strong>linux没有真正意义的线程&lt;/strong>，这在很多教材都提过的观点。究其原因，就如上图所示，让n个PCB来管理一个进程地址空间不就有了线程了。区别windows系统专门设置了TCB结构体，linux选择用PCB来模拟TCB，因此linux可以说没有真正意义的线程，而是叫做&lt;strong>轻量级进程&lt;/strong>。&lt;/p>
+&lt;p>你linux搞特殊是吧？我想使用线程，你告诉我说让我使用轻量级进程。这让用户满意吗？于是linux封装了一个库 &lt;strong>pthread&lt;/strong>，让用户可以使用到&lt;strong>用户级线程&lt;/strong>，并不能叫做&lt;strong>内核级线程&lt;/strong>，因为在linux内核中只有轻量级进程。可以通过下图来理解：&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/linux-thread/image/f99a74ee3b55fc2c2ab61eae415b29a7.png"
+width="1106"
+height="768"
+srcset="https://sfw003.github.io/p/linux-thread/image/f99a74ee3b55fc2c2ab61eae415b29a7_hu_4c75f0ddc73b0b86.png 480w, https://sfw003.github.io/p/linux-thread/image/f99a74ee3b55fc2c2ab61eae415b29a7_hu_a872263aa6e0f674.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="345px"
+>&lt;/p>
+&lt;p>注：&lt;/p>
+&lt;ul>
+&lt;li>轻量级进程:用户级线程 = 1:1&lt;/li>
+&lt;li>用户使用到的TCB结构体并不在内核空间中。&lt;/li>
+&lt;/ul>
+&lt;p>上图中出现了2个名词：线程栈和线程局部存储&lt;/p>
+&lt;h4 id="线程栈">线程栈
+&lt;/h4>&lt;p>每一个线程都有自己的调用链，注定了每个线程都要有调用链对应的栈帧结构，用来存储线程函数中的局部变量、函数参数以及函数调用的返回地址等信息。这一点类似进程的main函数的函数栈帧。这里的线程栈由pthread来维护，有了线程栈，才能在内核里创建执行流，有了新的执行流，才是一个真正的线程。&lt;/p>
+&lt;blockquote>
+&lt;p>pthread是如何创建线程栈？&lt;/p>
+&lt;p>inux下只有轻量级进程的概念，自然linux会提供轻量级进程的接口，pthread库正是对轻量级进程的接口进行了封装，才在用户层创建了线程的概念。&lt;/p>
+&lt;p>linux下创建轻量级进程的系统接口是clone&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/linux-thread/image/4172bee3ea61ac55cc7cf5ad25794b62.png"
+width="1046"
+height="348"
+srcset="https://sfw003.github.io/p/linux-thread/image/4172bee3ea61ac55cc7cf5ad25794b62_hu_2ae41c3c3347bb0.png 480w, https://sfw003.github.io/p/linux-thread/image/4172bee3ea61ac55cc7cf5ad25794b62_hu_2220ad0128af24e7.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="300"
+data-flex-basis="721px"
+>&lt;/p>&lt;/blockquote>
+&lt;h4 id="线程的局部存储">线程的局部存储
+&lt;/h4>&lt;h2 id="pthread库的使用">pthread库的使用
+&lt;/h2>&lt;h2 id="线程互斥">线程互斥
+&lt;/h2>&lt;h3 id="相关概念">相关概念
+&lt;/h3>&lt;ul>
+&lt;li>共享资源：多个线程之间可以&lt;strong>并发&lt;/strong>访问的资源。&lt;/li>
+&lt;li>临界资源：多个线程&lt;strong>互斥&lt;/strong>访问的共享资源。（共享资源 &amp;amp;&amp;amp; 同一时间只能由一个线程访问）&lt;/li>
+&lt;li>临界区：每个线程内部，访问临界资源的代码，就叫做临界区&lt;/li>
+&lt;li>互斥：任何时刻，互斥保证有且只有一个执行流进入临界区，访问临界资源，通常对临界资源起保护作用&lt;/li>
+&lt;li>原子性：不会被任何调度机制打断的操作，该操作只有两态，要么完成，要么未完成&lt;/li>
+&lt;/ul>
+&lt;h3 id="互斥锁">互斥锁
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">lock:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> movb $0, %al
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> xchgb %al, mutex
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> if(al寄存器的内容〉0) {
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> return 0;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> } else
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 挂起等待;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> goto lock;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">unlock:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> movb $l,mutex
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 唤醒等待Mutex的线程；
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> return 0;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;img src="image/efdc12726f6487bd1c677f9e9ae7e1c1.gif" alt="请添加图片描述" style="zoom:150%;" />
+&lt;h2 id="线程同步">线程同步
+&lt;/h2></description></item></channel></rss>
