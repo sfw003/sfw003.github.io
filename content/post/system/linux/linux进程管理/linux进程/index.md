@@ -11,7 +11,8 @@ tags:
 
 
 
-
+文章图片大部分使用draw.io绘制，一部分来源网上。
+emoji [linux进程管理.drawio](linux进程管理.drawio)
 
 ## 进程和PCB
 
@@ -540,13 +541,9 @@ root@iZbp1inz4ol3gjahpjal9qZ:~# while :; do ps ajx | head -1 && ps ajx | grep t1
 
 
 
-#### 进程退出码
 
 
-
-
-
-#### status
+#### 进程退出信息
 
 wait和waitpid，都有一个status参数，该参数是一个输出型参数，由操作系统填充。
 

@@ -18,10 +18,3 @@ categories:
 baseurl: https://sfw003.github.io
 ```
 
-```mermaid
-graph TD
-    A[开始] --> B{判断}
-    B -->|Yes| C[执行]
-    B -->|No| D[结束]
-    C --> D
-```

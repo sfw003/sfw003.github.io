@@ -16,8 +16,6 @@ tags:
 
 
 文章图片大部分使用draw.io绘制，一部分来源网上。
-个人绘制文件：
-
 emoji [linux进程管理.drawio](../linux进程管理.drawio)
 
 
@@ -57,7 +55,7 @@ emoji [linux进程管理.drawio](../linux进程管理.drawio)
 >
 >1. System V 消息队列
 >2. System V 共享内存
->     3 .System V 信号量
+> 3. 3 .System V 信号量
 >
 >POSIX IPC
 >
@@ -179,6 +177,8 @@ linux下一切皆文件，管道能读能写，肯定是一种文件。一般情
 听名字就懂了，具体原理：拿出一块虚拟地址空间来，映射到相同的物理内存中。
 
 ![image-20250410163312482](image/image-20250410163312482.png)
+
+
 
 
 
