@@ -4,7 +4,7 @@ description: "数据链路层"
 date: 2025-04-02
 slug: "data-link-layer"
 categories:
-    - Net
+    - 计算机网络
 ---
 
 

@@ -4,7 +4,7 @@ description: "内网穿透"
 date: 2025-04-02
 slug: "intranet-penetration"
 categories:
-    - Net
+    - 网络应用
 tags:
     - 内网穿透
 ---

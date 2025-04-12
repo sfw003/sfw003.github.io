@@ -4,8 +4,7 @@ description: hugo + github page
 date: 2025-04-02
 slug: blog_hugo-series_part1
 categories:
-    - Blog
-    - Hugo
+    - 博客
 ---
 
 ## 设置github action

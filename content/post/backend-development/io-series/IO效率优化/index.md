@@ -4,7 +4,6 @@ description: IO效率优化
 date: 2025-04-02
 slug: io_optimization
 categories:
-    - Make It Fast
     - 后端开发
 tags:
     - IO

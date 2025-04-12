@@ -1,15 +1,35 @@
 ﻿---
-title: "Linux 系统系列"
-description: "Linux 系统系列"
+title: "Linux 系统系列文章"
+description: "文字+图片，助你理解Linux系统"
 date: 2025-04-03
-weight: 3
+weight: 1
 slug: "linux-series"
 categories:
     - linux
 ---
 
-## 系列介绍
 
-本系列文章将带您从零开始学习 Linux 系统，涵盖从基础概念到高级应用的各个方面。无论您是编程新手还是有一定经验的开发者，都能在这里找到适合自己的学习路径。
+
+
+## 文章列表
+
+
+### Linux 常用命令
+
+
+
+### Linux进程管理
+
+绘制文件：[linux进程管理.drawio](linux进程管理.drawio)
+
+- [Linux 进程]({{< ref "/post/system/linux/linux进程管理/linux进程/index" >}}) - Linux 进程管理
+- [Linux 进程间通信]({{< ref "/post/system/linux/linux进程管理/linux进程间通信/index" >}}) - Linux 进程间通信
+
+
+### Linux 文件系统
+
+
+
+
 
 

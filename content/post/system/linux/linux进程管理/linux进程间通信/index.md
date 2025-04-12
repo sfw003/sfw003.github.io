@@ -13,11 +13,7 @@ tags:
 
 
 
-
-
-文章图片大部分使用draw.io绘制，一部分来源网上。
-emoji [linux进程管理.drawio](../linux进程管理.drawio)
-
+绘图文件，在[linux系列文章:进程管理]({{< ref "/post/system/linux/linux-dic/index#linux进程管理" >}})
 
 
 

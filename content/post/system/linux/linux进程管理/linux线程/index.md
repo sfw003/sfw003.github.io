@@ -12,8 +12,7 @@ tags:
 
 
 
-
-
+绘图文件，在[linux系列文章:进程管理]({{< ref "/post/system/linux/linux-dic/index#linux进程管理" >}})
 
 
 

@@ -4,5 +4,5 @@ description: "应用层"
 date: 2025-04-02
 slug: "application-layer"
 categories:
-    - Net
+    - 计算机网络
 ---
