@@ -1,6 +1,6 @@
 ---
 title: "C++11"
-description: "C++11"
+description: "C++11特性介绍: 新增关键字、初始化列表、右值引用、lambda表达式、智能指针"
 date: 2025-04-13
 slug: "c++-11"
 categories:
@@ -1104,13 +1104,34 @@ int main(void)
 
 ![image-20250415125927892](image/image-20250415125927892.png)
 
+程序执行结果：
+
+```
+A()
+A()
+~A()
+~A()
+```
+
+
+
+## c++的函数式编程
+
+> 函数式编程是什么？
+>
+> 函数式编程（Functional Programming, FP）是一种以数学中的λ演算（lambda calculus）为理论基础的编程范式，其核心是将计算视为**函数的组合与变换**，而非对状态或指令的执行顺序的依赖.
+
+从 C++11 开始，C++ 引入对函数式编程的支持。主要体现在
+
+- `lambda表达式`：函数式编程中闭包机制的体现。
+- `std::function`：通用函数封装器，可存储Lambda、函数指针等，提供统一接口。
+- `std::bind`：参数绑定与适配工具，用于生成部分参数固定的新函数。
 
 
 
 
-
-## lambda
-lambda可以看作函数对象（仿函数），编译器会根据lambda表达式自动生成一个函数对象，它有以下优点：
+### lambda
+lambda可以看作函数对象（仿函数），编译器会根据lambda表达式自动生成一个匿名函数对象，它有以下优点：
 
 -  声明式的编程风格：就地匿名定义目标函数或函数对象，不需要额外写一个命名函数或函数对象。
 - 简洁：避免了代码膨胀和功能分散，让开发更加高效。
@@ -1170,65 +1191,119 @@ int main()
 ```
 
 
-## 包装器
+
+lambda和闭包
+
+> 闭包（Closure） 是编程语言中一种特殊的函数与词法作用域结合的现象。其核心机制是：**当一个内部函数（如 Lambda 表达式）访问其外部函数或定义环境中的变量时，即使外部函数已执行完毕，这些变量的生命周期会被延长，形成闭包环境**。
+
+Lambda 表达式通过捕获列表（如 C++ 的 `[=]` 或 `[&]`）或隐式捕获（如 Java、JavaScript）引用外部变量。这些变量在 Lambda 定义时被“冻结”，即使原作用域已销毁，仍可通过闭包访问。
+
+```cpp
+int x = 5;
+auto lambda = [x]() { return x * 2; }; // 值捕获x，形成闭包
+```
+
+
+
+
 
 ### function
 
-```cpp
-std::function在头文件<functional>
+function是**包装器**，当需要将不同类型的可调用对象（如普通函数、Lambda、成员函数等）作为参数传递时，`std::function`提供统一的封装接口。
 
-// 类模板原型如下
+比如：函数指针，反函数，lambda表达式，即使他们的功能一样，但将它们作为参数传给模板时，会被识别为三种类型，实例化为三份，这导致使用效率降低，而包装器则可以说是将它们进行了一层封装。
 
-template <class T> function;     // undefined
-
-template <class Ret, class... Args>
-
-class function<Ret(Args...)>;
-```
-
-使用场景及作用：
-函数指针，反函数，lambda表达式，即使他们的功能一样，但将它们作为参数传给模板时，会被识别为三种类型，实例化为三份，这导致使用效率降低，而包装器则可以说是将它们进行了一层封装。
-
-
+验证如下：
 
 ```cpp
 template<class F, class T>
 T useF(F f, T x)
 {
-	static int count = 0;
-	cout << "count:" << ++count << endl;
-	cout << "count:" << &count << endl;
-	return f(x);
+    static int count = 0;
+    cout << "count:" << ++count << endl;
+    cout << "count:" << &count << endl;
+    return f(x);
 }
 double f(double i)
 {
-	return i / 2;
+    return i / 2;
 }
 struct Functor
 {
-	double operator()(double d)
-	{
-		return d / 3;
-	}
+    double operator()(double d)
+    {
+        return d / 3;
+    }
 };
-#include <functional>
+
 int main(void)
 {
-	std::function<double(double)> func1 = f;
-	cout << useF(func1, 11.11) << endl;
-	// 函数对象
-	std::function<double(double)> func2 = Functor();
-	cout << useF(func2, 11.11) << endl;
-	// lamber表达式
-	std::function<double(double)> func3 = [](double d)->double { return d / 4; };
-	cout << useF(func3, 11.11) << endl;
-	return 0;
+    // 实例化3个useF
+    cout << useF(f, 11.11) << endl;
+    cout << useF(Functor(), 11.11) << endl;
+    cout << useF([](double d)->double {return d / 4; }, 11.11) << endl;
+    
+    cout << endl;
+
+    // 实例化1个useF
+    std::function<double(double)> func1 = f;
+    std::function<double(double)> func2 = Functor();
+    std::function<double(double)> func3 = [](double d)->double { return d / 4; };
+    cout << useF(func1, 11.11) << endl;
+    cout << useF(func2, 11.11) << endl;
+    cout << useF(func3, 11.11) << endl;
+    return 0;
 }
 ```
 
+
+
+结果：只实例化了一个useF
+
+```
+count:1
+count:00FBF4F0
+5.555
+count:1
+count:00FBF4F4
+3.70333
+count:1
+count:00FBF4F8
+2.7775
+
+count:1
+count:00FBF4FC
+5.555
+count:2
+count:00FBF4FC
+3.70333
+count:3
+count:00FBF4FC
+2.7775
+```
+
+
+
+
+
+使用场景：最常见的场景是设置**回调函数**
+
+```cpp
+// 定义回调接口
+void register_callback(std::function<void(int)> callback) {
+    callback(42);
+}
+// 传递Lambda或函数
+register_callback([](int x) { std::cout << x; });  // 输出42
+```
+
+
+
+
+
 ### bind
 
-bind是一个函数模板，它就像一个函数包装器(适配器)，接受一个可调用对象（callable object），生成一个新的可调用对象来“适应”原对象的参数列表。一般而言，我们用它可以把一个原本接收N个参数的函数fn，通过绑定一些参数，返回一个接收M个（M可以大于N，但这么做没什么意义）参数的新函数。同时，使用std::bind函数还可以实现参数顺序调整等操作。
+bind也是是包装器，也叫绑定器，当目标函数参数与调用环境不匹配时，通过绑定部分参数生成新函数对象
 
 使用如下：
 
@@ -1249,12 +1324,40 @@ int main() {
 理解
 ![在这里插入图片描述](image/9a3af5aa315f490fbac08047b5e62244.png)
 
-它的使用场景是什么？
-我个人仅在编写服务器项目时，使用bind包装**回调函数**。
+它的使用场景：回调函数，基本和function搭配使用。
+
+举例：
+
+```cpp
+class Channel
+{
+private:
+    using EventCallback = std::function<void()>;
+    EventCallback m_read_callback;
+public:
+    void setReadCallback(const EventCallback& cb)
+    {
+        m_read_callback = cb;
+    }
+};
+
+class Connection
+{
+private:
+	Channel m_channel;
+	void hanleRead() {
+		//..
+	}
+public:
+	Connection() {
+		m_channel.setReadCallback(std::bind(&Connection::hanleRead, this));
+	}
+};
+```
 
 
 
-
+回调函数往往在事件驱动模型中使用，想更深入了解回调函数，可以去参考reactor模式的服务器等。
 
 
 

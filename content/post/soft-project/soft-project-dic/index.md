@@ -2,7 +2,7 @@
 title: "软件工程系列文章"
 description: "软件工程系列文章"
 date: 2025-04-12
-weight: 1
+weight: 20
 slug: "soft-project-series"
 categories:
     - 软件工程

@@ -2,7 +2,7 @@
 title: "Linux 系统系列文章"
 description: "文字+图片，助你理解Linux系统"
 date: 2025-04-03
-weight: 1
+weight: 20
 slug: "linux-series"
 categories:
     - linux

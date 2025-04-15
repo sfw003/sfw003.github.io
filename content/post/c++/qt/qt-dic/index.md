@@ -2,7 +2,7 @@
 title: "Qt 开发系列"
 description: "从入门到精通的 Qt 开发教程系列"
 date: 2025-04-02
-weight: 1
+weight: 30
 slug: "qt-series"
 categories:
     - Qt
