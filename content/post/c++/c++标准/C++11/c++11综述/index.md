@@ -9,12 +9,25 @@ categories:
 
 
 
-# C++11简介
+## C++11简介
 
 在2003年C++标准委员会曾经提交了一份技术勘误表(简称TC1)，使得C++03这个名字已经取代了C++98称为C++11之前的最新C++标准名称。不过由于C++03(TC1)主要是对C++98标准中的漏洞进行修复，语言的核心部分则没有改动，因此人们习惯性的把两个标准合并称为C++98/03标准。从C++0x到C++11，C++标准10年磨一剑，第二个真正意义上的标准珊珊来迟。相比于C++98/03，C++11则带来了数量可观的变化，其中包含了约140个新特性，以及对C++03标准中约600个缺陷的修正，这使得C++11更像是从C++98/03中孕育出的一种新语言。相比较而言C++11能更好地用于系统开发和库开发、语法更加泛华和简单化、更加稳定和安全，不仅功能更强大，而且能提升程序员的开发效率，公司实际项目开发中也用得比较多，所以我们要作为一个重点去学习。C++11增加的语法特性非常篇幅非常多，这里挑重点介绍。
 
-# 统一的初始化列表
-## {}初始化
+
+
+
+
+面试常问：你了解c++11的新特性吗？说一下你的看法
+
+回答思路：
+
+1. 首先说一下有哪些新特性
+2. 然后再问面试官需要详细说说哪些特性
+
+
+
+## 统一的初始化列表
+### {}初始化
 在C++98中，标准允许使用花括号{}对数组或者结构体元素进行统一的列表初始值设定。比如
 
 ```cpp
@@ -92,7 +105,7 @@ int main()
 }
 ```
 
-## std::initializer_list
+### std::initializer_list
 
 std::initializer_list 是 C++11 中的一个特性，它允许你使用花括号 {} 中的值列表来初始化容器或数组。通常用于初始化标准库容器，比如 std::list、std::vector、std::set、std::map 以及数组， 也可以用于包含容器成员的自定义类。
 当使用花括号初始化语法时，编译器会生成一个 `std::initializer_list` 对象。这个对象内部实际上包含两个指针：一个指向数组（或类似数组的结构）的开始位置，另一个指向结束位置（即下一个元素的起始位置，但不包括该位置）。
@@ -115,9 +128,9 @@ int main()
 
 
 
-# C++11关键字
+## C++11关键字
 
-## auto
+### auto
 
 在C++98中auto是一个存储类型的说明符，表明变量是局部自动存储类型，但是局部域中定义局部的变量默认就是自动存储类型，所以auto就没什么价值了。C++11中废奔auto原来的用法，将其用于实现自动类型腿断。这样要求必须进行显示初始化，让编译器将定义对象的类型设置为初始化值的类型。
 
@@ -152,7 +165,7 @@ int main() {
 
 
 
-## decltype
+### decltype
 
 decltype 是 C++11 新增的一个关键字，它和 auto 的功能一样，都用来在编译时期进行自动类型推导。它是declare type的缩写，主要功能用来声明类型auto并不适合于所有自动推导的类型，并且auto的使用必须要初始化变量。而特殊的情况可能无法满足。declart type就可以解决这个问题。它可以在编译的时候推导出一个表达式
 
@@ -196,7 +209,7 @@ int main()
 
 
 
-## using
+### using
 
 在老版的C++中using用于声明域名空间。在C++11中C++赋予了using更多新的功能，让C++变得更加灵活。
 
@@ -223,7 +236,7 @@ using funp = int (*)(int,int);
 
 
 
-## nullptr
+### nullptr
 
 nullptr是为了替换NULL而发明出来的。nullptr的类型为std::nullptr_t,而NULL的类型为int，可以防止一些类型转化导致的问题。如下：
 
@@ -292,7 +305,7 @@ private:
 }nullptr = {};
 ```
 
-## default
+### default
 
 用于生产默认的成员函数
 
@@ -305,7 +318,7 @@ public:
 };
 ```
 
-## delete	
+### delete	
 
 禁止生成默认的成员函数
 
@@ -319,7 +332,7 @@ public:
 
 
 
-## orride
+### orride
 
 c++11新增：用于明确指示派生类中的成员函数是对基类中的虚函数的重写。若没有对虚函数重写，会提示错误。一般子类写了override，就不用加virtual了。
 
@@ -338,7 +351,7 @@ public:
 
 
 
-## final
+### final
 
 c++11新增：用于标记虚函数，表示该函数不能在派生类中再次被重写。
 
@@ -357,7 +370,7 @@ public:
 
 
 
-## explicit
+### explicit
 
 c++11新增，禁止隐式类型转换
 
@@ -370,7 +383,7 @@ c++11新增，禁止隐式类型转换
 
 
 
-## constexpr (重要)
+### constexpr (重要)
 
 `constexpr` 是 C++11 引入的关键字，用于指定表达式在**编译时**求值。它允许在编译期对常量表达式进行计算，从而提高程序效率，并增加编译时类型检查的可能性。
 
@@ -394,7 +407,7 @@ int main() {
 
 
 
-# 右值引用
+## 右值引用 *
 
 左值和右值：**左值可以出现赋值符号的左边，右值不能出现在赋值符号左边**
 
@@ -469,7 +482,7 @@ int main()
 
 
 
-## 完美转发
+### 完美转发
 
 **完美转发**（Perfect Forwarding）是 C++11 引入的一种机制，它允许函数在调用其他函数时，能够**完美保留**传入参数的类型和值类别（左值或右值），并将其准确地传递给下一个函数。
 
@@ -529,7 +542,7 @@ void insert(size_t pos, T&& t)
 
 
 
-## 万能引用（引用折叠）
+### 万能引用（引用折叠）
 
 **万能引用**（Universal References）是在 C++11 中引入的一个重要概念。万能引用是通过使用模板类型推导和右值引用的结合来实现的，主要用于实现完美转发（Perfect Forwarding）
 
@@ -558,7 +571,7 @@ T&& ReturnValue(T&& value) {
 只有参数是万能引用，上面的返回值只能视作右值
 ```
 
-# 可变模板参数
+## 可变模板参数
 
 C++11的新特性可变参数模板能够让您创建可以接受可变参数的函数模板和类模板，相比C++98/03，类模版和函数模版中只能含固定数量的模版参数，可变模版参数无疑是一个巨大的改进。然而由于可变模版参数比较抽象，使用起来需要一定的技巧.
 
@@ -655,13 +668,15 @@ void emplace_back (Args&&... args);
 ```
 emplace_back是直接构造了，push_back 是先构造，再移动构造
 
-# RAII和智能指针
+## 智能指针 *
 
-RAII是Resource Acquisition Is Initialization（wiki上面翻译成 “资源获取就是初始化”）的简称，是C++语言的一种管理资源、避免泄漏的惯用法。利用的就是C++构造的对象最终会被销毁的原则。RAII的做法是使用一个对象，在其构造时获取对应的资源，在对象生命期内控制对资源的访问，使之始终保持有效，最后在对象析构的时候，释放构造时获取的资源。
+智能指针是基于RAII机制的类模板，利用对象生命周期来控制程序资源。
+
+> RAII是Resource Acquisition Is Initialization（wiki上面翻译成 “资源获取就是初始化”）的简称，是C++语言的一种管理资源、避免泄漏的惯用法。利用的就是C++构造的对象最终会被销毁的原则。**RAII的做法是使用一个对象，在其构造时获取对应的资源，在对象生命期内控制对资源的访问，使之始终保持有效，最后在对象析构的时候，释放构造时获取的资源。**
 
 
 
-智能指针所依据的原理是 RAII （Resource Acquisition Is Initialization）利用对象生命周期来控制程序资源。在对象构造时获取资源，接着控制对资源的访问使之在对象的生命周期内始终保持有效，最后在对象析构的时候释放资源。最重要的就是保障资源自动释放。
+2个问题：为什么？怎么实现？
 
 **为什么要保障资源自动释放**？
 
@@ -682,27 +697,50 @@ delete p;
 
 
 
-## auto_ptr
+智能指针一共有4种，其中auto_ptr已经弃用。不同类型的智能指针的使用场景，实现机制不同。对于使用者，首先要记住的就是它们的使用场景。
+
+### auto_ptr
 
 C++98: 资源转移
 
 C++11之前：资源管理权限的转移----对资源释放的权限
 
-C++11：又恢复到---资源转移
+C++11：弃用
 
 
 
 它的解决方式是管理权转移，`p2 = p1`会将p1的管理权转移给p2, 而后p1悬空。如果p1是将亡值，这没什么问题，但p1不一定是将亡值，可能是左值，不能随便的转移资源。因此建议什么情况都不要使用auto_ptr
 
+auto_ptr`在C++11中被标记为`deprecated`（弃用），并建议开发者迁移至`std::unique_ptr
 
 
-## unique_ptr
 
-c++11新增：资源独占---从跟上防止浅拷贝：将拷贝构造和赋值运算符重载禁止
+### unique_ptr
 
-本质：不允许拷贝构造和赋值，只允许移动构造、移动赋值
+c++11：**unique_ptr代表的是专属所有权，即由unique_ptr管理的内存，只能被一个对象持有。**
 
-模拟实现:简易版
+因此：unique_ptr不支持拷贝和赋值，只支持移动(std::move)
+
+
+
+**使用场景**：
+
+大多数场景下用到的应该都是unique_ptr
+
+- 忘记delete
+- 抛异常，导致跳过delete 语句
+
+这2点也是智能指针最基本的功能
+
+
+
+**性能**：
+
+因为C++的zero cost abstraction的特点，unique_ptr在默认情况下和裸指针的大小是一样的。所以**内存上没有任何的额外消耗，性能是最优的。**
+
+
+
+**模拟实现:简易版**
 
 ```cpp
 template<typename T>
@@ -776,13 +814,38 @@ std::unique_ptr<int[]> ptr(new int[5]);
 
 
 
-## shared_ptr
+### shared_ptr
 
-c++11新增：共享资源的智能指针，原理：引入引用计数
+c++11新增：**shared_ptr代表的是共享所有权，即多个shared_ptr可以共享同一块内存。**
+
+**使用场景**：
+
+1. **shared_ptr通常使用在共享权不明的场景。有可能多个对象同时管理同一个内存时。最经典场景就是：多线程下的跨线程的对象**
+2. 对象的延迟销毁。当一个对象的析构非常耗时，甚至影响到了关键线程的速度。可以将对象转移到另外一个线程中释放，从而解放关键线程。
+3. 延迟对象的生命周期。
+
+
+
+**原理**：
+
+shared_ptr内部是利用引用计数来实现内存的自动管理，每当复制一个shared_ptr，引用计数会+1。当一个shared_ptr离开作用域时，引用计数会-1。当引用计数为0的时候，则delete内存。
 
 ![在这里插入图片描述](image/6f12215dbe524833882fade179ac42f3.png)
 
 
+
+**性能**：
+
+1. **内存占用高**：shared_ptr的内存占用是裸指针的两倍。因为除了要管理一个裸指针外，还要维护一个引用计数。 因此相比于unique_ptr, shared_ptr的内存占用更高
+2. **原子操作性能低**：考虑到线程安全问题，引用计数的增减必须是原子操作。而原子操作一般情况下都比非原子操作慢。
+
+
+
+我们在使用中，可以通过移动来优化：如果一个shared_ptr需要将所有权共享给另外一个新的shared_ptr，而我们确定在之后的代码中都不再使用这个shared_ptr。 对于此种场景，我们尽量使用std::move，将shared_ptr转移给新的对象。因为移动不用增加引用计数，因此性能比复制更好。
+
+
+
+**使用**：
 
 
 | shared_ptr支持的操作   | 描述                                                         |
@@ -830,6 +893,7 @@ int main()
 std::shared_ptr<int> ptr(new int[5]);  // 错误
 std::shared_ptr<int[]> sp1(new int[10]()); // 错误，c++17前不能传递数组类型作为shared_ptr的模板参数
 因为 std::shared_ptr 默认使用 delete 来释放内存，而不是 delete[]。
+
 解决方式：添加自定义删除器
 std::shared_ptr<int> ptr(new int[5], [](int* p) { delete[] p; });
 std::shared_ptr<int> sp3(new int[10](), std::default_delete<int[]>());
@@ -838,7 +902,7 @@ std::shared_ptr<int> sp3(new int[10](), std::default_delete<int[]>());
 
 
 
-模拟实现：
+**模拟实现：**
 
 ```cpp
 #pragma once
@@ -922,8 +986,8 @@ T* MySharedPtr<T>::get()
 template<typename T>
 void MySharedPtr<T>::realse()
 {
-    m_pmutex->lock();
     bool flag = false;
+    m_pmutex->lock();
     if (--(*m_pcount) == 0 && m_ptr)
     {
         delete m_ptr;
@@ -953,8 +1017,6 @@ void MySharedPtr<T>::subCount()
 
 
 
-缺陷：
-
 循环引用问题：
 
 ```cpp
@@ -973,35 +1035,81 @@ public:
     shared_ptr<Node> next = nullptr;
 };
 
-int main(void)
+int main(void) 
 {
-    shared_ptr<Node> p1(new Node);
-    shared_ptr<Node> p2(new Node);
+    auto p1 = std::make_shared<Node>();
+    auto p2 = std::make_shared<Node>();
     p2->prev = p1;
     p1->next = p2;
-
     return 0;
 }
 ```
 
-![在这里插入图片描述](image/793bc26a96d8405d99eff6368b6a0a5d.png)
+![image-20250415110513259](image/image-20250415110513259.png)
+
+程序执行结果：
+
+```
+A()
+A()
+```
 
 
-## weak_ptr
 
-c++11新增：不能单独管理对象，唯一作用：就是配合shared_ptr解决循环引用问题
-weak_ptr 的含义为 弱引用,它的构造和析构不会引起引用计数的增加或减少,即不影响生命周期。
+
+
+
+### weak_ptr
+
+c++11新增：**weak_ptr代表的是无所有权，不能单独管理对象。配合shared_ptr解决循环引用问题**
+
+
+weak_ptr 的构造和析构不会引起引用计数的增加或减少。
 
 | weak_ptr支持的操作                       | 描述                                                         |
 | ---------------------------------------- | ------------------------------------------------------------ |
 | `bool expired() const`                   | 空共判断weak_ptr保存的队行是否已经销毁，销毁了返回true，否则返回false。 |
-| `shared_ptr<element_type> lock() const;` | 生命周期未结束，返回一个share_ptr指针，指向同样的对象，否则，返回一个执行null的share_ptr.注意：会让引用计数 + 1 |
+| `shared_ptr<element_type> lock() const;` | 生命周期未结束，返回一个share_ptr指针，指向同样的对象，否则，返回一个为nullptr的share_ptr.引用计数 + 1 |
 | `long use_count()`                       | 返回所有与weak_ptr指向同一对象的shared_ptr的数量。           |
 
 
 
+我们用weak_ptr来修改之前的循环引用代码
 
-# lambda
+```cpp
+class A
+{
+public:
+    A() { cout << "A()" << endl; }
+    ~A() { cout << "~A()" << endl; }
+};
+
+struct Node
+{
+public:
+    A val;
+    weak_ptr<Node> prev = nullptr; //修改prev和next其中一个为weak_ptr
+    shared_ptr<Node> next = nullptr;
+};
+
+int main(void) 
+{
+    auto p1 = std::make_shared<Node>();
+    auto p2 = std::make_shared<Node>();
+    p2->prev = p1; //prev为weak_ptr
+    p1->next = p2;
+    return 0;
+}
+```
+
+![image-20250415125927892](image/image-20250415125927892.png)
+
+
+
+
+
+
+## lambda
 lambda可以看作函数对象（仿函数），编译器会根据lambda表达式自动生成一个函数对象，它有以下优点：
 
 -  声明式的编程风格：就地匿名定义目标函数或函数对象，不需要额外写一个命名函数或函数对象。
@@ -1062,9 +1170,9 @@ int main()
 ```
 
 
-# 包装器
+## 包装器
 
-## function
+### function
 
 ```cpp
 std::function在头文件<functional>
@@ -1118,7 +1226,7 @@ int main(void)
 }
 ```
 
-## bind
+### bind
 
 bind是一个函数模板，它就像一个函数包装器(适配器)，接受一个可调用对象（callable object），生成一个新的可调用对象来“适应”原对象的参数列表。一般而言，我们用它可以把一个原本接收N个参数的函数fn，通过绑定一些参数，返回一个接收M个（M可以大于N，但这么做没什么意义）参数的新函数。同时，使用std::bind函数还可以实现参数顺序调整等操作。
 
@@ -1152,9 +1260,9 @@ int main() {
 
 
 
-# 其他
+## 其他
 
-## std::tuple
+### std::tuple
 
 c++11新增，用于将多个值打包成一个单一的对象。它可以存储不同类型的值，并且可以通过索引或类型来访问这些值。
 
@@ -1162,7 +1270,7 @@ c++11新增，用于将多个值打包成一个单一的对象。它可以存储
  std::tuple<int, std::string, double> t(42, "Hello", 3.14159);
 ```
 
-## std::quoted
+### std::quoted
 
 c++11新增，给字符串加双引号
 
