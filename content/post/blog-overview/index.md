@@ -8,6 +8,4 @@ slug: "blog-overview"
 
 ## 网站概览
 
-思维导图文件：[网站内容概述.xmind](网站概述.xmind)
-
 

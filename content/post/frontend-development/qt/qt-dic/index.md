@@ -20,17 +20,17 @@ categories:
 
 
 ### Qt 环境搭建
-- [Qt 的安装与环境配置]({{< ref "/post/c++/qt/Qt 环境搭建/index" >}}) - 搭建 Qt 开发环境
+- [Qt 的安装与环境配置]({{< ref "/post/frontend-development/qt/Qt 环境搭建/index" >}}) - 搭建 Qt 开发环境
 
 
 ### Qt Core
-- [Qt Core 02 容器类和算法 ]({{< ref "/post/c++/qt/Qt Core/02 容器类和算法/index" >}}) - Qt 核心概念与基础功能
-- [Qt Core 03 事件机制]({{< ref "/post/c++/qt/Qt Core/03 事件机制/index" >}}) - 事件机制
+- [Qt Core 02 容器类和算法 ]({{< ref "/post/frontend-development/qt/Qt Core/02 容器类和算法/index" >}}) - Qt 核心概念与基础功能
+- [Qt Core 03 事件机制]({{< ref "/post/frontend-development/qt/Qt Core/03 事件机制/index" >}}) - 事件机制
 
 
 
 ### Qt GUI
-- [Qt GUI 01 Qt 绘图框架]({{< ref "/post/c++/qt/Qt GUI/01 Qt 绘图框架/index" >}}) - Qt 绘图框架
+- [Qt GUI 01 Qt 绘图框架]({{< ref "/post/frontend-development/qt/Qt GUI/01 Qt 绘图框架/index" >}}) - Qt 绘图框架
 
 
 ### Qt Widgets
