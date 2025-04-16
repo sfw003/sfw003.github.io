@@ -1,0 +1,360 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Linux 线程"><title>Linux 线程</title>
+<link rel=canonical href=https://sfw003.github.io/p/linux-thread/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="Linux 线程"><meta property='og:description' content="Linux 线程"><meta property='og:url' content='https://sfw003.github.io/p/linux-thread/'><meta property='og:site_name' content='石某人'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='linux线程'><meta property='article:published_time' content='2025-04-03T00:00:00+00:00'><meta property='article:modified_time' content='2025-04-03T00:00:00+00:00'><meta name=twitter:title content="Linux 线程"><meta name=twitter:description content="Linux 线程"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_a0516c4ce0480f39.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>石某人</a></h1><h2 class=site-description>成为一名强大的程序员</h2></div></header><ol class=menu-social><li><a href=https://blog.csdn.net/ProcedureStone target=_blank title=CSDN rel=me><svg class="icon icon-tabler icon-tabler-brand-csdn" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12c0 4.97 4.03 9 9 9s9-4.03 9-9-4.03-9-9-9-9 4.03-9 9z"/><path d="M12 8c-2.21.0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/><path d="M12 12m-2 0a2 2 0 104 0 2 2 0 10-4 0"/></svg></a></li><li><a href=https://gitee.com/sfw003 target=_blank title=Gitee rel=me><svg class="icon icon-tabler icon-tabler-brand-gitee" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2c5.523.0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z"/><path d="M12 6c-3.314.0-6 2.686-6 6s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6z"/><path d="M12 10c-1.105.0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2z"/></svg></a></li><li><a href=https://github.com/sfw003 target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>友情链接</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#线程与tcb>线程与TCB</a><ol><li><a href=#linux下的线程与pthread库>linux下的线程与pthread库</a><ol><li><a href=#线程栈>线程栈</a></li><li><a href=#线程的局部存储>线程的局部存储</a></li></ol></li></ol></li><li><a href=#线程的竞争与协作>线程的竞争与协作</a><ol><li><a href=#同步和互斥相关概念>同步和互斥相关概念</a></li><li><a href=#同步和互斥的实现>同步和互斥的实现</a><ol><li><a href=#互斥锁和条件变量>互斥锁和条件变量</a></li><li><a href=#posix信号量>POSIX信号量</a></li></ol></li></ol></li><li><a href=#经典同步问题>经典同步问题</a><ol><li><a href=#生产者消费者模型>生产者消费者模型</a><ol><li><a href=#基于阻塞队列的生产消费模型>基于阻塞队列的生产消费模型</a></li></ol></li></ol></li><li><a href=#锁->锁 *</a><ol><li><a href=#锁的种类>锁的种类</a><ol><li><a href=#互斥锁和自旋锁>互斥锁和自旋锁</a></li><li><a href=#读写锁>读写锁</a></li></ol></li><li><a href=#死锁->死锁 *</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/linux/>Linux</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/linux-thread/>Linux 线程</a></h2><h3 class=article-subtitle>Linux 线程</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Apr 03, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 4 分钟</time></div></footer></div></header><section class=article-content><p>绘图文件，在<a class=link href=https://sfw003.github.io/p/linux-series/#linux进程管理>linux系列文章:进程管理</a></p><h2 id=线程与tcb>线程与TCB</h2><blockquote><p>线程（Thread）是进程内的一个执行分支，线程的执行粒度，要比进程更细。</p></blockquote><p>如何理解？</p><p><img src=/p/linux-thread/image/image-20250410164313828.png width=461 height=551 srcset="/p/linux-thread/image/image-20250410164313828_hu_66d962c4dc9bb428.png 480w, /p/linux-thread/image/image-20250410164313828_hu_fd636f545b34d674.png 1024w" loading=lazy alt=image-20250410164313828 class=gallery-image data-flex-grow=83 data-flex-basis=200px></p><h3 id=linux下的线程与pthread库>linux下的线程与pthread库</h3><p><strong>linux没有真正意义的线程</strong>，这在很多教材都提过的观点。究其原因，就如上图所示，让n个PCB来管理一个进程地址空间不就有了线程了。区别windows系统专门设置了TCB结构体，linux选择用PCB来模拟TCB，因此linux可以说没有真正意义的线程，而是叫做<strong>轻量级进程</strong>。</p><p>你linux搞特殊是吧？我想使用线程，你告诉我说让我使用轻量级进程。这让用户满意吗？于是linux封装了一个库 <strong>pthread</strong>，让用户可以使用到<strong>用户级线程</strong>，并不能叫做<strong>内核级线程</strong>，因为在linux内核中只有轻量级进程。可以通过下图来理解：</p><p><img src=/p/linux-thread/image/f99a74ee3b55fc2c2ab61eae415b29a7.png width=1106 height=768 srcset="/p/linux-thread/image/f99a74ee3b55fc2c2ab61eae415b29a7_hu_4c75f0ddc73b0b86.png 480w, /p/linux-thread/image/f99a74ee3b55fc2c2ab61eae415b29a7_hu_a872263aa6e0f674.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=144 data-flex-basis=345px></p><p>注：</p><ul><li>轻量级进程:用户级线程 = 1:1</li><li>用户使用到的TCB结构体并不在内核空间中。</li></ul><p>上图中出现了2个名词：线程栈和线程局部存储</p><h4 id=线程栈>线程栈</h4><p>每一个线程都有自己的调用链，注定了每个线程都要有调用链对应的栈帧结构，用来存储线程函数中的局部变量、函数参数以及函数调用的返回地址等信息。这一点类似进程的main函数的函数栈帧。这里的线程栈由pthread来维护，有了线程栈，才能在内核里创建执行流，有了新的执行流，才是一个真正的线程。</p><blockquote><p>pthread是如何创建线程栈？</p><p>inux下只有轻量级进程的概念，自然linux会提供轻量级进程的接口，pthread库正是对轻量级进程的接口进行了封装，才在用户层创建了线程的概念。</p><p>linux下创建轻量级进程的系统接口是clone</p><p><img src=/p/linux-thread/image/4172bee3ea61ac55cc7cf5ad25794b62.png width=1046 height=348 srcset="/p/linux-thread/image/4172bee3ea61ac55cc7cf5ad25794b62_hu_2ae41c3c3347bb0.png 480w, /p/linux-thread/image/4172bee3ea61ac55cc7cf5ad25794b62_hu_2220ad0128af24e7.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=300 data-flex-basis=721px></p></blockquote><p>如何验证？</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;pthread.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;vector&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=k>using</span> <span class=k>namespace</span> <span class=n>std</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=n>g_val</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=o>*</span><span class=nf>thread_routine</span><span class=p>(</span><span class=kt>void</span><span class=o>*</span> <span class=n>arg</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span><span class=o>*</span> <span class=n>pi</span> <span class=o>=</span> <span class=p>(</span><span class=kt>int</span><span class=o>*</span><span class=p>)</span><span class=n>arg</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=o>*</span><span class=n>pi</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>(</span><span class=n>j</span> <span class=o>&lt;</span> <span class=mi>5</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;thread-&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>i</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;, j=&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>j</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;, &amp;j=&#34;</span> <span class=o>&lt;&lt;</span> <span class=o>&amp;</span><span class=n>j</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;, g_val=&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>g_val</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;, &amp;g_val=&#34;</span> <span class=o>&lt;&lt;</span> <span class=o>&amp;</span><span class=n>g_val</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>sleep</span><span class=p>(</span><span class=mi>2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>j</span><span class=o>++</span><span class=p>,</span> <span class=n>g_val</span><span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nb>NULL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nl>std</span><span class=p>:;</span><span class=n>vector</span><span class=o>&lt;</span><span class=n>pthread_t</span><span class=o>&gt;</span> <span class=n>tids</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>(</span><span class=n>i</span> <span class=o>&lt;</span> <span class=mi>4</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_t</span> <span class=n>tid</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_create</span><span class=p>(</span><span class=o>&amp;</span><span class=n>tid</span><span class=p>,</span> <span class=k>nullptr</span><span class=p>,</span> <span class=n>thread_routine</span><span class=p>,</span> <span class=p>(</span><span class=kt>void</span><span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>i</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>sleep</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>tids</span><span class=p>.</span><span class=n>push_back</span><span class=p>(</span><span class=n>tid</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>i</span><span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=mi>4</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_join</span><span class=p>(</span><span class=n>tids</span><span class=p>[</span><span class=n>j</span><span class=p>],</span> <span class=k>nullptr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>sleep</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>sleep</span><span class=p>(</span><span class=mi>3</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/linux-thread/image/b752d85cc384361884d16c1771508fba.png width=837 height=608 srcset="/p/linux-thread/image/b752d85cc384361884d16c1771508fba_hu_80c65b96be950cfd.png 480w, /p/linux-thread/image/b752d85cc384361884d16c1771508fba_hu_83dde00b95c6e81.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=137 data-flex-basis=330px></p><p>不同的线程，都执行的同一个函数thread_routine，但函数内部的临时变量j，不是共享的，如果是共享的，那么不同的线程的j的地址应该一样。但结果表明，j的地址都不同。这也表明线程有自己独立的栈结构。</p><p>对于全局变量g_val，不同线程是共享的。</p><p>插入一个问题：线程栈由多大？</p><p>在linux系统中使用 <code>ulimit -a</code>可以查看</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=n>hcss</span><span class=o>-</span><span class=n>ecs</span><span class=o>-</span><span class=n>f8b5</span><span class=p>:</span><span class=o>/</span><span class=n>blog</span><span class=c1># ulimit -a</span>
+</span></span><span class=line><span class=cl><span class=n>real</span><span class=o>-</span><span class=n>time</span> <span class=n>non</span><span class=o>-</span><span class=n>blocking</span> <span class=n>time</span>  <span class=p>(</span><span class=n>microseconds</span><span class=p>,</span> <span class=o>-</span><span class=n>R</span><span class=p>)</span> <span class=n>unlimited</span>
+</span></span><span class=line><span class=cl><span class=n>core</span> <span class=n>file</span> <span class=n>size</span>              <span class=p>(</span><span class=n>blocks</span><span class=p>,</span> <span class=o>-</span><span class=n>c</span><span class=p>)</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>data</span> <span class=n>seg</span> <span class=n>size</span>               <span class=p>(</span><span class=n>kbytes</span><span class=p>,</span> <span class=o>-</span><span class=n>d</span><span class=p>)</span> <span class=n>unlimited</span>
+</span></span><span class=line><span class=cl><span class=n>scheduling</span> <span class=n>priority</span>                 <span class=p>(</span><span class=o>-</span><span class=n>e</span><span class=p>)</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>file</span> <span class=n>size</span>                   <span class=p>(</span><span class=n>blocks</span><span class=p>,</span> <span class=o>-</span><span class=n>f</span><span class=p>)</span> <span class=n>unlimited</span>
+</span></span><span class=line><span class=cl><span class=n>pending</span> <span class=n>signals</span>                     <span class=p>(</span><span class=o>-</span><span class=n>i</span><span class=p>)</span> <span class=mi>6628</span>
+</span></span><span class=line><span class=cl><span class=nb>max</span> <span class=n>locked</span> <span class=n>memory</span>           <span class=p>(</span><span class=n>kbytes</span><span class=p>,</span> <span class=o>-</span><span class=n>l</span><span class=p>)</span> <span class=mi>226728</span>
+</span></span><span class=line><span class=cl><span class=nb>max</span> <span class=n>memory</span> <span class=n>size</span>             <span class=p>(</span><span class=n>kbytes</span><span class=p>,</span> <span class=o>-</span><span class=n>m</span><span class=p>)</span> <span class=n>unlimited</span>
+</span></span><span class=line><span class=cl><span class=n>open</span> <span class=n>files</span>                          <span class=p>(</span><span class=o>-</span><span class=n>n</span><span class=p>)</span> <span class=mi>65535</span>
+</span></span><span class=line><span class=cl><span class=n>pipe</span> <span class=n>size</span>                <span class=p>(</span><span class=mi>512</span> <span class=n>bytes</span><span class=p>,</span> <span class=o>-</span><span class=n>p</span><span class=p>)</span> <span class=mi>8</span>
+</span></span><span class=line><span class=cl><span class=n>POSIX</span> <span class=n>message</span> <span class=n>queues</span>         <span class=p>(</span><span class=n>bytes</span><span class=p>,</span> <span class=o>-</span><span class=n>q</span><span class=p>)</span> <span class=mi>819200</span>
+</span></span><span class=line><span class=cl><span class=n>real</span><span class=o>-</span><span class=n>time</span> <span class=n>priority</span>                  <span class=p>(</span><span class=o>-</span><span class=n>r</span><span class=p>)</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>stack</span> <span class=n>size</span>                  <span class=p>(</span><span class=n>kbytes</span><span class=p>,</span> <span class=o>-</span><span class=n>s</span><span class=p>)</span> <span class=mi>8192</span>
+</span></span><span class=line><span class=cl><span class=n>cpu</span> <span class=n>time</span>                   <span class=p>(</span><span class=n>seconds</span><span class=p>,</span> <span class=o>-</span><span class=n>t</span><span class=p>)</span> <span class=n>unlimited</span>
+</span></span><span class=line><span class=cl><span class=nb>max</span> <span class=n>user</span> <span class=n>processes</span>                  <span class=p>(</span><span class=o>-</span><span class=n>u</span><span class=p>)</span> <span class=mi>6628</span>
+</span></span><span class=line><span class=cl><span class=n>virtual</span> <span class=n>memory</span>              <span class=p>(</span><span class=n>kbytes</span><span class=p>,</span> <span class=o>-</span><span class=n>v</span><span class=p>)</span> <span class=n>unlimited</span>
+</span></span><span class=line><span class=cl><span class=n>file</span> <span class=n>locks</span>                          <span class=p>(</span><span class=o>-</span><span class=n>x</span><span class=p>)</span> <span class=n>unlimited</span>
+</span></span></code></pre></td></tr></table></div></div><p>stack size (kbytes, -s) 8192 约为8M</p><h4 id=线程的局部存储>线程的局部存储</h4><p>如果我想线程拥有私有的全局变量呢？这就要使用线程的局部存储。
+<code>int g_val = 0 改为 __thread in g_val = 0</code>
+此时不同的线程的变量g_val，都是不同的
+<img src=/p/linux-thread/image/82808e1010e8844a562705b983fe0c6c.png width=1068 height=645 srcset="/p/linux-thread/image/82808e1010e8844a562705b983fe0c6c_hu_93ca0ec558de0ec7.png 480w, /p/linux-thread/image/82808e1010e8844a562705b983fe0c6c_hu_6c8faee95482b335.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=165 data-flex-basis=397px>
+在变量前加上 <code>__thread</code>， 就可以将该变量改为局部存储。除了这个关键字之外，pthread库中也有一些函数可以实现局部存储。</p><p>__thread 是 GCC 中用于实现线程局部存储（Thread Local Storage，TLS）的关键字。它可以用来声明线程局部变量，这些变量对于每个线程是唯一的，不同线程之间的变量不会相互影响。<strong>但是它只能声明内置类型，无法声明自定义类型。</strong>
+需要注意的是，__thread 关键字是 GCC 的扩展语法，虽然在大多数情况下可以正常工作，但并不是 C 标准的一部分，因此在一些不支持 GCC 扩展语法的编译器中可能无法使用。在 C11 标准中引入了 _Thread_local 关键字，用于实现线程局部存储，具有类似的功能，而且是标准化的语法。</p><h2 id=线程的竞争与协作>线程的竞争与协作</h2><p>进程地址空间存在的意义是什么？扩大地址空间，内存保护、进程隔离。这中间最重要一点的就是进程隔离，它可以放在数据被随意修改。现在多个线程共享一个进程地址空间，不可避免的就会出现数据竞争的问题。</p><p>看下面这段代码：4个线程同时访问全局变量tickets</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;pthread.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;vector&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=k>using</span> <span class=k>namespace</span> <span class=n>std</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=n>tickets</span> <span class=o>=</span> <span class=mi>1000</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=o>*</span><span class=nf>getTickets</span><span class=p>(</span><span class=kt>void</span><span class=o>*</span> <span class=n>arg</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span><span class=o>*</span> <span class=n>pi</span> <span class=o>=</span> <span class=p>(</span><span class=kt>int</span><span class=o>*</span><span class=p>)</span><span class=n>arg</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=o>*</span><span class=n>pi</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//票大于0才抢
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>if</span><span class=p>(</span><span class=n>tickets</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>usleep</span><span class=p>(</span><span class=mi>1000</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>printf</span><span class=p>(</span><span class=s>&#34;thread-%d, get a ticket: %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>tickets</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>tickets</span><span class=o>--</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=k>nullptr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=n>vector</span><span class=o>&lt;</span><span class=n>pthread_t</span><span class=o>&gt;</span> <span class=n>tids</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>(</span><span class=n>i</span> <span class=o>&lt;</span> <span class=mi>4</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_t</span> <span class=n>tid</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_create</span><span class=p>(</span><span class=o>&amp;</span><span class=n>tid</span><span class=p>,</span> <span class=k>nullptr</span><span class=p>,</span> <span class=n>getTickets</span><span class=p>,</span> <span class=p>(</span><span class=kt>void</span><span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>i</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>tids</span><span class=p>.</span><span class=n>push_back</span><span class=p>(</span><span class=n>tid</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>i</span><span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span><span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>j</span> <span class=o>&lt;</span> <span class=mi>4</span><span class=p>;</span> <span class=n>j</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_join</span><span class=p>(</span><span class=n>tids</span><span class=p>[</span><span class=n>j</span><span class=p>],</span> <span class=k>nullptr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>sleep</span><span class=p>(</span><span class=mi>3</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/linux-thread/image/220d95bc9366db5f9a606c2a70d4e3e2.png width=636 height=184 srcset="/p/linux-thread/image/220d95bc9366db5f9a606c2a70d4e3e2_hu_a207777bef057b84.png 480w, /p/linux-thread/image/220d95bc9366db5f9a606c2a70d4e3e2_hu_f8b019caa092df75.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=345 data-flex-basis=829px></p><p>按照抢票的逻辑，票>0才抢，&lt;=0就退出，怎么会出现负数呢？一张票应该属于一个线程，怎么出现了相同数字？问题就出在多线程并发访问。</p><img src=image/1263aed2829689f36df7f566e583c72e.png alt=在这里插入图片描述 style=zoom:67%><p>多线程执行操作共享变量会导致竞争状态，在执行过程中发生了上下文切换，得到了错误的结果。每次运行都可能得到不同的结果，存在不确定性，为了解决这类问题，我们需要引入同步和互斥</p><h3 id=同步和互斥相关概念>同步和互斥相关概念</h3><p>首先了解以下几个概念</p><ul><li><p><strong>并发</strong>：指的是多个事情，在同一时间段内同时发生了。</p></li><li><p><strong>并行</strong>：指的是多个事情，在同一时间点上同时发生了。只有在多CPU的情况中，才会出现</p></li><li><p><strong>共享资源</strong>：多个线程之间可以<strong>并发</strong>访问的资源。</p></li><li><p><strong>临界资源</strong>：多个线程<strong>互斥</strong>访问的共享资源。（共享资源 且 同一时间只能由一个线程访问 即为临界资源）</p></li><li><p><strong>临界区</strong>：每个线程内部，访问临界资源的代码，就叫做临界区</p></li><li><p><strong>互斥</strong>：任何时刻，互斥保证有且只有一个执行流进入临界区，访问临界资源，通常对临界资源起保护作用</p></li><li><p><strong>同步</strong>：就是并发进程/线程在一些关键点上可能需要互相等待与互通消息，这种相互制约的等待与互通信息称为进程/线程同步。</p></li><li><p><strong>原子性</strong>：不会被任何调度机制打断的操作，该操作只有两态，要么完成，要么未完成</p></li></ul><p>了解完概念，下面的问题是如何实现线程的同步和互斥？</p><h3 id=同步和互斥的实现>同步和互斥的实现</h3><p>操作系统提供实现线程协作的措施和方法，主要的方法有两种：</p><ul><li>锁</li><li>POSIX信号量</li></ul><h4 id=互斥锁和条件变量>互斥锁和条件变量</h4><p>一个线程进入临界区之前，需要<strong>申请锁</strong>，只有拿了锁，才能执行临界区的代码。锁只有一把，故当一个线程拿了锁后，其他线程在申请锁时就会被阻塞，只有当持有锁的线程执行完临界区代码、进行<strong>解锁</strong>后，其他线程才可以申请锁。此时便实现了多个线程互斥的访问共享资源。</p><blockquote><p>锁有2中基本类型：互斥锁（互斥量）和自旋锁，下面以互斥锁为例。</p></blockquote><p><img src=/p/linux-thread/image/image-20250410225111994.png width=229 height=304 srcset="/p/linux-thread/image/image-20250410225111994_hu_822ecc6cef004450.png 480w, /p/linux-thread/image/image-20250410225111994_hu_17180de5793b002b.png 1024w" loading=lazy alt=image-20250410225111994 class=gallery-image data-flex-grow=75 data-flex-basis=180px></p><p>单纯加锁已经解决了数据资源竞争问题，但是又引出了锁资源竞争的问题。不同线程对锁的竞争能力是不同，这可能导致大部分时间，锁都在某一个线程上，这将导致线程的<strong>饥饿问题</strong></p><p><img src=/p/linux-thread/image/image-20250410225938165.png width=347 height=246 srcset="/p/linux-thread/image/image-20250410225938165_hu_860a5ba7b2cb2c20.png 480w, /p/linux-thread/image/image-20250410225938165_hu_cb1119741f277377.png 1024w" loading=lazy alt=image-20250410225938165 class=gallery-image data-flex-grow=141 data-flex-basis=338px></p><p>为此，我们需要引入一个同步机制，比如条件变量</p><blockquote><p>条件变量（Condition Variable）是一种线程同步机制，需要与互斥锁（Mutex）结合使用，用于在线程间传递某个条件的状态并实现线程的等待和唤醒。条件变量允许一个或多个线程在满足特定条件之前进入等待状态，并在条件被满足时被唤醒。</p></blockquote><p><img src=/p/linux-thread/image/image-20250410230214278.png width=453 height=231 srcset="/p/linux-thread/image/image-20250410230214278_hu_3fc4e65f01aa9427.png 480w, /p/linux-thread/image/image-20250410230214278_hu_76e5a27f3b1117a5.png 1024w" loading=lazy alt=image-20250410230214278 class=gallery-image data-flex-grow=196 data-flex-basis=470px></p><h5 id=互斥锁和条件变量的使用以下采用linux原生api>互斥锁和条件变量的使用（以下采用linux原生API)</h5><h5 id=互斥锁的原理>互斥锁的原理</h5><p>锁可以保护临界区被线程互斥访问。但锁同时也是所有线程共享，属于共享资源，那锁自身的互斥问题呢？那必须将申请锁设计成<strong>原子的</strong>。（不会被任何调度机制打断的操作，该操作只有两态，要么完成，要么未完成）
+首先我们要有一个共识：<strong>一条汇编语句是原子的</strong>。
+但加锁的过程不可能仅仅只是一条汇编语句。那是如何实现加锁过程是原子的呢？</p><p>为了实现互斥锁操作,大多数体系结构都提供了swap或exchange指令,该指令的作用是把寄存器和内存单元的数据相交换,由于只有一条指令,保证了原子性,即使是多处理器平台,访问内存的 总线周期也有先后,一个处理器上的交换指令执行时另一个处理器的交换指令只能等待总线周期。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>lock:
+</span></span><span class=line><span class=cl>        movb $0, %al
+</span></span><span class=line><span class=cl>        xchgb %al, mutex
+</span></span><span class=line><span class=cl>        if(al寄存器的内容〉0) {
+</span></span><span class=line><span class=cl>        	return 0;
+</span></span><span class=line><span class=cl>        } else
+</span></span><span class=line><span class=cl>	        挂起等待;
+</span></span><span class=line><span class=cl>        goto lock;
+</span></span><span class=line><span class=cl>unlock:
+</span></span><span class=line><span class=cl>		movb $l,mutex
+</span></span><span class=line><span class=cl>		唤醒等待Mutex的线程；
+</span></span><span class=line><span class=cl>		return 0;
+</span></span></code></pre></td></tr></table></div></div><img src=image/efdc12726f6487bd1c677f9e9ae7e1c1.gif alt=请添加图片描述 style=zoom:150%><h4 id=posix信号量>POSIX信号量</h4><p>POSIX信号量和SystemV信号量（进程间通信）作用相同，都是用于同步操作，达到无冲突的访问共享资源目的。 但POSIX可以用于线程间同步。</p><p>信号量是什么？信号量本质是个<strong>计数器</strong>。类似但是<strong>绝不等于</strong> <code>int cnt;</code>(这里的绝不等于体现在信号量的++和&ndash;是原子的，但整形变量的++和&ndash;不是原子的）</p><p>那这个计数器记忆什么数据呢？<strong>临界资源的数量</strong></p><p>当申请时，信号量会预定临界资源给你。就像电影院买票，只要你买了票，不管你是否去看，电影院一定有你的位置。信号量同理，<strong>只要你向信号量申请了临界资源，就一定有可以使用的临界资源</strong>（不用担心临界资源是否就绪、是否存在等问题）</p><p>正是这一特性，我们使用信号量就不用像互斥锁一样，加了锁还要用条件变量。</p><p>信号量有2个操作P和V，P表示申请，V表示释放。
+使用时的顺序：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>P(信号量)
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>使用临界资源
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>V(信号量）
+</span></span></code></pre></td></tr></table></div></div><h2 id=经典同步问题>经典同步问题</h2><h3 id=生产者消费者模型>生产者消费者模型</h3><p>生成者消费者模型是一种用于解决多线程或多进程间数据交换与同步的经典问题。
+在该模型中，生产者负责生产数据并将其放入共享的缓冲区，而消费者则负责从缓冲区中获取数据并进行处理。这种模型通常用于解决生产者与消费者之间速度不匹配的情况，以及避免因为生产者和消费者之间的竞争条件而导致的数据丢失或不一致的问题。</p><p><img src=/p/linux-thread/image/image-20250411092358400.png width=694 height=217 srcset="/p/linux-thread/image/image-20250411092358400_hu_66426eaa42c8851e.png 480w, /p/linux-thread/image/image-20250411092358400_hu_b5c587edb6588e66.png 1024w" loading=lazy alt=image-20250411092358400 class=gallery-image data-flex-grow=319 data-flex-basis=767px></p><blockquote><p>这里共享资源准确说是临界资源</p></blockquote><p>生产者消费者模型的组成：</p><ul><li>3种关系：生产者和生产者，消费者和消费者，生产者和消费者</li><li>2种角色：生产者、消费者</li><li>1个场所：特定结构的内存空间</li></ul><p>从记忆的角度，我们可以简记为“321”原则。</p><p>3种关系：</p><ol><li>生产者与生产者：当一个生产者进行生产时，其他生产者不能生产 &ndash; <strong>互斥</strong>（避免争夺同一空间）</li><li>消费者与消费者：当一个消费者进行消费时，其他消费者不能消费 &ndash; <strong>互斥</strong> （避免争夺同一资源）</li><li>消费者与生产者：当一个生产者进行生产时，消费者不能进行消费 &ndash; <strong>互斥</strong>（原因：假如生产者正在生产，消费者这时要进行消费，刚好消费这个生产者生产的资源，哪你怎么知道生产者此时生产好了吗？消费者拿到完整的资源了吗？因此要互斥）。避免生产者向已满的缓冲区中放入数据，或消费者从空的缓冲区中获取数据的情况发生。&ndash; <strong>同步</strong></li></ol><p><strong>这个模型的优势在哪？</strong>
+一般的结论：</p><ul><li><p><strong>解耦生产者和消费者</strong></p></li><li><p><strong>支持并发</strong>：由于生产者与消费者是两个独立的并发体，他们之间是用缓冲区作为桥梁连接，生产者只需要往缓冲区里丢数据，就可以继续生产下一个数据，而消费者只需要从缓冲区了拿数据即可，这样就不会因为彼此的处理速度而发生阻塞。</p></li><li><p><strong>支持忙闲不均</strong>：当数据制造快的时候，消费者来不及处理，未处理的数据可以暂时存在缓冲区中。 等生产者的制造速度慢下来，消费者再慢慢处理掉。这平衡了生产和消费速率</p></li><li><p><strong>高效</strong></p></li></ul><p>这里重点说说<strong>高效</strong>，生产者消费者模型高效在哪？注意：前面提到3种关系都包含<strong>互斥</strong>，互斥决定了在共享资源中是串行访问，串行访问一点也不高效。</p><p>这里高效体现在非临界区上：</p><ul><li><p>对于生产者：我们仅仅提到了它生产数据，它能凭空产生吗？一定需要它去获取“原材料”。因此在<strong>生产数据</strong>前，还有<strong>获取数据</strong>。</p></li><li><p>对于消费者：前文我们指的消费，仅仅表示它把数据拿走了，但它拿走之后呢？一定要进行数据的加工和处理。因此在<strong>消费数据</strong>后，还有<strong>数据的加工和处理</strong>。</p></li></ul><p><img src=/p/linux-thread/image/image-20250411093644199.png width=377 height=190 srcset="/p/linux-thread/image/image-20250411093644199_hu_b40d74e9c5dcc53.png 480w, /p/linux-thread/image/image-20250411093644199_hu_184c94b08b8377f7.png 1024w" loading=lazy alt=image-20250411093644199 class=gallery-image data-flex-grow=198 data-flex-basis=476px></p><p>临界区的代码是串行的，谈不上高效，但是生产者和消费者的非临界区是可以<strong>并发</strong>访问。而<strong>非临界区的并发访问</strong>才是生产者消费者模型高效的部分。</p><h4 id=基于阻塞队列的生产消费模型>基于阻塞队列的生产消费模型</h4><p>在多线程编程中阻塞队列(Blocking Queue)是一种常用于实现生产者和消费者模型的数据结构。其与普通的队列区别：当队列为空时，从队列获取元素的操作将会被阻塞，直到队列中被放入了元素；当队列满时，往队列里存放元素的操作也会被阻塞，直到有元素被从队列中取出(以上的操作都是基于不同的线程来说的，线程在对阻塞队列进程操作时会被阻塞)</p><p><img src=/p/linux-thread/image/image-20250411101039386.png width=701 height=191 srcset="/p/linux-thread/image/image-20250411101039386_hu_68405d3793983161.png 480w, /p/linux-thread/image/image-20250411101039386_hu_b5f4315d6f9b25ad.png 1024w" loading=lazy alt=image-20250411101039386 class=gallery-image data-flex-grow=367 data-flex-basis=880px></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#pragma once
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;queue&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;pthread.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>template</span><span class=o>&lt;</span><span class=k>class</span> <span class=nc>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>blockqueue</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>static</span> <span class=k>const</span> <span class=kt>int</span> <span class=n>defaultnum</span> <span class=o>=</span> <span class=mi>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 加锁 - 等待 - 唤醒 - 解锁
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>blockqueue</span><span class=p>(</span><span class=kt>int</span> <span class=n>maxcap</span> <span class=o>=</span> <span class=n>defaultnum</span><span class=p>)</span><span class=o>:</span><span class=n>maxcap_</span><span class=p>(</span><span class=n>maxcap</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_mutex_init</span><span class=p>(</span><span class=o>&amp;</span><span class=n>mutex_</span><span class=p>,</span> <span class=k>nullptr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_cond_init</span><span class=p>(</span><span class=o>&amp;</span><span class=n>p_cond_</span><span class=p>,</span> <span class=k>nullptr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_cond_init</span><span class=p>(</span><span class=o>&amp;</span><span class=n>c_cond_</span><span class=p>,</span> <span class=k>nullptr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>~</span><span class=n>blockqueue</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_mutex_destroy</span><span class=p>(</span><span class=o>&amp;</span><span class=n>mutex_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_cond_destroy</span><span class=p>(</span><span class=o>&amp;</span><span class=n>c_cond_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_cond_destroy</span><span class=p>(</span><span class=o>&amp;</span><span class=n>p_cond_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>T</span> <span class=nf>pop</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_mutex_lock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>mutex_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>while</span><span class=p>(</span><span class=n>q_</span><span class=p>.</span><span class=n>empty</span><span class=p>())</span> <span class=c1>//为什么不用if来判断？
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>pthread_cond_wait</span><span class=p>(</span><span class=o>&amp;</span><span class=n>c_cond_</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>mutex_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>T</span> <span class=n>out</span> <span class=o>=</span> <span class=n>q_</span><span class=p>.</span><span class=n>front</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>q_</span><span class=p>.</span><span class=n>pop</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_cond_signal</span><span class=p>(</span><span class=o>&amp;</span><span class=n>p_cond_</span><span class=p>);</span> <span class=c1>// 消费后，唤醒生产者
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>pthread_mutex_unlock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>mutex_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>out</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>push</span><span class=p>(</span><span class=k>const</span> <span class=n>T</span><span class=o>&amp;</span> <span class=n>in</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_mutex_lock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>mutex_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>while</span><span class=p>(</span><span class=n>q_</span><span class=p>.</span><span class=n>size</span><span class=p>()</span> <span class=o>==</span> <span class=n>maxcap_</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>pthread_cond_wait</span><span class=p>(</span><span class=o>&amp;</span><span class=n>p_cond_</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>mutex_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>q_</span><span class=p>.</span><span class=n>push</span><span class=p>(</span><span class=n>in</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>pthread_cond_signal</span><span class=p>(</span><span class=o>&amp;</span><span class=n>c_cond_</span><span class=p>);</span> <span class=c1>// 生产后，唤醒消费者
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>pthread_mutex_unlock</span><span class=p>(</span><span class=o>&amp;</span><span class=n>mutex_</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=k>private</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>std</span><span class=o>::</span><span class=n>queue</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span> <span class=n>q_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>maxcap_</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl>    <span class=n>pthread_mutex_t</span> <span class=n>mutex_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>pthread_cond_t</span> <span class=n>c_cond_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>pthread_cond_t</span> <span class=n>p_cond_</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>细节：为什么在判断条件时，用while循环？
+<img src=/p/linux-thread/image/image-20250411095123482.png width=372 height=98 srcset="/p/linux-thread/image/image-20250411095123482_hu_1d73dabe59f159dc.png 480w, /p/linux-thread/image/image-20250411095123482_hu_f079c942e3cc0a6e.png 1024w" loading=lazy alt=image-20250411095123482 class=gallery-image data-flex-grow=379 data-flex-basis=911px></p><p>操作系统层面的条件变量（如 <code>pthread_cond_wait</code>）在实现上可能因某些原因（如信号中断或内核调度）导致线程被<strong>意外唤醒</strong>，即使没有其他线程显式调用 <code>pthread_cond_signal</code>。即 <strong>伪唤醒</strong></p><p>在上面代码就会导致一个问题，同时唤醒的生产者/消费者线程可能不止一个。</p><p>如下图：假设a是被正常唤醒，b，c是伪唤醒</p><p><img src=/p/linux-thread/image/image-20250411100504333.png width=1231 height=649 srcset="/p/linux-thread/image/image-20250411100504333_hu_b9967a1cf72da41e.png 480w, /p/linux-thread/image/image-20250411100504333_hu_1c2e3a2abe153c49.png 1024w" loading=lazy alt=image-20250411100504333 class=gallery-image data-flex-grow=189 data-flex-basis=455px></p><p>使用while循环后，伪唤醒的b还会先判断以下<code> q_.size() == maxcap_</code></p><h2 id=锁->锁 *</h2><h3 id=锁的种类>锁的种类</h3><h4 id=互斥锁和自旋锁>互斥锁和自旋锁</h4><p><strong>互斥锁和自旋锁是并发编程中最基础的两种锁</strong>，其核心区别在于<strong>等待锁时的行为</strong></p><ul><li><strong>互斥锁</strong>：通过<strong>休眠</strong>让出CPU，减少资源占用，但引入上下文切换开销</li><li><strong>自旋锁</strong>：通过<strong>忙等待</strong>避免切换，适合短临界区，但可能浪费CPU周期</li></ul><p>互斥锁加锁失败时，会从用户态陷入到内核态，让内核帮我们切换线程，虽然简化了使用锁的难
+度，但是存在一定的性能开销成本。
+那这个开销成本是什么呢？会有两次线程上下文切换的成本：
+·当线程加锁失败时，内核会把线程的状态从「运行」状态设置为「睡眠」状态，然后把CPU切换给其
+他线程运行；
+·接着，当锁被释放时，之前「睡眠」状态的线程会变为「就绪」状态，然后内核会在合适的时间，把
+CPU 切换给该线程运行。</p><h4 id=读写锁>读写锁</h4><p>读写锁由两把锁组成，读锁和写锁。它的应用场景：<strong>能明确区分读操作和写操作，且读操作 多于 写操作</strong>。</p><h3 id=死锁->死锁 *</h3><p>什么是死锁？比如当两个线程为了保护两个不同的共享资源而使用了两个互斥锁，那么这两个互斥锁应用不当的时候，可能会造成两个线程都在等待对方释放锁，在没有外力的作用下，这些线程会一直相互等待，就没办法继续运行，这种情况就是发生了死锁。</p><p><strong>死锁有四个必要条件</strong></p><ul><li><strong>互斥条件</strong>：多个线程不能同时使用同一个资源。</li><li><strong>请求与保持条件</strong>：线程因请求资源而阻塞时，对已获得的资源保持不放</li><li><strong>不剥夺条件</strong>：线程已获得的资源，在末使用完之前，不能强行剥夺</li><li><strong>循环等待条件</strong>：多个线程之间形成一种头尾相接的循环等待资源的关系</li></ul><p>如何破坏死锁？打破4个条件的其中一个就行，最常见的就是打破<strong>循环等待条件</strong>，核心就是理清<strong>资源的获取和释放顺序</strong>。</p></section><footer class=article-footer><section class=article-tags><a href=/tags/linux%E7%BA%BF%E7%A8%8B/>Linux线程</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/linux-file-command/><div class=article-details><h2 class=article-title>Linux 文件操作命令</h2></div></a></article><article><a href=/p/linux-file-system/><div class=article-details><h2 class=article-title>Linux 文件系统</h2></div></a></article><article><a href=/p/linux-series/><div class=article-details><h2 class=article-title>Linux 系统系列文章</h2></div></a></article><article><a href=/p/linux-network-command/><div class=article-details><h2 class=article-title>Linux 网络命令</h2></div></a></article><article><a href=/p/linux-process/><div class=article-details><h2 class=article-title>Linux 进程</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=sfw003/sfwblogtalks issue-term=title crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2025 石某人</section><section class=powerby>本站所有文章均为原创，转载请注明出处。<br>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

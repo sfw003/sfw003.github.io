@@ -1,0 +1,1608 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Qt on 石某人</title><link>https://sfw003.github.io/categories/qt/</link><description>Recent content in Qt on 石某人</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>石某人</copyright><lastBuildDate>Fri, 04 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://sfw003.github.io/categories/qt/index.xml" rel="self" type="application/rss+xml"/><item><title>Qt 开发系列</title><link>https://sfw003.github.io/p/qt-series/</link><pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/qt-series/</guid><description>&lt;h2 id="系列介绍">系列介绍
+&lt;/h2>&lt;p>本系列文章将带您从零开始学习 Qt 开发，涵盖从基础概念到高级应用的各个方面。无论您是编程新手还是有一定经验的开发者，都能在这里找到适合自己的学习路径。&lt;/p>
+&lt;p>绘图文件，在&lt;a class="link" href="qt.drawio" >qt.drawio&lt;/a>&lt;/p>
+&lt;h2 id="文章列表">文章列表
+&lt;/h2>&lt;h3 id="qt-环境搭建">Qt 环境搭建
+&lt;/h3>&lt;ul>
+&lt;li>&lt;a class="link" href="https://sfw003.github.io/p/qt-env-setup-01/" >Qt 的安装与环境配置&lt;/a> - 搭建 Qt 开发环境&lt;/li>
+&lt;/ul>
+&lt;h3 id="qt-core">Qt Core
+&lt;/h3>&lt;ul>
+&lt;li>&lt;a class="link" href="https://sfw003.github.io/p/qt-core_02_container_and_algorithm/" >Qt Core 02 容器类和算法 &lt;/a> - Qt 核心概念与基础功能&lt;/li>
+&lt;li>&lt;a class="link" href="https://sfw003.github.io/p/qt-core_03_event_mechanism/" >Qt Core 03 事件机制&lt;/a> - 事件机制&lt;/li>
+&lt;/ul>
+&lt;h3 id="qt-gui">Qt GUI
+&lt;/h3>&lt;ul>
+&lt;li>&lt;a class="link" href="https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/" >Qt GUI 01 Qt 绘图框架&lt;/a> - Qt 绘图框架&lt;/li>
+&lt;/ul>
+&lt;h3 id="qt-widgets">Qt Widgets
+&lt;/h3>&lt;h2 id="资源推荐">资源推荐
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://doc.qt.io/" target="_blank" rel="noopener"
+>Qt 官方文档&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://doc.qt.io/qt-6/examples.html" target="_blank" rel="noopener"
+>Qt 示例程序&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://forum.qt.io/" target="_blank" rel="noopener"
+>Qt 论坛&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.qtcn.org/" target="_blank" rel="noopener"
+>Qt 中文社区&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h2 id="更新计划">更新计划
+&lt;/h2>&lt;p>本系列文章会持续更新，计划包含以下内容：&lt;/p>
+&lt;ul>
+&lt;li>&lt;input checked="" disabled="" type="checkbox"> Qt 网络编程&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> Qt 数据库操作&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> Qt 项目实战&lt;/li>
+&lt;/ul>
+&lt;p>欢迎关注本系列文章的更新，也欢迎在评论区提出建议和问题。&lt;/p></description></item><item><title>【Qt GUI 01】Qt 绘图框架</title><link>https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/</link><pubDate>Fri, 04 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/</guid><description>&lt;h2 id="qt-绘图框架">Qt 绘图框架
+&lt;/h2>&lt;p>QPainter 与 QPaintDevice 和 QPaintEngine类一起构成了 Qt绘画系统的基础.&lt;/p>
+&lt;ul>
+&lt;li>QPainter 是用于执行绘图操作的类。&lt;/li>
+&lt;li>QPaintDevice 表示可以使用QPainter绘制的设备。Qt中绘图设备的基类，它是一个抽象类，用于描述可以绘制的设备,QPainter 在 绘图设备中绘制中,常用的绘图设备 QWidget、QPixmap 、QImage&lt;/li>
+&lt;li>QPaintEngine提供了 Painter 用于在不同类型的设备上绘图的界面。&lt;strong>对程序员不不透明&lt;/strong>，提供了不同类型设备的接口,由 QPaintDevice 和 QPainter 与其进行交互&lt;/li>
+&lt;/ul>
+&lt;p>如果 Painter处于活动状态，device()返回 Painter在其上绘画的绘制设备，paintEngine ()返回 Painter 当前正在操作的绘制引擎。有关更多信息，请参阅绘制系统。&lt;/p>
+&lt;h3 id="qpaintdevice">QPaintDevice
+&lt;/h3>&lt;p>QWidget 、QImage 、QPixmap 等等绘图场景都是从 QPainterDevice 继承而来的。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Q_WIDGETS_EXPORT&lt;/span> &lt;span class="nl">QWidget&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">QObject&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">QPaintDevice&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Q_GUI_EXPORT&lt;/span> &lt;span class="nl">QImage&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">QPaintDevice&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Q_GUI_EXPORT&lt;/span> &lt;span class="nl">QPixmap&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">QPaintDevice&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/OI2IWBIAYE.png"
+width="817"
+height="342"
+srcset="https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/OI2IWBIAYE_hu_a75d766174401bc2.png 480w, https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/OI2IWBIAYE_hu_cb5b473abd451f8e.png 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="238"
+data-flex-basis="573px"
+>&lt;/p>
+&lt;h3 id="qpainter">QPainter
+&lt;/h3>&lt;p>QPainter 是用于执行绘图操作的类，需要配合辅助类来使用，常见的有以下三种&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>QPen&lt;/th>
+&lt;th>描述画笔，用户画线&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>QBrush&lt;/td>
+&lt;td>描述画刷，用于填充&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QColor&lt;/td>
+&lt;td>描述颜色&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="qt绘图事件">Qt绘图事件
+&lt;/h3>&lt;p>&lt;img src="https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/4Y2YWBIAMY.png"
+width="819"
+height="159"
+srcset="https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/4Y2YWBIAMY_hu_f5f129d91046de75.png 480w, https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/4Y2YWBIAMY_hu_bce228ade624de57.png 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="515"
+data-flex-basis="1236px"
+>&lt;/p>
+&lt;p>绘图事件处理触发时机&lt;/p>
+&lt;ul>
+&lt;li>在窗口部件第一次显示时，系统会自动产生一个绘图事件(QPaintEvent),从而强制绘制这个窗口部件&lt;/li>
+&lt;li>当重新调整窗口部件的大小时，系统也会产生一个绘制事件&lt;/li>
+&lt;li>调用 update( 或者repaint()) 函数&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">void QWidget::update()
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">void QWidget::repaint()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>update和repaint的区别：&lt;/p>
+&lt;ul>
+&lt;li>update是一个异步函数,它会将绘图事件添加到事件队列中,当事件循环回到主线程时，会调用组件的 paintEvent() 函数进行实际的重绘工作&lt;/li>
+&lt;li>是一个同步函数，会立即触发组件的重绘操作,不会等待事件循环&lt;/li>
+&lt;/ul>
+&lt;h2 id="qt绘图实战">Qt绘图实战
+&lt;/h2>&lt;h3 id="qpen">QPen
+&lt;/h3>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>线型风格(Qt::PenStyle)&lt;/th>
+&lt;th>&lt;img src=".assets/RX3VIBIAY4.png" alt="img" style="zoom:67%;" />&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>端点风格( Qt::PenCapStyle)&lt;/td>
+&lt;td>&lt;img src=".assets/VP3VIBIAYE.png" alt="img" style="zoom:67%;" />&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>连接风格(Qt::PenJoinStyle)&lt;/td>
+&lt;td>&lt;img src=".assets/ED4FIBIA2I.png" alt="img" style="zoom: 67%;" />&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>使用案例&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QPainter&lt;/span> &lt;span class="nf">painter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QPen&lt;/span> &lt;span class="n">pen&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pen&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setStyle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Qt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">DashDotLine&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">//设置线性风格
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">pen&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setWidth&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pen&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setBrush&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Qt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">green&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">//设置刷子
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">pen&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setCapStyle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Qt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">RoundCap&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">//设置端点风格
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">pen&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setJoinStyle&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Qt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">RoundJoin&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">//设置连接风格
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">painter&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setPen&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pen&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="qbrush">QBrush
+&lt;/h3>&lt;p>QBrush用于描述画刷，Qt中用于描述绘图区域填充样式的类。它可以用于指定绘图区域的背景色、渐变色、纹理、图片等&lt;/p>
+&lt;img src="image/PC7OUWAYAAADC.png" alt="img" />
+&lt;h3 id="qcolor">QColor
+&lt;/h3>&lt;p>QColor 是Qt中用于表示颜色的类。它可以用于描述RGB颜色、RGBA颜色、HSL颜色、HSV颜色以及16进制颜色等。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QColor&lt;/span> &lt;span class="nf">color&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Qt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">red&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 使用预定义颜色
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">QColor&lt;/span> &lt;span class="nf">color&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">255&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 使用RGB值
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">QColor&lt;/span> &lt;span class="nf">color&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;#FF0000&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 使用16进制值
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setRgb&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">255&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 设置RGB颜色值
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">setHsl&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">255&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">127&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 设置HSL颜色值
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="qt坐标">Qt坐标
+&lt;/h3>&lt;p>QPainter 使用的坐标系是组件自身坐标系，如果通过 geometry() 函数与 pos() 函数获取的坐标是基于父组件的坐标系&lt;/p>
+&lt;p>相对于父组件的坐标可以通过 mapFromParent 函数进行转换，得到想的自己的坐标系&lt;/p>
+&lt;img src="image/TNKYYBIADM.png" alt="img" style="zoom:67%;" />
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//获得相对父控件的坐标
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">QPoint&lt;/span> &lt;span class="n">centerPointFromParent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">geometry&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="n">center&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//获得相对自身的坐标
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">QPoint&lt;/span> &lt;span class="n">centerPoint&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">mapFromParent&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">centerPointFromParent&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="qt图形变换">Qt图形变换
+&lt;/h3>&lt;p>在图形变换操作时,是对坐标系进行变换&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="n">QPainter&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">scale&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">qreal&lt;/span> &lt;span class="n">sx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">qreal&lt;/span> &lt;span class="n">sy&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 缩放
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="n">QPainter&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">rotate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">qreal&lt;/span> &lt;span class="n">angle&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 旋转
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="n">QPainter&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">shear&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">qreal&lt;/span> &lt;span class="n">sh&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">qreal&lt;/span> &lt;span class="n">sv&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 扭曲
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="n">QPainter&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">translate&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">qreal&lt;/span> &lt;span class="n">dx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">qreal&lt;/span> &lt;span class="n">dy&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1">// 平移
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/OSRFRJIYACQBM.png"
+width="651"
+height="170"
+srcset="https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/OSRFRJIYACQBM_hu_9e0653914bce9f9f.png 480w, https://sfw003.github.io/p/qt-gui_01_qt_drawing_framework/image/OSRFRJIYACQBM_hu_84e3a0d676e8b925.png 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="382"
+data-flex-basis="919px"
+>&lt;/p></description></item><item><title>【Qt MVC】model-view-delegate</title><link>https://sfw003.github.io/p/qt-mvc/</link><pubDate>Fri, 04 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/qt-mvc/</guid><description>&lt;h2 id="mvc">MVC
+&lt;/h2>&lt;p>模型-视图-控制(MVC) 是源自 Smalltalk 的一种设计模式,在构建用户界面时经常使用。用于将应用程序的数据、逻辑和界面分离，以提高代码可读性、可维护性和可扩展性&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>MVC 框架由三个对象组成:&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>Model (模型) : 负责存储和处理数据，通常与数据库进行交互。模型表示应用程序的核心逻辑,例如数据结构、数据处理和存储等&lt;/li>
+&lt;li>View (视图) ：负责显示数据，将模型中的数据可视化。视图是用户与系统交互的接口,通常包括图形用户界面 GUI 或者网页&lt;/li>
+&lt;li>Controller (控制器 ） : 负责接收用户输入，处理用户请求，并更新模型和视图&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://sfw003.github.io/p/qt-mvc/image/ZBUICBIAEM.png"
+width="593"
+height="336"
+srcset="https://sfw003.github.io/p/qt-mvc/image/ZBUICBIAEM_hu_5daf3b18062ef567.png 480w, https://sfw003.github.io/p/qt-mvc/image/ZBUICBIAEM_hu_95be9bc04bb0448f.png 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="176"
+data-flex-basis="423px"
+>&lt;/p>
+&lt;h2 id="qt-model-view">QT Model-View
+&lt;/h2>&lt;p>在Qt中，Model-View是一种设计模式，用于将数据（Model）与其可视化表示（View）分离，使得程序更加模块化、可扩展和易于维护。&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Model/View 框架主要包括以下三个组件&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>
+&lt;p>Model：模型是数据的抽象表示，它负责存储和管理数据。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>模型通常从底层数据源（如数据库、文件或数据结构）获取数据，并将其呈现给视图。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>
+&lt;p>View : 视图是数据的可视化表示，它负责呈现模型中的数据。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>视图可以有多种形式，如表格、列表、树状结构等&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>
+&lt;p>Delegate : 委托负责处理数据的显示和编辑。委托可以自定义单元格的渲染方式，以及将用户输入的数据写回模型&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;ul>
+&lt;li>如果用户没有设置委托，则使用默认委托&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://sfw003.github.io/p/qt-mvc/image/CNWIIBIATQ.png"
+width="389"
+height="370"
+srcset="https://sfw003.github.io/p/qt-mvc/image/CNWIIBIATQ_hu_135e5cf80bee8bc7.png 480w, https://sfw003.github.io/p/qt-mvc/image/CNWIIBIATQ_hu_f3d26aa16890443c.png 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="105"
+data-flex-basis="252px"
+>&lt;/p>
+&lt;h3 id="view">View
+&lt;/h3>&lt;p>在 Qt 内部实现了多个可以支持 Model/View 的视图,具体如下:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>视图名称&lt;/th>
+&lt;th>描述&lt;/th>
+&lt;th>示例&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>QListView&lt;/td>
+&lt;td>用于显示单列的列表数据，适用于一维数据的操作&lt;/td>
+&lt;td>&lt;img src="https://sfw003.github.io/.assets/CF3YIBIAFM.png"
+loading="lazy"
+alt="img"
+>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QTreeView&lt;/td>
+&lt;td>用于显示树状结构数据，适用于树状结构数据的操作&lt;/td>
+&lt;td>&lt;img src="https://sfw003.github.io/.assets/AB4IIBIBJM.png"
+loading="lazy"
+alt="img"
+>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QTableView&lt;/td>
+&lt;td>用于显示表格状数据，适用于二维表格型数据的操作&lt;/td>
+&lt;td>&lt;img src="https://sfw003.github.io/.assets/EN4IIBIADI.png"
+loading="lazy"
+alt="img"
+>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QColumnView&lt;/td>
+&lt;td>用于多个QListView显示树状层次结构，树状结构的一层用一个QListView显示。&lt;/td>
+&lt;td>&lt;img src="https://sfw003.github.io/.assets/KF4IIBIAQQ.png"
+loading="lazy"
+alt="img"
+>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>它们的继承关系如下图。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/qt-mvc/image/4Z6IIBIATQ.png"
+width="1124"
+height="458"
+srcset="https://sfw003.github.io/p/qt-mvc/image/4Z6IIBIATQ_hu_6f611430ed07ae8d.png 480w, https://sfw003.github.io/p/qt-mvc/image/4Z6IIBIATQ_hu_e50e4df0b12c1825.png 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="245"
+data-flex-basis="588px"
+>&lt;/p>
+&lt;h3 id="自定义view">自定义View
+&lt;/h3>&lt;h3 id="model">Model
+&lt;/h3>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>模型&lt;/th>
+&lt;th>描述&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>QStandardItemModel&lt;/td>
+&lt;td>1.通用的数据模型类，可以存储各种类型的数据（如列表、树形结构、表格等）2.是 QAbstractItemModel 的子类，提供了一组用于管理数据项（如添加、删除、修改等）的便捷方法&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QStringListModel&lt;/td>
+&lt;td>1.用于存储字符串列表的数据模型类，2.是 QAbstractListModel 的子类，可以方便地管理字符串列表（如添加、删除、修改等3.适用于需要展示和操作字符串列表的场景，如列表框、下拉框&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QFileSystemModel&lt;/td>
+&lt;td>用于访问文件系统的数据模型类是 QAbstractItemModel 的子类,可以表示文件系统的目录结构和文件信息适用于需要浏览和操作文件系统的场景，如文件选择器、文件管理器等&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QSqlTableModel&lt;/td>
+&lt;td>一个用于访问 SQL 数据库的数据模型类是 QAbstractTableModel 的子类,可以表示 SQL 数据库中的表格数据QSqlTableModel 提供了一组用于查询、插入、更新和删除数据库记录的方法。它适用于需要与 SQL 数据库交互的场景。&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QSqlRelationalTableModel&lt;/td>
+&lt;td>用于访问带有关系的 SQL 数据库的数据模型类是 QSqlTableModel 的子类，可以表示 SQL 数据库中的关系表格数据QSqlRelationalTableModel 提供了一组用于处理关系字段（如外键）的方法。适用于需要表示和操作关系数据库的场景。&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QSortFilterProxyModel&lt;/td>
+&lt;td>代理模型类，用于对其他模型数据进行排序和过滤是 QAbstractProxyModel 的子类,可以作为其他模型（如上述内置模型）的代理，对数据进行排序和过滤QSortFilterProxyModel 适用于需要对数据进行排序和过滤的场景，如表格视图、树形视图等&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;img src="https://sfw003.github.io/p/qt-mvc/image/MMRZGBIAHI.png"
+width="1327"
+height="731"
+srcset="https://sfw003.github.io/p/qt-mvc/image/MMRZGBIAHI_hu_6dfec354ff1dd4e1.png 480w, https://sfw003.github.io/p/qt-mvc/image/MMRZGBIAHI_hu_9f512f3c00b0870d.png 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="181"
+data-flex-basis="435px"
+>&lt;/p>
+&lt;h4 id="model索引">Model索引
+&lt;/h4>&lt;p>所有的模型都是统一通过模型索引来访问数据，它用于表示数据模型中特定数据项的位置
+模型索引由&lt;strong>QModellndex&lt;/strong>类来表示，包含了一个数据项的行、列和父索引信息
+关于QModellndex类一些主要特性如下：&lt;/p>
+&lt;ul>
+&lt;li>行和列：QModellndex包含一个数据项在模型中的行和列信息&lt;/li>
+&lt;li>父索引：QModellndex还包含一个父索引l，表示数据项的父项，对于树形结构的模型（如QStandardltemModel或QFileSystemModel特别有用&lt;/li>
+&lt;li>有效性：QModellndex可以是有效或无效的。有效索引表示模型中实际存在的数据项，而无效索引表示一个空或未定义的位置&lt;/li>
+&lt;li>数据访问：通过模型索引，可以访问和操作模型中的数据&lt;/li>
+&lt;li>模型指针：QModellndex包含一个指向其所属模型的指针&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://sfw003.github.io/p/qt-mvc/image/3LSJGBIAH4.png"
+width="721"
+height="370"
+srcset="https://sfw003.github.io/p/qt-mvc/image/3LSJGBIAH4_hu_c6e4ef9674c71418.png 480w, https://sfw003.github.io/p/qt-mvc/image/3LSJGBIAH4_hu_97e33c2f13850eca.png 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="194"
+data-flex-basis="467px"
+>&lt;/p>
+&lt;p>获取索引的函数是index，它在这一层定义&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/qt-mvc/image/image-20241130103502653.png"
+width="1053"
+height="84"
+srcset="https://sfw003.github.io/p/qt-mvc/image/image-20241130103502653_hu_5d40cf61f51a9baa.png 480w, https://sfw003.github.io/p/qt-mvc/image/image-20241130103502653_hu_987656470be95d72.png 1024w"
+loading="lazy"
+alt="image-20241130103502653"
+class="gallery-image"
+data-flex-grow="1253"
+data-flex-basis="3008px"
+>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QAbstracTableMode&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">QModelIndex&lt;/span> &lt;span class="n">index&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="ne">int&lt;/span> &lt;span class="n">row&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="ne">int&lt;/span> &lt;span class="n">column&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">QModelIndex&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">parent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">QModelIndex&lt;/span>&lt;span class="p">())&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">override&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://sfw003.github.io/p/qt-mvc/image/image-20241130102827271.png"
+width="954"
+height="614"
+srcset="https://sfw003.github.io/p/qt-mvc/image/image-20241130102827271_hu_1c80d29eebde69a7.png 480w, https://sfw003.github.io/p/qt-mvc/image/image-20241130102827271_hu_d436540a77b55d2a.png 1024w"
+loading="lazy"
+alt="image-20241130102827271"
+class="gallery-image"
+data-flex-grow="155"
+data-flex-basis="372px"
+>&lt;/p>
+&lt;h4 id="自定义model">自定义Model
+&lt;/h4>&lt;p>系统的标准模型(QStandardltemModel）主要支持字符串与图标(Qlcon)，对于其他类型支持能力较弱
+如果需要显示自定义数据结构，则更好的方式是采用自定义模型，同时对于大量数据的处理，自定义数据模型可以实现数据的按需加载、缓存等策略，以提高视图的性能。&lt;/p>
+&lt;p>自定义模型基本实现思路：&lt;/p>
+&lt;ul>
+&lt;li>明确自定义模型需要处理的数据结构和特点，如树形结构，列表或者表格&lt;/li>
+&lt;li>根据数据结构的特点，选择合适的基类，下面列举了相应的数据类型对应的比较合适的基类&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>数据结构类型&lt;/th>
+&lt;th>自定义模型基类&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>表格&lt;/td>
+&lt;td>QAbstractTableModel&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>列表&lt;/td>
+&lt;td>QAbstractListModel&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>通用&lt;/td>
+&lt;td>QAbstractItemModel&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>继承这些模型后，需要实现以下函数（不同的模型实现的函数不同）&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>方法原型&lt;/th>
+&lt;th>方法描述&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>int rowCount(const QModelIndex&amp;amp; parent) const&lt;/strong>&lt;/td>
+&lt;td>返回数据模型的行数&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>int columnCount(const QModelIndex&amp;amp; parent = QModelIndex())&lt;/strong>&lt;/td>
+&lt;td>返回数据模型的列数&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>QVariant data(const QModelIndex&amp;amp; index, int role = Qt::DisplayRole) const ;&lt;/strong>&lt;/td>
+&lt;td>返回指定数据模型中指定单元格数据&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole&lt;/td>
+&lt;td>返回表头数据&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>bool setData(const QModelIndex &amp;amp;index, const QVariant &amp;amp;value, int role = Qt::EditRole);&lt;/td>
+&lt;td>设置指定索引的项的数据&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QModelIndex index(int row, int column, const QModelIndex &amp;amp;parent = QModelIndex()) const;&lt;/td>
+&lt;td>返回给定行和列的项的索引&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QModelIndex parent(const QModelIndex &amp;amp;child) const;&lt;/td>
+&lt;td>返回给定子项的父项的索引&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Qt::ItemFlags flags(const QModelIndex &amp;amp;index) const;&lt;/td>
+&lt;td>返回给定索引的项的标志&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>bool insertRows(int row, int count, const QModelIndex &amp;amp;parent = QModelIndex());&lt;/td>
+&lt;td>在给定位置插入指定数量的行&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>bool removeRows(int row, int count, const QModelIndex &amp;amp;parent = QModelIndex());&lt;/td>
+&lt;td>从给定位置移除指定数量的行&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>bool insertColumns(int column, int count, const QModelIndex &amp;amp;parent = QModelIndex());&lt;/td>
+&lt;td>在给定位置插入指定数量的列&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>bool removeColumns(int column, int count, const QModelIndex &amp;amp;parent = QModelIndex());&lt;/td>
+&lt;td>从给定位置移除指定数量的列&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>其中最重要的是&lt;/p>
+&lt;p>&lt;code>QVariant data(const QModelIndex&amp;amp; index, int role = Qt::DisplayRole) const ; &lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>index 是索引&lt;/li>
+&lt;li>role则是角色说明，Qt里有自带的角色说明
+&lt;ul>
+&lt;li>DisplayRole (0)，这是最基本的角色，通常用来显示文本内容&lt;/li>
+&lt;li>DecorationRole (1)，通常用来显示图标或图片&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>如果是自定义Model, 最好使用自定义.&lt;/p>
+&lt;p>数据的更改和增加，可以使用bool insertColumns(int column, int count, const QModelIndex &amp;amp;parent = QModelIndex()); 。。。&lt;/p>
+&lt;p>简易使用自定义函数&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 添加一个新的笔画
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="n">StrokeModel&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">addStroke&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">StrokeData&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">stroke&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 通知视图即将插入新行
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">beginInsertRows&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">QModelIndex&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="n">m_strokes&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="n">m_strokes&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 创建新的笔画数据，使用当前样式和时间戳
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">StrokeData&lt;/span> &lt;span class="n">newStroke&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">stroke&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">newStroke&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">style&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">m_currentStyle&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">newStroke&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">timestamp&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">QDateTime&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">currentMSecsSinceEpoch&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">m_strokes&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">append&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">newStroke&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 添加到笔画列表中
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// 通知视图插入完成
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">endInsertRows&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">emit&lt;/span> &lt;span class="nf">strokeAdded&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">m_strokes&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 发射笔画添加信号，处理handwriteview的按钮更新
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>使用自定义函数就需要关注：&lt;strong>通知&lt;/strong>&lt;/p>
+&lt;p>beginRemoveRows 和 endRemoveRows 主要用于通知视图模型的结构变化（即行的添加或删除）&lt;/p>
+&lt;p>这对函数主要影响视图的行管理，比如：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>更新视图的行数&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>更新行的索引&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>更新视图的滚动范围等&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>dataChanged 信号用于通知视图数据内容的变化&lt;/p>
+&lt;p>这个信号会触发视图的重绘操作&lt;/p>
+&lt;p>它告诉视图：&amp;ldquo;这些数据已经改变，你需要重新绘制它们&lt;/p>
+&lt;h3 id="delegate">Delegate
+&lt;/h3>&lt;p>Qt Delegate 负责数据的编辑和渲染。当用户需要编辑数据时，Delegate负责提供编辑器，同时负责将编辑后的数据写回Model&lt;/p>
+&lt;p>Qt 内置支持 MVD 模式的组件都是支持 QTableView,QTreeView 都支持默认委托,用于基本数据类型的渲染,包括文本、数字和图像，还有默认编辑组件 QLineEdit&lt;/p>
+&lt;p>默认委托是由 ﻿QStyledItemDelegate 类来进行过描述,继承于QAbstractItemDelegate&lt;/p>
+&lt;p>当遇到单元格的内容非文本，数字和图像等基本数据类型，则应该考虑自定义 Delegate,如下面应用场景&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/qt-mvc/image/HOHJMBIAGE.png"
+width="1616"
+height="340"
+srcset="https://sfw003.github.io/p/qt-mvc/image/HOHJMBIAGE_hu_a848bfe585f6501a.png 480w, https://sfw003.github.io/p/qt-mvc/image/HOHJMBIAGE_hu_ddef277a51253473.png 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="475"
+data-flex-basis="1140px"
+>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>委托类名称&lt;/th>
+&lt;th>描述&lt;/th>
+&lt;th>父类&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>QItemDelegate&lt;/td>
+&lt;td>基本的委托类，提供默认的渲染和编辑功能&lt;/td>
+&lt;td>QAbstractItemDelegate&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>QStyledItemDelegate&lt;/td>
+&lt;td>继承自 QItemDelegate，提供更好的样式支持和性能&lt;/td>
+&lt;td>QItemDelegate&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;img src="image/SQKKGBI2ADQF6.png" alt="img" style="zoom:67%;" />
+&lt;h4 id="自定义delegate">自定义Delegate
+&lt;/h4>&lt;p>在实现自定义 Delegate 主要方式就是选择合适的 Delegate 基类，并重写实现相应的方法,这里一般选择 QStyledItemDelegate作为基类&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &amp;amp;option, const QModelIndex &amp;amp;index) const&lt;/th>
+&lt;th>自定义单元格编辑器组件&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>*&lt;em>virtual void paint(QPainter &lt;em>painter, const QStyleOptionViewItem &amp;amp;option, const QModelIndex &amp;amp;index) const = 0&lt;/em>&lt;/em>&lt;/td>
+&lt;td>自定义组件绘制&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>virtual void setEditorData(QWidget *editor, const QModelIndex &amp;amp;index) const&lt;/td>
+&lt;td>将模型数据设置到编辑器&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>virtual void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &amp;amp;index) const&lt;/td>
+&lt;td>将编辑后的数据设置到模型&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &amp;amp;option, const QModelIndex &amp;amp;index) const&lt;/td>
+&lt;td>自定义编辑器的几何位置&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>【Qt Widgets】Qt 布局管理</title><link>https://sfw003.github.io/p/qt-widgets_layout_management/</link><pubDate>Fri, 04 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/qt-widgets_layout_management/</guid><description>&lt;h2 id="qt-布局管理">Qt 布局管理
+&lt;/h2>&lt;h3 id="基本布局">基本布局
+&lt;/h3>&lt;p>Qt 的布局管理系统提供了多种布局管理器类，用于自动排列和管理控件的位置与大小，确保界面在不同分辨率下保持美观和功能性。以下是其核心布局类及其特点的总结：&lt;/p>
+&lt;h4 id="qhboxlayout水平布局">&lt;code>QHBoxLayout&lt;/code>（水平布局）
+&lt;/h4>&lt;p>• &lt;strong>功能&lt;/strong>：将控件从左到右水平排列，适用于工具栏、按钮组等横向布局场景。
+• &lt;strong>特点&lt;/strong>：自动调整控件间距，支持拉伸系数（&lt;code>stretch&lt;/code>）控制控件宽度占比。
+• &lt;strong>代码示例&lt;/strong>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QHBoxLayout&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">layout&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">QHBoxLayout&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addWidget&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">button1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addWidget&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">button2&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="qvboxlayout垂直布局">&lt;code>QVBoxLayout&lt;/code>（垂直布局）
+&lt;/h4>&lt;p>• &lt;strong>功能&lt;/strong>：将控件从上到下垂直排列，常用于表单、列表等纵向布局。
+• &lt;strong>特点&lt;/strong>：支持设置空白区域（&lt;code>addStretch()&lt;/code>）和固定间距（&lt;code>addSpacing()&lt;/code>），灵活分配空间。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QVBoxLayout&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">layout&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">QVBoxLayout&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addWidget&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">label1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addWidget&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">lineEdit&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="qgridlayout网格布局">&lt;code>QGridLayout&lt;/code>（网格布局）
+&lt;/h4>&lt;p>• &lt;strong>功能&lt;/strong>：将控件按行和列排列成网格，支持控件跨行或跨列。
+• &lt;strong>特点&lt;/strong>：适用于复杂界面（如计算器、表格），通过 &lt;code>addWidget(widget, row, column, rowSpan, columnSpan)&lt;/code> 指定位置。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QGridLayout&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">layout&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">QGridLayout&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addWidget&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">button1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 第0行第0列
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addWidget&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">button2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 跨2列
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="qformlayout表单布局">&lt;code>QFormLayout&lt;/code>（表单布局）
+&lt;/h4>&lt;p>• &lt;strong>功能&lt;/strong>：专为表单设计，每行包含标签（如 &lt;code>QLabel&lt;/code>）和输入控件（如 &lt;code>QLineEdit&lt;/code>）。
+• &lt;strong>特点&lt;/strong>：自动对齐标签和输入框，简化登录界面、设置对话框的开发。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QFormLayout&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">layout&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">QFormLayout&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addRow&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;用户名:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lineEditUser&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addRow&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;密码:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lineEditPass&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>【Qt Core 02】容器类和算法</title><link>https://sfw003.github.io/p/qt-core_02_container_and_algorithm/</link><pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/qt-core_02_container_and_algorithm/</guid><description>&lt;blockquote>
+&lt;p>以下内容基于Qt 5.15 LTS 官方文档整理&lt;/p>&lt;/blockquote>
+&lt;p>Qt Core 提供多种容器类，满足不同的数据存储和操作需求。&lt;/p>
+&lt;h2 id="字符串">字符串
+&lt;/h2>&lt;p>Qt中与字符的核心类&lt;/p>
+&lt;ul>
+&lt;li>QChar：存放文本数据&lt;/li>
+&lt;li>QByteArray：这个用来存放原始数据（图片、文件的二进制）&lt;/li>
+&lt;li>QString：&lt;/li>
+&lt;/ul>
+&lt;p>QString存储一串16 位QChar，其中每个QChar对应一个&lt;strong>UTF-16&lt;/strong> 代码单元。（代码值大于65535的Unicode字符使用代理项对存储，即两个连续的QChar。&lt;/p>
+&lt;p>Unicode是一种国际标准，支持当今使用的大多数书写系统。它是US-ASCIl（ANSIX3.4-1986）和Latin-1（IS08859-1）的超集，所有US-
+ASCll/Latin-1字符都可以在相同的代码位置使用。&lt;/p>
+&lt;p>在幕后，QString 使用隐式共享（写时复制）来减少内存使用并避免不必要的数据复制。这也有助于减少存储16 位字符而不是8 位字符的固有开销。&lt;/p>
+&lt;p>除了QString之外，Qt还提供了QByteArray类来存储原始字节和传统的8位以\0&amp;rsquo;结尾的字符串。在大多数情况下，QString 是您要使用的类。它在整个QtAPI 中使用，如果您想在某个时候扩大应用程序的市场，Unicode支持可确保您的应用程序易于翻译。QByteArray适用的两种突出情况是需要存储原始二进制数据时，以及内存节省至关重要时（如在嵌入式系统中），&lt;/p>
+&lt;h3 id="初始化">初始化
+&lt;/h3>&lt;p>初始化QString的一种方法是将const char *传递给其构造函数。例如，以下代码创建了一个包含数据 “Hello”、大小为 5 的QString：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QString&lt;/span> &lt;span class="n">str&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;Hello&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>QString会使用&lt;code>fromUtf8()&lt;/code>函数将const char * 数据转换为 Unicode。
+在所有接受const char * 参数的QString函数中，const char * 被解释为经典的 C 风格以&amp;rsquo;\0&amp;rsquo;结尾的字符串。除非函数名明确表明采用其他编码，否则这类const char *参数都假定为 UTF-8 编码。
+你也可以将字符串数据作为QChar数组提供：&lt;/p>
+&lt;p>可以将字符串数据作为QChar数组提供：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">QChar&lt;/span> &lt;span class="n">data&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="mh">0x0055&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x006e&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x10e3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x03a3&lt;/span> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">QString&lt;/span> &lt;span class="nf">str&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>QString会对QChar数据进行深拷贝，所以你之后修改原数据不会产生副作用。如果不想对字符数据进行深拷贝，可以使用QStringView或QString::fromRawData()。&lt;/p>
+&lt;p>此时会采用原始数据，如果你仍然修改了数据，它在修改时自动创建副本（深拷贝）&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QRegularExpression&lt;/span> &lt;span class="nf">pattern&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="se">\u00A4&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">QChar&lt;/span> &lt;span class="n">unicode&lt;/span>&lt;span class="p">[]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mh">0x005A&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x007F&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x00A4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x0060&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mh">0x1009&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x0020&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0x0020&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">qsizetype&lt;/span> &lt;span class="n">size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">unicode&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">QChar&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">QString&lt;/span> &lt;span class="n">str&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">fromRawData&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">unicode&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">str&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">contains&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pattern&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其他访问QString的数据，可以使用 operator&lt;a class="link" href="" >&lt;/a>和at()，这和c++的string使用方式一样。&lt;/p>
+&lt;p>QString可以嵌入&amp;rsquo;\0&amp;rsquo;字符（QChar::Null）。size()函数始终返回整个字符串的大小，包括嵌入的&amp;rsquo;\0&amp;rsquo;字符。调用resize()函数后，新分配的字符具有未定义的值。要将字符串中的所有字符设置为特定值，可以使用fill()函数。&lt;/p>
+&lt;p>你也可以将字符串字面量传递给接受QString作为参数的函数，这会调用QString(const char * )构造函数。类似地，你可以使用&lt;code>qPrintable()&lt;/code>宏将QString传递给接受const char * 参数的函数，该宏会将给定的QString作为const char *返回，这等效于调用&lt;code>&amp;lt;QString&amp;gt;.toLocal8Bit().constData()&lt;/code>。&lt;/p>
+&lt;h3 id="操作字符串数据">操作字符串数据
+&lt;/h3>&lt;p>QString 提供了以下用于修改字符数据的基本函数：append()（追加）、prepend()（前置添加）、insert()（插入）、replace()（替换）和remove()（删除）等等
+如果你逐步构建一个 QString，并且事先大致知道该 QString 会包含多少字符，可以调用reserve()函数，让 QString 预先分配一定量的内存。你还可以调用capacity()函数来查看 QString 实际分配了多少内存。
+replace()和remove()函数的前两个参数分别是开始删除的位置和应删除的字符数。如果你想将某个子字符串的所有出现都替换为另一个子字符串，可以使用带有两个参数的replace()重载函数。&lt;/p>
+&lt;p>一个常见的需求是从字符串中删除空白字符（如&amp;rsquo;\n&amp;rsquo;、&amp;rsquo;\t&amp;rsquo;、&amp;rsquo; &amp;lsquo;等）。如果你想删除 QString 两端的空白字符，可以使用trimmed()函数。如果你想删除两端的空白字符，并且将字符串中多个连续的空白字符替换为单个空格字符，可以使用&lt;code>simplified()&lt;/code>函数。&lt;/p>
+&lt;p>如果你想在 QString 中查找某个特定字符或子字符串的所有出现位置，可以使用indexOf()或lastIndexOf()函数。前者从给定的索引位置开始向前搜索，后者向后搜索。如果找到字符或子字符串，这两个函数都会返回其索引位置；否则，返回 -1。例如，下面是一个典型的循环，用于查找某个特定子字符串的所有出现位置：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QString&lt;/span> &lt;span class="n">str&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;We must be &amp;lt;b&amp;gt;bold&amp;lt;/b&amp;gt;, very &amp;lt;b&amp;gt;bold&amp;lt;/b&amp;gt;&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="n">j&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">while&lt;/span> &lt;span class="p">((&lt;/span>&lt;span class="n">j&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">str&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">indexOf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;&amp;lt;b&amp;gt;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">j&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">qDebug&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;Found &amp;lt;b&amp;gt; tag at index position&amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">j&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">++&lt;/span>&lt;span class="n">j&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>QString 提供了许多用于将数字转换为字符串以及将字符串转换为数字的函数。例如arg()函数、setNum()函数、number()静态函数，以及toInt()、toDouble()等类似函数。
+要获取字符串的大写或小写版本，可以使用toUpper()或toLower()函数。
+字符串列表由QStringList类处理。你可以使用split()函数将一个字符串拆分为字符串列表，并使用QStringList::join()函数通过一个可选的分隔符将字符串列表合并为一个字符串。你还可以使用QStringList::filter()函数从字符串列表中获取包含特定子字符串或匹配特定QRegExp（正则表达式）的字符串列表。&lt;/p>
+&lt;h3 id="查询字符串数据">查询字符串数据
+&lt;/h3>&lt;p>如果你想查看一个QString是否以某个特定子字符串开头或结尾，可以使用&lt;code>startsWith()&lt;/code>或&lt;code>endsWith()&lt;/code>函数。如果你只是想检查一个QString是否包含某个特定字符或子字符串，可以使用&lt;code>contains()&lt;/code>函数。如果你想知道某个特定字符或子字符串在字符串中出现的次数，可以使用&lt;code>count()&lt;/code>函数。&lt;/p>
+&lt;p>要获取指向实际字符数据的指针，可以调用&lt;code>data()&lt;/code>或&lt;code>constData()&lt;/code>函数。这些函数返回一个指向QChar数据开头的指针。在对QString调用非const函数之前，该指针保证有效。&lt;/p>
+&lt;h3 id="比较字符串">比较字符串
+&lt;/h3>&lt;p>QStrings可以使用诸如&lt;code>operator&amp;lt;()&lt;/code>、&lt;code>operator&amp;lt;=()&lt;/code>、&lt;code>operator==()&lt;/code>、&lt;code>operator&amp;gt;=()&lt;/code>等重载运算符进行比较。请注意，这种比较完全基于字符的数字Unicode值。它速度非常快，但不符合人类的预期；在可用的情况下，&lt;code>QString::localeAwareCompare()&lt;/code>函数通常是对用户界面字符串进行排序的更好选择。&lt;/p>
+&lt;p>在类Unix平台（包括Linux、macOS和iOS）上，当Qt与ICU库链接时（通常是这样），会使用其区域设置感知排序。否则，在macOS和iOS上，&lt;code>localeAwareCompare()&lt;/code>会根据“国际”偏好面板中的“排序列表顺序”设置进行比较。在没有ICU的其他类Unix系统上，比较会回退到系统库的&lt;code>strcoll()&lt;/code>函数，当&lt;code>strcoll()&lt;/code>认为字符串相等时，再回退到QString的（不区分区域设置的）比较，如上文所述。&lt;/p>
+&lt;h3 id="在8位字符串和unicode字符串之间转换">在8位字符串和Unicode字符串之间转换
+&lt;/h3>&lt;p>QString提供了以下三个函数，用于将字符串以QByteArray的形式返回为&lt;code>const char *&lt;/code>版本：&lt;code>toUtf8()&lt;/code>、&lt;code>toLatin1()&lt;/code>和&lt;code>toLocal8Bit()&lt;/code>。&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>toLatin1()&lt;/code>返回一个Latin - 1（ISO 8859 - 1）编码的8位字符串。&lt;/li>
+&lt;li>&lt;code>toUtf8()&lt;/code>返回一个UTF - 8编码的8位字符串。UTF - 8是US - ASCII（ANSI X3.4 - 1986）的超集，通过多字节序列支持整个Unicode字符集。&lt;/li>
+&lt;li>&lt;code>toLocal8Bit()&lt;/code>返回一个使用系统本地编码的8位字符串。&lt;/li>
+&lt;/ul>
+&lt;p>为了从这些编码之一进行转换，QString提供了&lt;code>fromLatin1()&lt;/code>、&lt;code>fromUtf8()&lt;/code>和&lt;code>fromLocal8Bit()&lt;/code>函数。其他编码可通过&lt;code>QTextCodec&lt;/code>类支持。&lt;/p>
+&lt;p>如上文所述，QString提供了许多函数和运算符，使其与&lt;code>const char *&lt;/code>字符串的互操作变得容易。但这种功能是一把双刃剑：如果所有字符串都是US - ASCII或Latin - 1，它会使QString使用起来更方便，但始终存在从&lt;code>const char *&lt;/code>进行隐式转换或转换为&lt;code>const char *&lt;/code>时使用错误的8位编码的风险。为了最小化这些风险，你可以通过定义以下一些预处理器符号来关闭这些隐式转换：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>QT_NO_CAST_FROM_ASCII&lt;/code>禁用从C字符串字面量和指针到Unicode的自动转换。&lt;/li>
+&lt;li>&lt;code>QT_RESTRICTED_CAST_FROM_ASCII&lt;/code>允许从C字符和字符数组进行自动转换，但禁用从字符指针到Unicode的自动转换。&lt;/li>
+&lt;li>&lt;code>QT_NO_CAST_TO_ASCII&lt;/code>禁用从QString到C字符串的自动转换。&lt;/li>
+&lt;/ul>
+&lt;p>然后，你需要显式调用&lt;code>fromUtf8()&lt;/code>、&lt;code>fromLatin1()&lt;/code>或&lt;code>fromLocal8Bit()&lt;/code>从8位字符串构造QString，或者使用轻量级的&lt;code>QLatin1String&lt;/code>类，例如：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QString&lt;/span> &lt;span class="n">url&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">QLatin1String&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;http://www.unicode.org/&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>同样，你必须显式调用&lt;code>toLatin1()&lt;/code>、&lt;code>toUtf8()&lt;/code>或&lt;code>toLocal8Bit()&lt;/code>将QString转换为8位字符串。（其他编码可通过&lt;code>QTextCodec&lt;/code>类支持。）&lt;/p>
+&lt;h3 id="给c程序员的注意事项">给C程序员的注意事项
+&lt;/h3>&lt;p>由于C++的类型系统以及QString是隐式共享的这一事实，QStrings可能会被当作&lt;code>int&lt;/code>或其他基本类型来对待。例如：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QString&lt;/span> &lt;span class="n">Widget&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">boolToString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">bool&lt;/span> &lt;span class="n">b&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QString&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">b&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;True&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;False&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>result&lt;/code>变量是一个在栈上分配的普通变量。当调用&lt;code>return&lt;/code>时，由于我们是按值返回，复制构造函数会被调用并返回字符串的一个副本。由于隐式共享，实际上并不会发生复制。&lt;/p>
+&lt;h3 id="空字符串和null字符串的区别">空字符串和NULL字符串的区别
+&lt;/h3>&lt;p>由于历史原因，QString区分空字符串和NULL字符串。NULL字符串是使用QString的默认构造函数或通过将&lt;code>(const char *)0&lt;/code>传递给构造函数初始化的字符串。空字符串是任何长度为0的字符串。NULL字符串总是空的，但空字符串不一定是NULL：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QString&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="n">isNull&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="c1">// 返回true
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">QString&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="n">isEmpty&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="c1">// 返回true
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">QString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="n">isNull&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="c1">// 返回false
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">QString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="n">isEmpty&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="c1">// 返回true
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">QString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;abc&amp;#34;&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="n">isNull&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="c1">// 返回false
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">QString&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;abc&amp;#34;&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="n">isEmpty&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="c1">// 返回false
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>除了&lt;code>isNull()&lt;/code>函数外，所有函数都将NULL字符串与空字符串同等对待。例如，&lt;code>toUtf8().constData()&lt;/code>会为NULL字符串返回一个指向&lt;code>'\0'&lt;/code>字符的有效指针（不是&lt;code>nullptr&lt;/code> ）。我们建议始终使用&lt;code>isEmpty()&lt;/code>函数并避免使用&lt;code>isNull()&lt;/code>。&lt;/p>
+&lt;h3 id="参数格式">参数格式
+&lt;/h3>&lt;p>在可以指定参数格式的成员函数（例如&lt;code>arg()&lt;/code>、&lt;code>number()&lt;/code> ）中，参数格式可以是以下之一：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>格式&lt;/th>
+&lt;th>含义&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>e&lt;/code>&lt;/td>
+&lt;td>格式化为`[-]9.9e[+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>E&lt;/code>&lt;/td>
+&lt;td>格式化为`[-]9.9E[+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>f&lt;/code>&lt;/td>
+&lt;td>格式化为&lt;code>[-]9.9&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>g&lt;/code>&lt;/td>
+&lt;td>使用&lt;code>e&lt;/code>或&lt;code>f&lt;/code>格式，以更简洁者为准&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>G&lt;/code>&lt;/td>
+&lt;td>使用&lt;code>E&lt;/code>或&lt;code>f&lt;/code>格式，以更简洁者为准&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>参数格式中还会指定精度。对于&lt;code>'e'&lt;/code>、&lt;code>'E'&lt;/code>和&lt;code>'f'&lt;/code>格式，精度表示小数点后的位数。对于&lt;code>'g'&lt;/code>和&lt;code>'G'&lt;/code>格式，精度表示最大有效位数（省略尾随零）。&lt;/p>
+&lt;h3 id="更高效的字符串构建">更高效的字符串构建
+&lt;/h3>&lt;p>许多字符串在编译时就已知。但是，简单的构造函数&lt;code>QString(&amp;quot;Hello&amp;quot;)&lt;/code>会将字符串内容视为Latin - 1并进行复制。为避免这种情况，可以使用&lt;code>QStringLiteral&lt;/code>宏在编译时直接创建所需的数据。这样，从字面量构造QString在运行时不会产生任何开销。&lt;/p>
+&lt;p>一种效率稍低的方法是使用&lt;code>QLatin1String&lt;/code>。这个类包装一个C字符串字面量，在编译时预先计算其长度，因此与普通C字符串字面量相比，它可以更快地与QStrings进行比较并转换为QStrings。&lt;/p>
+&lt;p>使用QString的&lt;code>+&lt;/code>运算符，可以轻松地从多个子字符串构造一个复杂的字符串。你可能经常编写这样的代码：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QString&lt;/span> &lt;span class="n">foo&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">QString&lt;/span> &lt;span class="n">type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;long&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">foo&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">setText&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">QLatin1String&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;vector&amp;lt;&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">type&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">QLatin1String&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;&amp;gt;::iterator&amp;#34;&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">foo&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">startsWith&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;(&amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">type&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s">&amp;#34;) 0x&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这些字符串构造方式本身没有问题，但存在一些隐藏的低效之处。从Qt 4.6开始，可以消除这些问题。&lt;/p>
+&lt;p>首先，多次使用&lt;code>+&lt;/code>运算符通常意味着多次内存分配。当连接n个子字符串（n &amp;gt; 2）时，可能会调用多达n - 1次内存分配器。&lt;/p>
+&lt;p>在Qt 4.6中，添加了一个内部模板类&lt;code>QStringBuilder&lt;/code>以及一些辅助函数。这个类被标记为内部类，不会出现在文档中，因为不应该在代码中实例化它。它的使用是自动的，如下所述。如果你想查看它，可以在&lt;code>src/corelib/tools/qstringbuilder.cpp&lt;/code>中找到这个类。&lt;/p>
+&lt;p>&lt;code>QStringBuilder&lt;/code>使用表达式模板并重新实现了&lt;code>%&lt;/code>运算符，因此当使用&lt;code>%&lt;/code>而不是&lt;code>+&lt;/code>进行字符串连接时，多个子字符串的连接将被推迟，直到最终结果即将分配给QString。此时，已知最终结果所需的内存量。然后调用一次内存分配器来获取所需的空间，并将子字符串逐个复制到其中。&lt;/p>
+&lt;p>通过内联和减少引用计数（从&lt;code>QStringBuilder&lt;/code>创建的QString通常引用计数为1，而&lt;code>QString::append()&lt;/code>需要额外的测试），可以进一步提高效率。&lt;/p>
+&lt;p>有两种方法可以使用这种改进的字符串构建方法。一种直接的方法是在需要使用的地方包含&lt;code>QStringBuilder&lt;/code>，并在连接字符串时使用&lt;code>%&lt;/code>运算符而不是&lt;code>+&lt;/code>运算符：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;QStringBuilder&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QString&lt;/span> &lt;span class="nf">hello&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;hello&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QStringRef&lt;/span> &lt;span class="nf">el&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">hello&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QLatin1String&lt;/span> &lt;span class="nf">world&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;world&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QString&lt;/span> &lt;span class="n">message&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">hello&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">el&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">world&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">QChar&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sc">&amp;#39;!&amp;#39;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>QStringBuilder类则通过表达式模板和重新实现%操作符来解决这一问题。它推迟子字符串的拼接，直到确定最终结果所需内存量后，再一次性分配内存并完成拼接，同时通过内联和减少引用计数进一步提升效率。&lt;/p>
+&lt;p>另一种更全局的方法，也是最方便但并非完全源兼容的方法，是在.pro文件中进行如下定义：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">DEFINES *= QT_USE_QSTRINGBUILDER
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这样，+操作符在任何地方都会自动像QStringBuilder的%操作符一样工作。&lt;/p>
+&lt;p>如果采用cmake来管理的话则添加&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">启用 QStringBuilder 优化
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">target_compile_definitions(my_app PRIVATE QT_USE_QSTRINGBUILDER)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="字符串编码问题">字符串编码问题
+&lt;/h3>&lt;p>在使用vs运行qt程序遇到这样的问题&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// vs2019 界面显示为乱码
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// vs2022 直接在编译时报错：常量中有换行符
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">ui&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">label&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">setText&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;森林是否是发顺丰砍伐&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>问题的根源：&lt;strong>纯文本文件却不会记录自己采用的编码&lt;/strong>
+比如我采用UTF8编码保存文件，用某软件打开时，并不知道该用什么编码方式去打开，只能靠猜。
+以 GBK 编码文件在不同软件中的表现为例：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Linux 下的 gedit：
+默认仅支持 UTF-8，打开 GBK 文件会显示乱码。需通过修改 gedit 配置，将 GBK 添加到自动检测列表。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Windows 记事本：
+会优先尝试 UTF-8，失败后回退到本地编码（GBK），但此行为不稳定，可能误判为其他编码（如 ISO-8859-1）&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>疑问：那如果我采用 UTF8 with BOM 呢？
+BOM文件确实会通过文件头 EF BB BF 隐式声明编码，但此方式不被所有系统兼容。
+VS编译器可以识别BOM文件，但是即使知道文件的编码方式，依然有问题。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="o">//&lt;/span> &lt;span class="err">文件编码：&lt;/span>&lt;span class="n">UTF&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">8&lt;/span> &lt;span class="n">with&lt;/span> &lt;span class="n">BOM&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">const&lt;/span> &lt;span class="n">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="nb">str&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;我是汉字&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">//&lt;/span> &lt;span class="err">实际链路：&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">//&lt;/span> &lt;span class="mf">1.&lt;/span> &lt;span class="err">编译器按&lt;/span> &lt;span class="n">UTF&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">8&lt;/span> &lt;span class="err">解析源码&lt;/span> &lt;span class="err">→&lt;/span> &lt;span class="s2">&amp;#34;我是汉字&amp;#34;&lt;/span> &lt;span class="err">的&lt;/span> &lt;span class="n">UTF&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">8&lt;/span> &lt;span class="err">字节为&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="mh">0xE6&lt;/span>&lt;span class="o">...&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">//&lt;/span> &lt;span class="mf">2.&lt;/span> &lt;span class="err">编译器将字符串隐式转码为本地编码（&lt;/span>&lt;span class="n">GBK&lt;/span>&lt;span class="err">）→&lt;/span> &lt;span class="err">字节变为&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="mh">0xCE&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mh">0xD2&lt;/span>&lt;span class="o">...&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">//&lt;/span> &lt;span class="err">结果：&lt;/span>&lt;span class="nb">str&lt;/span> &lt;span class="err">的内容是&lt;/span> &lt;span class="n">GBK&lt;/span> &lt;span class="err">编码，而非&lt;/span> &lt;span class="n">UTF&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">8&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>字符串常量会经过2次解析，原因在于 cl.exe 的 /execution-charset 默认值为本地代码页（如 GBK），导致 char* 字符串最终被转码为 GBK。&lt;/p>
+&lt;p>GBK编码下的 const char * str = &amp;ldquo;我是汉字&amp;rdquo;
+等价于
+const char * str = &amp;ldquo;\xce\xd2\xca\xc7\xba\xba\xd7\xd6&amp;rdquo;;&lt;/p>
+&lt;p>前文提到，QString 默认选择Latin-1，\xce\xd2\xca\xc7\xba\xba\xd7\xd6则会被当作Latin-1编码，再转为unicode，所以最后显示为乱码。&lt;/p>
+&lt;p>&lt;strong>解决方式&lt;/strong>：核心是要告诉 QString 你的str是何种编码&lt;/p>
+&lt;p>场景：UTF-8 with BOM文件，之前出错的原因是因为字符串常量会经过2次解析，我们可以使用QStringLiteral 跳过第2次解析。（这个适合静态字符串，即已经确定字符串的内容）
+&lt;img src="https://sfw003.github.io/p/qt-core_02_container_and_algorithm/image/c2b2ca422f4c496f819f7a7917d1d18c.png"
+width="816"
+height="183"
+srcset="https://sfw003.github.io/p/qt-core_02_container_and_algorithm/image/c2b2ca422f4c496f819f7a7917d1d18c_hu_2f7e5156029d3a2b.png 480w, https://sfw003.github.io/p/qt-core_02_container_and_algorithm/image/c2b2ca422f4c496f819f7a7917d1d18c_hu_da54049174d2bd38.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="445"
+data-flex-basis="1070px"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>如果文件为UTF-8编码，没有BOM，上面操作则会出问题，因为没有bom，编译器不知道文件的编码方式，只能采用默认的。因此为了统一，可以开启vs编译器的 /utf8选项，此时编译器会默认采用utf-8来解码。
+&lt;img src="https://sfw003.github.io/p/qt-core_02_container_and_algorithm/image/f977b34a5c044b1bb1ed9f3902b7e6e5.png"
+width="818"
+height="549"
+srcset="https://sfw003.github.io/p/qt-core_02_container_and_algorithm/image/f977b34a5c044b1bb1ed9f3902b7e6e5_hu_d90e679978986967.png 480w, https://sfw003.github.io/p/qt-core_02_container_and_algorithm/image/f977b34a5c044b1bb1ed9f3902b7e6e5_hu_3806e7e177565f71.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="148"
+data-flex-basis="357px"
+>&lt;/p>&lt;/blockquote>
+&lt;p>如果需要动态转换，参考&lt;strong>在8位字符串和Unicode字符串之间转换&lt;/strong>章节&lt;/p>
+&lt;h2 id="其他">其他
+&lt;/h2>&lt;p>QList， QVector， QMap等等，这些去看一下成员函数，就知道如何使用了。&lt;/p>
+&lt;h3 id="qvariant">QVariant
+&lt;/h3>&lt;p>Qt 的容器类，我个人认为最重点的就是QString和QVariant。&lt;/p>
+&lt;p>QVariant类类似于C++的联合（union）数据类型，它不仅能够保存很多Qt类型的值，包括QColor、QBrush、QFont、QPen、QRect、QString和QSize等，也能够存放Qt的容器类型的值。Qt的很多功能都是建立在QVariant基础上的，如Qt的对象属性及数据库功能等。&lt;/p>
+&lt;p>之后再写&lt;/p></description></item><item><title>【Qt Core 03】事件机制</title><link>https://sfw003.github.io/p/qt-core_03_event_mechanism/</link><pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/qt-core_03_event_mechanism/</guid><description>&lt;blockquote>
+&lt;p>以下内容基于Qt 5.15 LTS 官方文档整理&lt;/p>&lt;/blockquote>
+&lt;h2 id="事件驱动">事件驱动
+&lt;/h2>&lt;ul>
+&lt;li>&lt;strong>事件&lt;/strong>：事件是用户和应用软件间产生的一个交互操作，由用户操作产生或者系统内部产生，通过事件循环对事件进行处理，事件也可以用来在对象间进行信息交互。&lt;/li>
+&lt;li>&lt;strong>事件驱动架构&lt;/strong>(Event-Driven Architecture)是一种用于设计应用的软件架构和模型，程序的执行流由外部事件来决定
+&lt;ul>
+&lt;li>&lt;strong>事件队列&lt;/strong>(event queue)：接收事件的入口，存储待处理事件&lt;/li>
+&lt;li>&lt;strong>分发器&lt;/strong>(event mediator)：将不同的事件分发到不同的业务逻辑单元&lt;/li>
+&lt;li>&lt;strong>事件通道&lt;/strong>(event channel)：分发器与处理器之间的联系渠道&lt;/li>
+&lt;li>&lt;strong>事件处理器&lt;/strong>(event processor)：实现业务逻辑，处理完成后会发出事件，触发下一步操作&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://sfw003.github.io/p/qt-core_03_event_mechanism/image/bd25449331d44030a8f9dff0997be04d.png"
+width="832"
+height="620"
+srcset="https://sfw003.github.io/p/qt-core_03_event_mechanism/image/bd25449331d44030a8f9dff0997be04d_hu_db7c373c7b076c1e.png 480w, https://sfw003.github.io/p/qt-core_03_event_mechanism/image/bd25449331d44030a8f9dff0997be04d_hu_59adb75df97c02c3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="322px"
+>
+事件驱动模型的特点:&lt;/p>
+&lt;ul>
+&lt;li>可维护性高：事件驱动模型使得应用程序的代码结构更加清晰，并且易于维护和调试。每个事件都有相应的处理函数，使得代码更加模块化&lt;/li>
+&lt;li>可扩展性强：采用事件驱动模型可以方便地添加新的事件处理函数，并且可以轻松地扩展应用程序的功能。&lt;/li>
+&lt;li>并发性好：事件驱动模型可以方便管理多个事件，并且可以在处理事件时执行异步操作,使得应用程序具有更好的并发性&lt;/li>
+&lt;li>可移植性好：采用事件驱动模型可以使应用程序更容易地在不同的操作系统和平台上移植，从而提高了应用程序的可移植性。&lt;/li>
+&lt;/ul>
+&lt;h2 id="qt事件框架">Qt事件框架
+&lt;/h2>&lt;p>&lt;img src="https://sfw003.github.io/p/qt-core_03_event_mechanism/image/ad63b1a1f0f54603aaf7cf9777720e0f.png"
+width="1112"
+height="339"
+srcset="https://sfw003.github.io/p/qt-core_03_event_mechanism/image/ad63b1a1f0f54603aaf7cf9777720e0f_hu_6a54b5e5c5499332.png 480w, https://sfw003.github.io/p/qt-core_03_event_mechanism/image/ad63b1a1f0f54603aaf7cf9777720e0f_hu_df942e58c7580822.png 1024w"
+loading="lazy"
+alt=" "
+class="gallery-image"
+data-flex-grow="328"
+data-flex-basis="787px"
+>&lt;/p>
+&lt;ul>
+&lt;li>用户操作与 GUI 应用程序交互之后,系统内核获取用户动作，产生 OS 消息&lt;/li>
+&lt;li>系统内核会将 OS 消息传递给 Qt 事件处理框架,会转换 事件对象 QEvent,并讲转换后的事件发送给QObject。&lt;/li>
+&lt;li>QObject 调用 QObject::event 函数来接收事件，并分发，默认是在当前调用该事件的组件对象接收，若是该组件对象不做任何操作，则可以转给它的父对象来接收。最后会按照事件类型来调用不同的事件处理函数&lt;/li>
+&lt;li>调用 事件处理函数,在事件处理函数中可进行信号的发送&lt;/li>
+&lt;li>调用 槽函数(信号需要与槽函数进行关联)&lt;/li>
+&lt;/ul>
+&lt;h2 id="自定义事件处理">自定义事件处理
+&lt;/h2>&lt;p>Qt 用户自定义处理事件方式&lt;/p>
+&lt;p>按照 Qt 事件处理流程,用户自定义处理事件方式如下:&lt;/p>
+&lt;ul>
+&lt;li>重写特定事件函数mousePressEvent()，keyPressEvent()，paintEvent()&lt;/li>
+&lt;li>重写实现 Q0bject::event0&lt;/li>
+&lt;li>安装事件过滤器&lt;/li>
+&lt;li>在 QApplication 上安装事件过滤器&lt;/li>
+&lt;li>重新实现 QApplication 的 notify()方法&lt;/li>
+&lt;/ul>
+&lt;p>在实际应用的过程中,采用 重写特定事件函数 和 安装事件过滤器 的方式居多
+&lt;img src="https://sfw003.github.io/p/qt-core_03_event_mechanism/image/1866ba96870f4feb84a0b0fecf9beb8b.png"
+width="1149"
+height="184"
+srcset="https://sfw003.github.io/p/qt-core_03_event_mechanism/image/1866ba96870f4feb84a0b0fecf9beb8b_hu_8883731b8f9b4f58.png 480w, https://sfw003.github.io/p/qt-core_03_event_mechanism/image/1866ba96870f4feb84a0b0fecf9beb8b_hu_a7fccc7ba0325f28.png 1024w"
+loading="lazy"
+alt=" "
+class="gallery-image"
+data-flex-grow="624"
+data-flex-basis="1498px"
+>
+其实还有一种方式：自定义事件（继承 QEvent 并发送）
+原理：应用程序可通过QCoreApplication::sendEvent()和QCoreApplication::postEvent()发送自定义事件。sendEvent()会立即处理事件，返回时事件已被处理；postEvent()将事件放入队列，在 Qt 主事件循环下次运行时进行调度，且会对一些事件（如多个resize事件、paint事件）进行优化。在对象初始化期间常使用postEvent()，因为对象初始化完成后事件通常会很快被调度。创建自定义事件时，需定义大于QEvent::User的事件编号，可能还需子类化QEvent来传递特定信息。&lt;/p>
+&lt;h3 id="重写特定事件函数">重写特定事件函数
+&lt;/h3>&lt;p>重写特定事件函数是最常用的自定义事件处理方式，下面是案例&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="n">CustomButton&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">mousePressEvent&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">QMouseEvent&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">e&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 自定义处理
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">event&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">button&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">Qt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">LeftButton&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// handle left mouse button here
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">QPushButton&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">mousePressEvent&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">e&lt;/span>&lt;span class="p">);&lt;/span>&lt;span class="c1">// 调用父类的 mousePressEvent 函数
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这里有1点注意：&lt;strong>在结束时需要调用父类的事件处理函数，如果是故意不写，也应该加上注释&lt;/strong>&lt;/p>
+&lt;p>如果不加，会导致事件传播链中断：
+Qt 的事件处理机制中，若子类重写事件函数后未调用父类实现，相当于隐式调用了 event-&amp;gt;accept()，事件将停止传播。这可能导致父组件或上层逻辑无法响应事件。
+示例：若按钮被放置在父窗口的特定区域，父窗口可能依赖于事件传播实现拖拽等功能，但事件被截断后这些功能将失效。&lt;/p>
+&lt;p>&lt;strong>qt的事件忽略&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="n">QEvent&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">ignore&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="c1">// 表示当前对象忽略事件，该事件会继续传递给父对象
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="n">QEvent&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">accept&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="c1">// 表示事件在当前对象中已经处理，不会继续传递到父对象
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://sfw003.github.io/p/qt-core_03_event_mechanism/image/e218c3f678d04129a71485d7e06e6d49.png"
+width="662"
+height="318"
+srcset="https://sfw003.github.io/p/qt-core_03_event_mechanism/image/e218c3f678d04129a71485d7e06e6d49_hu_45a95566262ea11f.png 480w, https://sfw003.github.io/p/qt-core_03_event_mechanism/image/e218c3f678d04129a71485d7e06e6d49_hu_35e352203f1ece67.png 1024w"
+loading="lazy"
+alt=" "
+class="gallery-image"
+data-flex-grow="208"
+data-flex-basis="499px"
+>&lt;/p>
+&lt;h3 id="qt的事件过滤器">Qt的事件过滤器
+&lt;/h3>&lt;ul>
+&lt;li>Qt事件过滤器是一种机制，用于在Qt应用程序中拦截、处理和转发事件。&lt;/li>
+&lt;li>事件过滤器的作用是在 目标对象接收事件之前，对事件进行拦截和处理。&lt;/li>
+&lt;li>通过安装事件过滤器，可以对目标对象的事件进行修改、过滤、转发或者记录，这样可以很方便地实现一些自定义的功能。&lt;/li>
+&lt;li>事件过滤器的优点是可以在不修改目标对象的代码的情况下，对其进行功能扩充&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://sfw003.github.io/p/qt-core_03_event_mechanism/image/d8a6ddf1d755433ab28f9ec047334b4a.png"
+width="767"
+height="240"
+srcset="https://sfw003.github.io/p/qt-core_03_event_mechanism/image/d8a6ddf1d755433ab28f9ec047334b4a_hu_76da61c1baf04ad3.png 480w, https://sfw003.github.io/p/qt-core_03_event_mechanism/image/d8a6ddf1d755433ab28f9ec047334b4a_hu_abe63253d6f8c452.png 1024w"
+loading="lazy"
+alt=" "
+class="gallery-image"
+data-flex-grow="319"
+data-flex-basis="767px"
+>&lt;/p>
+&lt;p>事件过滤器的使用&lt;/p>
+&lt;ol>
+&lt;li>给目标对象安装过滤器,这里调用 installEventFilter 函数&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">ui&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">textEdit&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">installEventFilter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 在父窗口中监控textEdit的事件[1](@ref)
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol start="3">
+&lt;li>在事件过滤器对象中实现事件过滤器逻辑，这里需要重写 eventFilter 函数&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">bool&lt;/span> &lt;span class="n">Widget&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">eventFilter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">QObject&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">obj&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">QEvent&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">event&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">obj&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">ui&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">textEdit&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">event&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">QEvent&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Wheel&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 拦截滚轮事件，阻止传递
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nb">true&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 其他事件交给默认处理
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="n">QWidget&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">eventFilter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">obj&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">event&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//return true：事件被拦截，不再传递给目标对象。
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//return false：事件继续传递至目标对象或其父类
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 自定义过滤器类
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">class&lt;/span> &lt;span class="nc">KeyMouseFilter&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">QObject&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">protected&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">bool&lt;/span> &lt;span class="n">eventFilter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">QObject&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">obj&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">QEvent&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">event&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">override&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">event&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">QEvent&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">KeyPress&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QKeyEvent&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">keyEvent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">static_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">QKeyEvent&lt;/span>&lt;span class="o">*&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">event&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">qDebug&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;Key pressed:&amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">keyEvent&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nb">true&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 拦截按键
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="nf">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">event&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">type&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">QEvent&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">MouseButtonPress&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">qDebug&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;Mouse clicked on&amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">obj&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">objectName&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nb">false&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 安装到控件
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">KeyMouseFilter&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">filter&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">KeyMouseFilter&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">ui&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">lineEdit&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">installEventFilter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">filter&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>【Qt 环境搭建 01】cmake搭建Qt VS2019开发环境</title><link>https://sfw003.github.io/p/qt-env-setup-01/</link><pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/qt-env-setup-01/</guid><description>&lt;h2 id="准备">准备
+&lt;/h2>&lt;p>编码：vscode
+debug: vs2019 + Qt vs Tools 插件
+c++包管理工具：vcpkg
+项目构建：cmake&lt;/p>
+&lt;p>安装好上述工具后。&lt;/p>
+&lt;h3 id="第一步安装qt5-库">第一步：安装Qt5 库
+&lt;/h3>&lt;p>使用vcpkg&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">PS D:&lt;span class="se">\c&lt;/span>ppsoft&lt;span class="se">\v&lt;/span>cpkg&amp;gt; .&lt;span class="se">\v&lt;/span>cpkg.exe install qt5
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="第二步编写cmakeliststxt">第二步：编写CMakeLists.txt
+&lt;/h3>&lt;p>项目结构：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">PS D:\MyProject\qt-code\Qt5Demo&amp;gt; tree /F
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">卷 系统文件 的文件夹 PATH 列表
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">卷序列号为 67C3-157C
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">D:.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ CMakeLists.txt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ main.cpp
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ mainwindow.cpp
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ mainwindow.h
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ mainwindow.ui
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ resource.qrc
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">└─resource
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> └─image
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>参考下面的案例&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="nf">cmake_minimum_required&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">VERSION&lt;/span> &lt;span class="mf">3.10&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="err">#&lt;/span>&lt;span class="n">cmake版本最低3&lt;/span>&lt;span class="mf">.10&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp"># 设置CMAKE工具链
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="nf">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">CMAKE_TOOLCHAIN_FILE&lt;/span> &lt;span class="s">&amp;#34;D:/cppsoft/vcpkg/scripts/buildsystems/vcpkg.cmake&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp"># 获取当前子CMake文件所在目录的完整路径
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="nf">get_filename_component&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">CURRENT_DIR_PATH&lt;/span> &lt;span class="s">&amp;#34;${CMAKE_CURRENT_LIST_DIR}&amp;#34;&lt;/span> &lt;span class="n">ABSOLUTE&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp"># 从完整路径中提取目录名称
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="nf">get_filename_component&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">CURRENT_DIR_NAME&lt;/span> &lt;span class="s">&amp;#34;${CURRENT_DIR_PATH}&amp;#34;&lt;/span> &lt;span class="n">NAME&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp"># 设置项目名称
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="nf">project&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="err">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">CURRENT_DIR_NAME&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">set&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">CMAKE_CXX_STANDARD&lt;/span> &lt;span class="mi">11&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">MSVC&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">add_compile_options&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="nl">Zc&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="n">__cplusplus&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">endif&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp"># 自动包含当前目录
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="nf">SET&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">CMAKE_INCLUDE_CURRENT_DIR&lt;/span> &lt;span class="n">ON&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp"># 自动生成moc文件
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="nf">SET&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">CMAKE_AUTOMOC&lt;/span> &lt;span class="n">ON&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp"># 自动生成rcc文件
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="nf">SET&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">CMAKE_AUTORCC&lt;/span> &lt;span class="n">ON&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp"># 自动生成uic文件
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="nf">SET&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">CMAKE_AUTOUIC&lt;/span> &lt;span class="n">ON&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp"># 查找Qt5库
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="nf">find_package&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Qt5&lt;/span> &lt;span class="n">COMPONENTS&lt;/span> &lt;span class="n">Core&lt;/span> &lt;span class="n">Widgets&lt;/span> &lt;span class="n">Gui&lt;/span> &lt;span class="n">REQUIRED&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">file&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GLOB&lt;/span> &lt;span class="n">UI_FILES&lt;/span> &lt;span class="s">&amp;#34;${CMAKE_CURRENT_SOURCE_DIR}/*.ui&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">file&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GLOB&lt;/span> &lt;span class="n">RCC_FILES&lt;/span> &lt;span class="s">&amp;#34;${CMAKE_CURRENT_SOURCE_DIR}/*qrc&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">file&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GLOB&lt;/span> &lt;span class="n">HEADER_FILES&lt;/span> &lt;span class="s">&amp;#34;${CMAKE_CURRENT_SOURCE_DIR}/*.h&amp;#34;&lt;/span> &lt;span class="s">&amp;#34;${CMAKE_CURRENT_BINARY_DIR}/*.h&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">file&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">GLOB&lt;/span> &lt;span class="n">CPP_FILES&lt;/span> &lt;span class="s">&amp;#34;${CMAKE_CURRENT_SOURCE_DIR}/*.cpp&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">qt5_wrap_ui&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">UI_HEADERS&lt;/span> &lt;span class="err">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">UI_FILES&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">source_group&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Form Files&amp;#34;&lt;/span> &lt;span class="n">FILES&lt;/span> &lt;span class="err">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">UI_FILES&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">source_group&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Resource Files&amp;#34;&lt;/span> &lt;span class="n">FILES&lt;/span> &lt;span class="err">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">RCC_FILES&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp"># win32表示关闭控制台窗口
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="nf">add_executable&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="err">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">PROJECT_NAME&lt;/span>&lt;span class="p">}&lt;/span> &lt;span class="n">WIN32&lt;/span> &lt;span class="err">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">HEADER_FILES&lt;/span>&lt;span class="p">}&lt;/span> &lt;span class="err">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">CPP_FILES&lt;/span>&lt;span class="p">}&lt;/span> &lt;span class="err">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">UI_FILES&lt;/span>&lt;span class="p">}&lt;/span> &lt;span class="err">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">RCC_FILES&lt;/span>&lt;span class="p">})&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp"># 链接库
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="nf">target_link_libraries&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="err">$&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">PROJECT_NAME&lt;/span>&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Qt5&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Widgets&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Qt5&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Core&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Qt5&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Gui&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="第三步编写批处理文件">第三步：编写批处理文件
+&lt;/h3>&lt;p>编写好CMakeLists.txt后可以使用cmake构建，但为了更方便控制，我们可以再编写一个批处理文件来运行cmake命令
+案例：这里call后需要改为你的vs2019的vcvarsamd64_x86.bat路径&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="n">mkdir&lt;/span> &lt;span class="n">build&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">cd&lt;/span> &lt;span class="n">build&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">call&lt;/span> &lt;span class="s">&amp;#34;C:\Program Files (x86)\Microsoft Visual Studio&lt;/span>&lt;span class="se">\201&lt;/span>&lt;span class="s">9\Professional\VC\Auxiliary\Build&lt;/span>&lt;span class="se">\v&lt;/span>&lt;span class="s">cvarsamd64_x86.bat&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">cmake&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">G&lt;/span> &lt;span class="s">&amp;#34;Visual Studio 16 2019&amp;#34;&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">A&lt;/span> &lt;span class="n">x64&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">DCMAKE_BUILD_TYPE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">Debug&lt;/span> &lt;span class="p">..&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">cd&lt;/span> &lt;span class="p">..&lt;/span>&lt;span class="o">/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">pause&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>运行批处理文件后，便可以再build目录下找到 .sln （vs工程）
+这里打开后可能还需要将项目设置为启动项。
+&lt;img src="https://sfw003.github.io/p/qt-env-setup-01/image/36bc970b270a4a0eab3f2e0db7ee847b.png"
+width="531"
+height="513"
+srcset="https://sfw003.github.io/p/qt-env-setup-01/image/36bc970b270a4a0eab3f2e0db7ee847b_hu_e277951e000b238c.png 480w, https://sfw003.github.io/p/qt-env-setup-01/image/36bc970b270a4a0eab3f2e0db7ee847b_hu_b6d20a577f36efc.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="103"
+data-flex-basis="248px"
+>
+到这里一个Qt 工程就创建好了。&lt;/p>
+&lt;h2 id="其他">其他
+&lt;/h2>&lt;h3 id="配置qt-vs-tools">配置Qt VS Tools
+&lt;/h3>&lt;p>再vs2019扩展商店里搜索Qt，下载下面这个插件（如果没有魔法，连不上扩展商店，找其他方式下载）
+&lt;img src="https://sfw003.github.io/p/qt-env-setup-01/image/1dc9b157a6c042d784e208ea7215077d.png"
+width="940"
+height="289"
+srcset="https://sfw003.github.io/p/qt-env-setup-01/image/1dc9b157a6c042d784e208ea7215077d_hu_aea772e243b687e8.png 480w, https://sfw003.github.io/p/qt-env-setup-01/image/1dc9b157a6c042d784e208ea7215077d_hu_4927b4e18fa856cb.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="325"
+data-flex-basis="780px"
+>
+点击Qt VS Tools的options
+&lt;img src="https://sfw003.github.io/p/qt-env-setup-01/image/1f2993de38cf41748eb2663fc84fe4be.png"
+width="527"
+height="231"
+srcset="https://sfw003.github.io/p/qt-env-setup-01/image/1f2993de38cf41748eb2663fc84fe4be_hu_b4d10cce438c5540.png 480w, https://sfw003.github.io/p/qt-env-setup-01/image/1f2993de38cf41748eb2663fc84fe4be_hu_841deb606fef185d.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="228"
+data-flex-basis="547px"
+>
+将这些选项设为true（如果你之后不想使用Qt Designer也可以不使用）
+&lt;img src="https://sfw003.github.io/p/qt-env-setup-01/image/5e9716a4f6994fb6b3f79c18c11441fa.png"
+width="455"
+height="231"
+srcset="https://sfw003.github.io/p/qt-env-setup-01/image/5e9716a4f6994fb6b3f79c18c11441fa_hu_17ca08be41836025.png 480w, https://sfw003.github.io/p/qt-env-setup-01/image/5e9716a4f6994fb6b3f79c18c11441fa_hu_e3a47116a8d1962c.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="196"
+data-flex-basis="472px"
+>&lt;/p>
+&lt;p>此时便可以使用Qt Designer打开 .ui 文件
+（如果打开失败，原因估计是找不到Qt Desinger，右键 &amp;ndash;&amp;gt; 打开方式，自己配置一个Qt Desinger，这里是Qt Desinger需要自己去官网或其他地方下载）
+&lt;img src="https://sfw003.github.io/p/qt-env-setup-01/image/07c4407f00a84a18b78219c8b19abd7a.png"
+width="504"
+height="98"
+srcset="https://sfw003.github.io/p/qt-env-setup-01/image/07c4407f00a84a18b78219c8b19abd7a_hu_fb40d7e690ae6d6c.png 480w, https://sfw003.github.io/p/qt-env-setup-01/image/07c4407f00a84a18b78219c8b19abd7a_hu_2d27148e6ab03327.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="514"
+data-flex-basis="1234px"
+>&lt;/p>
+&lt;h3 id="qt-源码调试配置">qt 源码调试配置
+&lt;/h3>&lt;p>在开发过程中，如果想通过断点进入到 qt 源码中，我们可以配置pdb文件。&lt;/p>
+&lt;blockquote>
+&lt;p>PDB文件（Program Database File）是Microsoft Visual Studio编译生成的调试信息文件，主要用于存储程序的符号信息（如函数名、变量名、行号等），使调试器能将机器代码与源代码对应，从而辅助开发人员定位问题。&lt;/p>&lt;/blockquote>
+&lt;p>右键点击vs 2019 解决方案 进入属性中,添加相应的源码路径&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/qt-env-setup-01/image/254b47079ce04f22bcd8eda084006fd2.png"
+width="1172"
+height="803"
+srcset="https://sfw003.github.io/p/qt-env-setup-01/image/254b47079ce04f22bcd8eda084006fd2_hu_307bf76f84dcd7ed.png 480w, https://sfw003.github.io/p/qt-env-setup-01/image/254b47079ce04f22bcd8eda084006fd2_hu_ee6c392abfa69ee3.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="145"
+data-flex-basis="350px"
+>
+然后设置pdb文件，pdb文件需要使用Debug编译生成。由于我们使用vcpkg安装了qt5，它已经生成了pdb文件&lt;/p>
+&lt;p>路径：D:\cppsoft\vcpkg\installed\x64-windows\debug\bin
+点击工具 &amp;ndash;&amp;gt; 选项 &amp;ndash;&amp;gt; 调试 &amp;mdash;&amp;gt; 符号&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/qt-env-setup-01/image/ef43e4f01c6f492db202d37232683393.png"
+width="1302"
+height="1067"
+srcset="https://sfw003.github.io/p/qt-env-setup-01/image/ef43e4f01c6f492db202d37232683393_hu_176799270869bc66.png 480w, https://sfw003.github.io/p/qt-env-setup-01/image/ef43e4f01c6f492db202d37232683393_hu_e196a8d7162c8911.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="122"
+data-flex-basis="292px"
+>&lt;/p>
+&lt;p>到这里就可以通过断点进入源码。&lt;/p>
+&lt;h2 id="疑问">疑问
+&lt;/h2>&lt;h3 id="初始的ui-qrc文件如何生成">初始的.ui, .qrc文件如何生成？
+&lt;/h3>&lt;p>Qt Creator 左上角新建 .ui文件，qrc同理使用 Qt Resource Editor&lt;/p>
+&lt;p>当然可以自己手动编写ui文件&lt;/p></description></item></channel></rss>

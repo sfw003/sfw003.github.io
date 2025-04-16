@@ -1,0 +1,1785 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>计算机网络 on 石某人</title><link>https://sfw003.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</link><description>Recent content in 计算机网络 on 石某人</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>石某人</copyright><lastBuildDate>Wed, 02 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://sfw003.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/index.xml" rel="self" type="application/rss+xml"/><item><title>传输层</title><link>https://sfw003.github.io/p/transport-layer/</link><pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/transport-layer/</guid><description>&lt;h2 id="传输层">传输层
+&lt;/h2>&lt;img src="image/image-20240527151114201.png" alt="image-20240527151114201" style="zoom: 67%;" />
+&lt;h2 id="端口号">端口号
+&lt;/h2>&lt;p>端口的由来：&lt;/p>
+&lt;p>在操作系统中，不同的进程是通过进程标识符(pid)进行区分。不同的操作系统使用的pid的格式不尽相同，但在网络里我们需要采用统一的格式进行区分。因此端口号诞生了。它采用统一的格式来标识进程。&lt;/p>
+&lt;p>端口号的格式：TCP/IP： 16bit位的正整数&lt;/p>
+&lt;p>c++：&lt;code>uint16_t&lt;/code>&lt;/p>
+&lt;p>在TCP/IP协议中, 用 &amp;ldquo;源IP&amp;rdquo;, &amp;ldquo;源端口号&amp;rdquo;, &amp;ldquo;目的IP&amp;rdquo;, &amp;ldquo;目的端口号&amp;rdquo;, &amp;ldquo;协议号&amp;rdquo; 这样一个五元组来标识一个通信。&lt;/p>
+&lt;h3 id="端口的分类">端口的分类
+&lt;/h3>&lt;p>服务端使用的端口号&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>熟知端口号: 里面一些端口固定绑定某些应用程序：1-1023&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align: center">应用程序&lt;/th>
+&lt;th style="text-align: center">HTTP&lt;/th>
+&lt;th style="text-align: center">SSH&lt;/th>
+&lt;th style="text-align: center">FTP&lt;/th>
+&lt;th>&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align: center">端口号&lt;/td>
+&lt;td style="text-align: center">80&lt;/td>
+&lt;td style="text-align: center">22&lt;/td>
+&lt;td style="text-align: center">21&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;/li>
+&lt;li>
+&lt;p>登记端口号：&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>客户端端口号：49152-65535，客户端运行时，操作系统动态绑定，通信时自动绑定，通信结束自动回收&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="端口号的理解">端口号的理解
+&lt;/h3>&lt;p>传输层的协议由TCP/UDP，这里2个协议能公用一个端口号？&lt;strong>可以&lt;/strong>&lt;/p>
+&lt;p>首先我们要理解端口号对于传输层的作用：区分同一个主机上不同应用程序的数据包&lt;/p>
+&lt;p>当主机收到一个IP数据包，根据IP数据包里的协议号分辨是TCP还是UDP，然后根据这一信息，交给系统中的TCP或UDP模块进行处理，然后TCP或UDP模块再端口号转发给对应的应用程序。&lt;/p>
+&lt;h2 id="udpuser-datagram-protocol">UDP(user datagram protocol)
+&lt;/h2>&lt;p>用户数据报协议&lt;/p>
+&lt;h3 id="udp特点">UDP特点：
+&lt;/h3>&lt;ul>
+&lt;li>无连接&lt;/li>
+&lt;li>不可靠，尽最大努力交付，因此数据可能丢失、乱序&lt;/li>
+&lt;li>面向&lt;strong>数据报&lt;/strong>，每次读取都是完整的报文，且发多少个数据报，就要收到多少个数据报&lt;/li>
+&lt;li>&lt;strong>UDP没有拥塞控制&lt;/strong>，因此网络拥塞不会降低发送速率&lt;/li>
+&lt;li>UDP支持一对一，一对多，多对一和多对多通信&lt;/li>
+&lt;li>UDP首部开销小：8字节&lt;/li>
+&lt;li>UDP是&lt;strong>全双工&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;h3 id="udp缓存区">UDP缓存区
+&lt;/h3>&lt;ul>
+&lt;li>UDP没有真正意义上的 &lt;strong>发送缓冲区&lt;/strong>. 调用sendto会直接交给内核, 由内核将数据传给网络层协议进行后&lt;/li>
+&lt;/ul>
+&lt;p>续的传输动作;&lt;/p>
+&lt;ul>
+&lt;li>UDP具有接收缓冲区. 但是这个接收缓冲区不能保证收到的UDP报的顺序和发送UDP报的顺序一致; 如果&lt;/li>
+&lt;/ul>
+&lt;p>缓冲区满了, 再到达的UDP数据就会被丢弃，而且也不会通知你。&lt;/p>
+&lt;h3 id="udp格式">UDP格式
+&lt;/h3>&lt;ul>
+&lt;li>源端口号（选用）：在需要对方回信时选用，不需要则全0&lt;/li>
+&lt;li>目的端口号：终点交付报文时必用&lt;/li>
+&lt;li>长度：整个报文长度(大小), 最小为8字节&lt;/li>
+&lt;li>校验：检查报文传输中是否损坏&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://sfw003.github.io/p/transport-layer/image/image-20240508195906910.png"
+width="970"
+height="364"
+srcset="https://sfw003.github.io/p/transport-layer/image/image-20240508195906910_hu_a19907947e20e858.png 480w, https://sfw003.github.io/p/transport-layer/image/image-20240508195906910_hu_856ff1d29ad6056f.png 1024w"
+loading="lazy"
+alt="image-20240508195906910"
+class="gallery-image"
+data-flex-grow="266"
+data-flex-basis="639px"
+>&lt;/p>
+&lt;p>如果我们需要传输的数据超过64K, 2^16bit, 则需要手动拆解数据。&lt;/p>
+&lt;h3 id="udp的应用场景">UDP的应用场景
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>NFS: 网络文件系统&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>TFTP: 简单文件传输协议&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>DHCP: 动态主机配置协议&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>BOOTP: 启动协议(用于无盘设备启动)&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>DNS: 域名解析协议&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>直播，视频&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="udp的使用">UDP的使用
+&lt;/h3>&lt;p>在Linux系统中，对UDP头部的定义&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">udphdr&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">__be16&lt;/span> &lt;span class="n">source&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* 源端口 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">__be16&lt;/span> &lt;span class="n">dest&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* 目标端口 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">__be16&lt;/span> &lt;span class="n">len&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* UDP数据包长度 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">__sum16&lt;/span> &lt;span class="n">check&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* 校验和 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>对UDP的缓存区的定义&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="n">sk_buff&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">sk_buff&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">next&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* 下一个缓冲区 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">sk_buff&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">prev&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* 上一个缓冲区 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">sk_buff_head&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">list&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* 缓冲区链表 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">sock&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">sk&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* 相关的套接字 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* 数据指针 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">len&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* 数据长度 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">data_len&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* 数据部分长度 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">unsigned&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">truesize&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* 真实大小 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">udphdr&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">udp&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="cm">/* UDP头指针 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* 其他成员 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="tcptransmission-control-protocol">TCP(Transmission Control Protocol)
+&lt;/h2>&lt;p>传输控制协议&lt;/p>
+&lt;h3 id="tcp的特点">TCP的特点
+&lt;/h3>&lt;ul>
+&lt;li>基于连接&lt;/li>
+&lt;li>可靠交付（无差错，不丢失，不重复）&lt;/li>
+&lt;li>面向字节流&lt;/li>
+&lt;li>全双工&lt;/li>
+&lt;li>一对一通信&lt;/li>
+&lt;/ul>
+&lt;h3 id="tcp的格式">TCP的格式
+&lt;/h3>&lt;p>TCP的数据我们称为数据段（报文段）&lt;/p>
+&lt;p>注：同一份数据，在传输层称为数据段，网络层称为数据包，数据链路层称为数据帧&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/transport-layer/image/image-20240510085136785.png"
+width="1008"
+height="644"
+srcset="https://sfw003.github.io/p/transport-layer/image/image-20240510085136785_hu_cb687bae5397bcd1.png 480w, https://sfw003.github.io/p/transport-layer/image/image-20240510085136785_hu_39112993b0cc61b3.png 1024w"
+loading="lazy"
+alt="image-20240510085136785"
+class="gallery-image"
+data-flex-grow="156"
+data-flex-basis="375px"
+>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>源/目的端口号: 表示数据是从哪个进程来, 到哪个进程去;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>32位序号/32位确认号: 保障有序性&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>4位TCP报头长度: 表示该TCP头部有多少个32位bit(有多少个4字节); 所以TCP头部最大长度是15 * 4 = 60&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>6位标志位:TCP报文是有类型的，比如一个TCP报文可能是通信报文，也可以是建立连接的报文，也可以是关闭连接的报文，因此需要用标志来区分。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>​ URG: 紧急指针是否有效&lt;/p>
+&lt;p>​ ACK: 确认号是否有效，当该报文是应答类型的报文，该标志置1&lt;/p>
+&lt;p>​ PSH: 提示接收端应用程序立刻从TCP缓冲区把数据读走&lt;/p>
+&lt;p>​ RST: 对方要求重新建立连接; 我们把携带RST标识的称为&lt;strong>复位报文段&lt;/strong>&lt;/p>
+&lt;p>​ SYN: 请求建立连接; 我们把携带SYN标识的称为&lt;strong>同步报文段&lt;/strong>&lt;/p>
+&lt;p>​ FIN: 通知对方, 本端要关闭了 , 我们称携带FIN标识的为&lt;strong>结束报文段&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>16位窗口大小: 16位窗口大小最大为2^16-1 = 65532 字节&lt;/li>
+&lt;li>16位校验和: 发送端填充, CRC校验. 接收端校验不通过, 则认为数据有问题. 此处的检验和不光包含TCP首部, 也包含TCP数据部分.&lt;/li>
+&lt;li>16位紧急指针: 标识哪部分数据是紧急数据。只有当URG标志为1，才有效。紧急指针的本质是紧急数据在TCP报文里的偏移量。&lt;/li>
+&lt;li>40字节头部选项: 暂时忽略;&lt;/li>
+&lt;/ul>
+&lt;h3 id="tcp的连接管理">TCP的连接管理
+&lt;/h3>&lt;p>TCP建立连接，需要进行3次握手和4次挥手&lt;/p>
+&lt;h4 id="3次握手和4次挥手">3次握手和4次挥手
+&lt;/h4>&lt;img src="image/image-20240513184431231.png" alt="image-20240513184431231" style="zoom: 80%;" />
+&lt;h4 id="为什么是3次握手1次2次为什么不行">为什么是3次握手？1次，2次为什么不行？
+&lt;/h4>&lt;p>3次握手的目的：&lt;strong>确认双方的通信能力和可达性&lt;/strong>，&lt;strong>同步双方的序列号&lt;/strong>&lt;/p>
+&lt;p>​ 第一次：客户端发送报文给服务器，服务器接受到报文：服务器知道客户端&lt;strong>发送&lt;/strong>能力正常&lt;/p>
+&lt;p>​ 第二次：服务器做出应答，客户端接受到报文：客户端知道服务器的&lt;strong>接受&lt;/strong>和&lt;strong>发送&lt;/strong>能力正常&lt;/p>
+&lt;p>​ 第三次：客户端做出应答，服务器接受到报文：服务器知道客户端的&lt;strong>接受&lt;/strong>能力正常&lt;/p>
+&lt;p>但是这个回答是比较片面的，RFC 793：&lt;strong>首要原因是为了防止旧的重复连接初始化造成混乱。&lt;/strong>&lt;/p>
+&lt;p>例：在网络拥堵情况下，客户端连续发送多次SYN建立连接的报文，3次握手可以防止历史连接的干扰。如下图：&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/transport-layer/image/image-20250411143924451.png"
+width="493"
+height="631"
+srcset="https://sfw003.github.io/p/transport-layer/image/image-20250411143924451_hu_b34de89c2fb528c5.png 480w, https://sfw003.github.io/p/transport-layer/image/image-20250411143924451_hu_489009027485fac.png 1024w"
+loading="lazy"
+alt="image-20250411143924451"
+class="gallery-image"
+data-flex-grow="78"
+data-flex-basis="187px"
+>&lt;/p>
+&lt;p>2次握手为什么解决不了上面的情况，原因在于：服务端没有中间状态（SYN RCVD）给客户端来阻止历史连接。
+2次握手下，服务器收到SYN，就会进入ESTABUSHED.&lt;/p>
+&lt;h4 id="4次挥手能合成为3次挥手">4次挥手能合成为3次挥手？
+&lt;/h4>&lt;p>问题：为什么要4次挥手，第2次挥手和第3次挥手为什么不能采用捎带应答的方式合成一次？&lt;/p>
+&lt;p>答：服务器收到FIN后，会发送ACK，进入CLOSE_WAIT，CLOSE_WAIT会处理一些未来得及处理的数据，处理完成后，再发送FIN.
+如果缓冲区本身没有数据需要处理，那么可以将第2次和第3次合为捎带应答 ==&amp;gt; FIN + ACK&lt;/p>
+&lt;p>因此4次挥手可以合成为3次挥手&lt;/p>
+&lt;h3 id="tcp的可靠传输">TCP的可靠传输
+&lt;/h3>&lt;p>TCP核心是可靠传输，而可靠传输体现在3个方面：无差错，无丢失，无重复&lt;/p>
+&lt;p>无差错：16位校验号&lt;/p>
+&lt;p>无丢失：自动重传机制（ARQ）, 超时重传机制（Retransmission Timeout)，滑动窗口&lt;/p>
+&lt;p>无重复：序列号、确认号、确认应答机制&lt;/p>
+&lt;p>下面一个一个介绍：&lt;/p>
+&lt;h4 id="确认应答ack机制">确认应答(ACK)机制
+&lt;/h4>&lt;p>要想确定一个报文是否有效，需要对方做出应答。但应答的有效性无法验证（验证应答的有效性会陷入循环），因此我们规定&lt;strong>不用对 应答 做出 应答。对方发出应答就默认我收到了应答。&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>捎带应答&lt;/strong>：多数情况下，单纯发出应答效率不高，而且根据规定，对方发出应答就默认我收到了应答。因此为了提高效率，对方发出的报文 = 应答 + 数据。&lt;/p>
+&lt;img src="image/image-20240513144431282.png" alt="image-20240513144431282" style="zoom:80%;" />
+&lt;h4 id="序列号sequence-number">序列号（Sequence number）
+&lt;/h4>&lt;p>TCP通信时，并不是发一个，应答一个。这样效率低下。而是一次发多个数据，发送多个数据存在乱序问题，而&lt;strong>乱序&lt;/strong>是不可靠的一种。&lt;/p>
+&lt;p>TCP保证有序是通过序列号来实现（TCP报文里的32位序号）。每个报文都带有序号，对方收到多个报文，会根据序号进行排序。如何理解这个序号？&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>TCP是面向字节流的，因此我们可以抽象的认为TCP的缓存区是一个 &lt;strong>char类型的数组&lt;/strong>，数组的元素天然带有一个编号（数组下标）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>TCP 报文头中的 32 位序号字段用于标识 TCP 连接中每个数据包的顺序。**这个序号表示了数据包中的第一个字节在整个数据流中的位置。**序号的增长是根据发送的数据量而定的，每发送一个字节，序号就增加一个。这样，接收端就可以根据序号来确定接收到的数据包的顺序，并进行重组。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;ol>
+&lt;li>如果发送方发送了第一个TCP段，包含100字节数据，且这个TCP段的序列号为1000。&lt;/li>
+&lt;li>接下来发送第二个TCP段时，它的序列号将是1100（1000 + 100），因为第一个段包含了100个字节。&lt;/li>
+&lt;/ol>
+&lt;p>&lt;strong>初始的序列号如何生成？&lt;/strong>&lt;/p>
+&lt;p>起始ISN是基于时钟的，每4微秒+1，转一圈要4.55个小时。
+RFC793提到&lt;/p>
+&lt;p>​ 初始化序列号ISN随机生成算法：ISN = M + F(localhost,localport,remotehost,remoteport)。&lt;/p>
+&lt;p>M是一个计时器，这个计时器每隔4微秒加1。&lt;/p>
+&lt;p>F是一个Hash 算法，根据源IP、目的IP、源端口、目的端口生成一个随机数值。要保证 Hash 算法不能被外部轻易推算得出，用MD5算法是一个比较好的选择。
+可以看到，随机数是会基于时钟计时器递增的，基本不可能会随机成一样的初始化序列号。&lt;/p>
+&lt;h4 id="确认号">确认号
+&lt;/h4>&lt;p>接受方收到一个序列号为&lt;strong>N&lt;/strong>报文后，需要应答。该应答需要告诉对方，自己接受到了序号为&lt;strong>N&lt;/strong>，因此要返回一个序号为&lt;strong>M&lt;/strong>确认序号，**规定：确认序号 = 最后一个已成功接收的数据字节的序列号 + 1， 即 M = N+1 **。通知发送方可以从M处开始发数据了。&lt;/p>
+&lt;p>当发送方收到序号为&lt;strong>M&lt;/strong>的应答后，&lt;strong>规定：发送方可以认为小于序号M的所有报文，接受方全部收到&lt;/strong>。这样，我们可以允许少量应答丢失。&lt;/p>
+&lt;img src="image/image-20240513152659063.png" alt="image-20240513152659063" style="zoom:67%;" />
+&lt;p>那为什么一个报文同时带有确认号和序列号？确认号 &amp;ndash; 应答， 序列号 &amp;ndash; 数据，由于存在&lt;strong>捎带应答&lt;/strong>的情况，一个报文即是应答又是数据，因此需要同时带上确认号和序列号。&lt;/p>
+&lt;h4 id="流量控制">流量控制
+&lt;/h4>&lt;p>接收端处理数据的速度是有限的. 如果发送端发的太快, 导致接收端的缓冲区被打满, 这个时候如果发送端继续发送,就会造成丢包, 继而引起丢包重传等等一系列连锁反应. 因此TCP支持根据接收端的处理能力, 来决定发送端的发送速度. 这个机制就叫做&lt;strong>流量控制&lt;/strong>(Flow Control);&lt;/p>
+&lt;p>流量控制是通过接收端抑制发送端发送数据的速率，以使接收端来得及接收。是点对点通信量的控制，是个端到端的问题。&lt;/p>
+&lt;p>流量控制的手段：滑动窗口&lt;/p>
+&lt;img src="image/image-20240515165815537.png" alt="image-20240515165815537" style="zoom:67%;" />
+&lt;ul>
+&lt;li>
+&lt;p>接收端将自己可以接收的缓冲区大小放入 TCP 首部中的 &amp;ldquo;窗口大小&amp;rdquo; 字段, 通过ACK端通知发送端;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>窗口大小字段越大, 说明网络的吞吐量越高;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>接收端一旦发现自己的缓冲区快满了, 就会将窗口大小设置成一个更小的值通知给发送端;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>发送端接受到这个窗口之后, 就会减慢自己的发送速度;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>如果接收端缓冲区满了, 就会将窗口置为0; 这时发送方不再发送数据, 但是需要定期发送一个窗口探测数据段, 使接收端把窗口大小告诉发送端.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>滑动窗口&lt;/strong>&lt;/p>
+&lt;p>刚才我们讨论了确认应答策略, 对每一个发送的数据段, 都要给一个ACK确认应答. 收到ACK后再发送下一个数据段.&lt;/p>
+&lt;p>这样做有一个比较大的缺点, 就是性能较差. 尤其是数据往返的时间较长的时候。因此为了提高效率，我们需要一次发送多段报文，而TCP使用&lt;strong>滑动窗口&lt;/strong>来管理多段数据的发送。&lt;/p>
+&lt;p>&lt;strong>窗口越大, 网络吞吐量就越大, 传输效率就越高.&lt;/strong>&lt;/p>
+&lt;p>问题：滑动窗口在哪里？发送缓存区的一部分&lt;/p>
+&lt;p>滑动窗口将发送缓存区分为了3部分：&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/transport-layer/image/wps2.jpg"
+width="805"
+height="287"
+srcset="https://sfw003.github.io/p/transport-layer/image/wps2_hu_cca9911ecb8ecac4.jpg 480w, https://sfw003.github.io/p/transport-layer/image/wps2_hu_18a72571f48f7460.jpg 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="280"
+data-flex-basis="673px"
+>&lt;/p>
+&lt;p>具体如下：&lt;/p>
+&lt;img src="image/image-20240515155939215.png" alt="image-20240515155939215" style="zoom: 50%;" />
+&lt;p>滑动窗口如何解决丢包问题？&lt;/p>
+&lt;ol>
+&lt;li>ACK丢了&lt;/li>
+&lt;/ol>
+&lt;img src="image/image-20240515163846423.png" alt="image-20240515163846423" style="zoom:67%;" />
+&lt;p>根据确认序号的定义：该序号之前的数据已经全部接受。&lt;/p>
+&lt;p>因此少量的丢包不会影响。&lt;/p>
+&lt;ol start="2">
+&lt;li>
+&lt;p>数据包丢了&lt;/p>
+&lt;img src="image/image-20240515164254088.png" alt="image-20240515164254088" style="zoom:67%;" />
+&lt;/li>
+&lt;/ol>
+&lt;p>现在：发送方：1000 2000 3000 4000 其中2000丢了 接受方没有接受到2000，但接受到了3000 4000，但根据确认序列号的定义，接受方只能发送ACK = 1001&lt;/p>
+&lt;h4 id="拥塞控制">&lt;strong>拥塞控制&lt;/strong>
+&lt;/h4>&lt;p>虽然TCP有了滑动窗口这个大杀器, 能够高效可靠的发送大量的数据. 但是如果在刚开始阶段就发送大量的数据, 仍然可能引发问题. 因为网络上有很多的计算机, 可能当前的网络状态就已经比较拥堵. 在不清楚当前网络状态下, 贸然发送大量的数据,是很有可能引起雪上加霜的. 因此TCP引入了&lt;strong>拥塞控制&lt;/strong>。&lt;/p>
+&lt;p>拥塞控制的目的是防止过多的数据注入到网络中，避免网络中的路由器或链路过载。是一个全局性的过程，涉及到所有的主机、路由器，以及与降低网络传输性能有关的所有因素。&lt;/p>
+&lt;img src="image/image-20240515170711380.png" alt="image-20240515170711380" style="zoom:67%;" />
+&lt;p>TCP 进行拥塞控制的算法有四种&lt;/p>
+&lt;ul>
+&lt;li>慢开始（slow-start)&lt;/li>
+&lt;li>拥塞避免(congestion avoidance)&lt;/li>
+&lt;li>快重传(fast retransmit)&lt;/li>
+&lt;li>快恢复(fast recovery)&lt;/li>
+&lt;/ul>
+&lt;p>此外引入2个概念：&lt;strong>拥塞窗口&lt;/strong>(&lt;code>cwnd：congestion window&lt;/code>)和&lt;strong>慢开始门限&lt;/strong> (&lt;code>ssthresh&lt;/code>)&lt;/p>
+&lt;p>拥塞窗口：初始为1，根据拥塞控制算法进行修改，它的作用：16位窗口大小 = min(cwnd, rwnd)&lt;/p>
+&lt;p>慢开始门限：为了防止拥塞窗口 cwnd 增长过大引起网络拥塞，还需要设置一个慢开始门限。具体来说，它用来控制什么情况下执行哪一种拥塞控制算法。&lt;/p>
+&lt;p>算法思想如下：cwnd 初始置1&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>刚开始执行&lt;strong>慢开始算法&lt;/strong>，cwnd成指数增长&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>当cwnd &amp;gt; ssthresh，执行&lt;strong>拥塞避免算法&lt;/strong>（特殊情况：cwnd == ssthresh，执行慢开始、拥塞避免都可以），开始进行线性增长&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>当出现下面2种情况：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>情况1：&lt;strong>超时&lt;/strong>，发送方长时间未收到接受方的ACK，判定为&lt;strong>网络拥塞&lt;/strong>。则cwnd置1，ssthresh变为超时时的cwnd的一半。进入慢开始阶段&lt;/p>
+&lt;img src="image/image-20240618144123833.png" alt="image-20240618144123833" style="zoom: 67%;" />
+&lt;/li>
+&lt;li>
+&lt;p>情况2：&lt;strong>快重传&lt;/strong>，发送方收到接受方3个相同的ACK。则cwnd == ssthresh == 快重传时cwnd的一半，&lt;strong>进入快恢复阶段&lt;/strong>&lt;/p>
+&lt;img src="image/image-20240618144258465.png" alt="image-20240618144258465" style="zoom:67%;" />
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>理解：为什么分2种情况？&lt;/p>
+&lt;p>答：有时，个别报文段会在网络中意外丢失，但实际上网络并未发生拥塞。如果发送方迟迟收不到确认，就会产生超时，并误认为网络发生了拥塞。这就导致发送方错误地启动慢开始，把拥塞窗口 cwnd 又设置为 1，因而不必要地降低了传输效率。因而引入快重传算法&lt;/p>
+&lt;h4 id="快重传机制">快重传机制
+&lt;/h4>&lt;p>快重传算法规定，发送力只要一连收到3个重复确认，就可知道现在并未出现网络拥塞，而只是接收方少收到一个报文段 M3 ，因而立即进行重传M3 (即“快重传”)。使用快重传可以使整个网络的吞吐坟提高约 20%.&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/transport-layer/image/image-20240618151505806.png"
+width="867"
+height="435"
+srcset="https://sfw003.github.io/p/transport-layer/image/image-20240618151505806_hu_7d0d9e3ceac3357f.png 480w, https://sfw003.github.io/p/transport-layer/image/image-20240618151505806_hu_bce21558940c282c.png 1024w"
+loading="lazy"
+alt="image-20240618151505806"
+class="gallery-image"
+data-flex-grow="199"
+data-flex-basis="478px"
+>&lt;/p>
+&lt;h4 id="超时重传机制">超时重传机制
+&lt;/h4>&lt;p>主机A发送给主机B的数据可能因为网络问题而丢失，或者主机B由于某些原因，收到了报文，但没有应答。&lt;/p>
+&lt;p>如果主机A在一定时间内没有收到主机B的应答，则会重发。&lt;/p>
+&lt;p>问题：&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>主机B可能收到多个相同的报文，如何去重？ &lt;strong>根据序列号&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>“超时时间”是如何规定的？当网络良好时，超时时间太长，会导致效率低下，同理当网络不好时，超时时间太小，也会导致效率低下。&lt;/p>
+&lt;p>Linux中(BSD Unix和Windows也是如此), 超时以500ms为一个单位进行控制, 每次判定超时重发的超时&lt;/p>
+&lt;p>时间都是500ms的整数倍.&lt;/p>
+&lt;p>如果重发一次之后, 仍然得不到应答, 等待 2*500ms 后再进行重传.&lt;/p>
+&lt;p>如果仍然得不到应答, 等待 4*500ms 进行重传. 依次类推, 以&lt;strong>指数形式&lt;/strong>递增.&lt;/p>
+&lt;p>累计到一定的重传次数, TCP认为网络或者对端主机出现异常, 强制关闭连接.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;img src="image/image-20240513141329940.png" alt="image-20240513141329940" style="zoom: 67%;" />
+&lt;h3 id="tcp异常情况分析">TCP异常情况分析
+&lt;/h3>&lt;h4 id="syn洪水">SYN洪水
+&lt;/h4>&lt;p>.&lt;/p></description></item><item><title>数据链路层</title><link>https://sfw003.github.io/p/data-link-layer/</link><pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/data-link-layer/</guid><description>&lt;p>了解完网络层，我们知道了数据报是如何跨网络进行传输的，数据报通过一次又一次的”跳“，最后到达目的主机。但具体的一次”跳”是怎么完成的呢？由数据链路层完成，下面介绍数据链路层。&lt;/p>
+&lt;img src="image/image-20240527140508236.png" alt="image-20240527140508236" style="zoom:67%;" />
+&lt;h1 id="数据链路层">数据链路层
+&lt;/h1>&lt;p>&lt;strong>数据链路层负责通过一条链路从一个结点向另一个物理链路直接相连的相邻结点传送数据报。&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>链路：网络中两个结点之间的物理通道，链路的传输介质主要有双绞线、光纤和微波。分为有线链路、无线链路。&lt;/li>
+&lt;li>数据链路：网络中两个结点之间的逻辑通道，把实现控制数据传输协议的硬件和软件加到链路上就构成数据链路。&lt;/li>
+&lt;/ul>
+&lt;p>数据链路层在物理层提供服务的基础上向网络层提供服务。&lt;/p>
+&lt;ul>
+&lt;li>对上：将源自网络层来的数据&lt;strong>可靠&lt;/strong>地传输到相邻节点的目标机网络层。&lt;/li>
+&lt;li>对下：加强物理层传输原始比特流的功能，将物理层提供的&lt;strong>可能出错的物理连接&lt;/strong>改造成为&lt;strong>逻辑上无差错的数据链路&lt;/strong>，使之对网络层表现为一条&lt;strong>无差错&lt;/strong>的链路。&lt;/li>
+&lt;/ul>
+&lt;img src="image/image-20240527151104647.png" alt="image-20240527151104647" style="zoom:67%;" />
+&lt;p>数据链路层负责两个设备(同一种数据链路节点)之间进行传递。通常情况下，同一数据链接即二者处于同一局域网内，因此首先要了解局域网内是如何通信的。&lt;/p>
+&lt;p>注：局域网和数据链路的关系&lt;/p>
+&lt;p>虽然在许多情况下，处于同一数据链路的设备确实位于同一个局域网内，但有些网络拓扑和配置可能导致例外情况：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>虚拟局域网（VLAN）&lt;/strong>：VLAN允许在同一个物理网络基础设施上创建多个逻辑隔离的网络。不同VLAN的设备尽管连接到同一个交换机，但处于不同的逻辑数据链路和广播域中。&lt;/li>
+&lt;li>&lt;strong>网桥和交换机&lt;/strong>：现代交换机能够隔离冲突域，但不隔离广播域。因此，连接到同一交换机不同端口的设备可以认为在同一数据链路上，但仍处于同一局域网中。&lt;/li>
+&lt;li>&lt;strong>子网划分和路由&lt;/strong>：在一些复杂网络中，可能会通过子网划分和路由策略，使得不同子网的设备在逻辑上看似处于不同数据链路，但实际上共享同一个物理介质。&lt;/li>
+&lt;/ul>
+&lt;h1 id="局域网通信">局域网通信
+&lt;/h1>&lt;p>局域网通信的技术：以太网，令牌环网, 无线LAN等&lt;/p>
+&lt;p>下面主要介绍以太网。&lt;/p>
+&lt;h2 id="以太网">以太网
+&lt;/h2>&lt;p>以太网（Ethernet）是一种广泛使用的局域网（LAN）技术，用于在局域网内设备之间进行数据通信。它定义了数据帧的格式、传输协议、物理连接标准和介质访问控制方法。以太网因其高效性、可靠性和易于实现而成为最常用的有线网络技术。&lt;/p>
+&lt;p>&amp;ldquo;以太网&amp;rdquo; 不是一种具体的网络, 而是一种技术标准; 既包含了数据链路层的内容, 也包含了一些物理层的内容. 例如: 规定了网络拓扑结构, 访问控制方式, 传输速率等;例如以太网中的网线必须使用双绞线; 传输速率有10M, 100M, 1000M等;&lt;/p>
+&lt;p>以太网是当前应用最广泛的局域网技术; 和以太网并列的还有令牌环网, 无线LAN等;&lt;/p>
+&lt;p>以太网会将网络层的IP数据报封装为以太网帧，然后进行通信。那以太网帧的格式是什么呢？&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240527100944071.png"
+width="901"
+height="297"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240527100944071_hu_c58901566e7d1738.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240527100944071_hu_c3fe870eab3d1b63.png 1024w"
+loading="lazy"
+alt="image-20240527100944071"
+class="gallery-image"
+data-flex-grow="303"
+data-flex-basis="728px"
+>&lt;/p>
+&lt;h1 id="数据帧">数据帧
+&lt;/h1>&lt;h2 id="封装成帧">封装成帧
+&lt;/h2>&lt;p>封装成帧就是在一段数据的前后部分添加首部和尾部，这样就构成了一个帧。接收端在收到物理层上交的比特流后，就能根据首部和尾部的标记，从收到的比特流中识别帧的开始和结束。&lt;/p>
+&lt;p>首部和尾部包含许多的控制信息，他们的一个重要作用:&lt;strong>定界(确定帧的界限)。&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>帧同步&lt;/strong>:接收方应当能从接收到的二进制比特流中区分出帧的起始和终止。&lt;/p>
+&lt;p>&lt;strong>组帧&lt;/strong>的四种方法:&lt;/p>
+&lt;ol>
+&lt;li>字符计数法，&lt;/li>
+&lt;li>字符(节)填充法&lt;/li>
+&lt;li>零比特填充法&lt;/li>
+&lt;li>违规编码法。&lt;/li>
+&lt;/ol>
+&lt;h2 id="透明传输">透明传输
+&lt;/h2>&lt;h2 id="差错检验">差错检验
+&lt;/h2>&lt;p>&lt;strong>差错的来源&lt;/strong>：&lt;/p>
+&lt;p>全局性 1.由于线路本身电气特性所产生的随机噪声(热噪声)，是信道固有的，随机存在的。
+解决办法:提高信噪比来减少或避免干扰。(对传感器下手)
+局部性 2.外界特定的短暂原因所造成的冲击噪声，是产生差错的主要原因。
+解决办法:通常利用编码技术来解决。&lt;/p>
+&lt;p>&lt;strong>差错体现的方面&lt;/strong>：&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240614212445396.png"
+width="732"
+height="304"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240614212445396_hu_caf6357be5e2873c.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240614212445396_hu_9bd02947c8a50dc1.png 1024w"
+loading="lazy"
+alt="image-20240614212445396"
+class="gallery-image"
+data-flex-grow="240"
+data-flex-basis="577px"
+>&lt;/p>
+&lt;p>&lt;strong>差错的检测和解决&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240614212607552.png"
+width="585"
+height="304"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240614212607552_hu_a7f50ecb8e9ef2af.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240614212607552_hu_9c86a92366d1752d.png 1024w"
+loading="lazy"
+alt="image-20240614212607552"
+class="gallery-image"
+data-flex-grow="192"
+data-flex-basis="461px"
+>&lt;/p>
+&lt;p>&lt;strong>奇偶检验码&lt;/strong>：&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240614212758854.png"
+width="792"
+height="227"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240614212758854_hu_f24bc300de7b42ef.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240614212758854_hu_3ad21de08f4a6041.png 1024w"
+loading="lazy"
+alt="image-20240614212758854"
+class="gallery-image"
+data-flex-grow="348"
+data-flex-basis="837px"
+>&lt;/p>
+&lt;p>局限：奇效验码只能检测奇数个1的错误，50%&lt;/p>
+&lt;p>&lt;strong>循环冗余检验&lt;/strong> CRC (Cyclic Redundancy Check)&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240614213048249.png"
+width="1620"
+height="454"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240614213048249_hu_c3e3533d001dd16b.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240614213048249_hu_cf430bd831e2c59.png 1024w"
+loading="lazy"
+alt="image-20240614213048249"
+class="gallery-image"
+data-flex-grow="356"
+data-flex-basis="856px"
+>&lt;/p>
+&lt;p>举例:&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240618200921386.png"
+width="1373"
+height="1008"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240618200921386_hu_fc037ebb642e2c99.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240618200921386_hu_1c80afc3205ef654.png 1024w"
+loading="lazy"
+alt="image-20240618200921386"
+class="gallery-image"
+data-flex-grow="136"
+data-flex-basis="326px"
+>&lt;/p>
+&lt;p>&lt;strong>总结：&lt;/strong>&lt;/p>
+&lt;p>在数据链路层仅仅使用循环冗余检验CRC差错检测技术，只能做到对的无差错接收，即“凡是接收端数据链路层接受的帧，我们都能以非常接近于1的概率认为这些帧在传输过程中没有产生差错”。接收端丢弃的帧虽然曾收到了，但是最终还是因为有差错被丢弃。“凡是接收端数据链路层接收的帧均无差错”&lt;/p>
+&lt;p>注意：&lt;strong>无差错 &amp;lt; 可靠传输（无差错，不丢失，不重复）&lt;/strong>&lt;/p>
+&lt;h1 id="数据链路层的流量控制">数据链路层的流量控制
+&lt;/h1>&lt;p>它和TCP的流量控制的区别：&lt;/p>
+&lt;blockquote>
+&lt;p>传输层的流量控制是 &lt;strong>端到端&lt;/strong>&lt;/p>
+&lt;p>数据链路层的流量控制是 &lt;strong>点到点&lt;/strong>&lt;/p>&lt;/blockquote>
+&lt;p>&lt;strong>都是通过滑动窗口来控制，但是数据链路层的滑动窗口的大小是固定的，而传输层不是固定的。&lt;/strong>&lt;/p>
+&lt;p>问题：由来传输层的流量控制，为什么还需要数据链路层的流量控制？&lt;/p>
+&lt;p>答：早期网络并不完善，让数据链路层进行流量控制，但现在随着技术发展，现代网络中的流量控制和错误恢复功能主要由传输层（如 TCP）来处理，而数据链路层更多地专注于差错检测和基本的帧传输。但在一些特定的网络场景中，数据链路层仍然会实现一些流量控制机制，例如：以太网流量控制，无线局域网。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240614214251461.png"
+width="1514"
+height="703"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240614214251461_hu_524a8de848854370.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240614214251461_hu_b446ce17f4881795.png 1024w"
+loading="lazy"
+alt="image-20240614214251461"
+class="gallery-image"
+data-flex-grow="215"
+data-flex-basis="516px"
+>&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240614214258539.png"
+width="992"
+height="328"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240614214258539_hu_60dee5979a28bfb6.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240614214258539_hu_ede8e98a17139cee.png 1024w"
+loading="lazy"
+alt="image-20240614214258539"
+class="gallery-image"
+data-flex-grow="302"
+data-flex-basis="725px"
+>&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240614214322961.png"
+width="939"
+height="229"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240614214322961_hu_4c376e3d1499decc.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240614214322961_hu_5b108d7b030cb28f.png 1024w"
+loading="lazy"
+alt="image-20240614214322961"
+class="gallery-image"
+data-flex-grow="410"
+data-flex-basis="984px"
+>&lt;/p>
+&lt;h1 id="以太网帧mac帧">以太网帧（MAC帧）
+&lt;/h1>&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240526205126623.png"
+width="1016"
+height="524"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240526205126623_hu_535ec7bccd0f83e7.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240526205126623_hu_ee2a59e42ff3cb49.png 1024w"
+loading="lazy"
+alt="image-20240526205126623"
+class="gallery-image"
+data-flex-grow="193"
+data-flex-basis="465px"
+>&lt;/p>
+&lt;h1 id="mac地址">MAC地址
+&lt;/h1>&lt;p>MAC地址用来识别数据链路层中相连的节点;&lt;/p>
+&lt;p>长度为48位, 及6个字节. 一般用16进制数字加上冒号的形式来表示(例如: 08:00:27:03:fb:19)&lt;/p>
+&lt;p>在网卡出厂时就确定了, 不能修改. mac地址通常是唯一的(虚拟机中的mac地址不是真实的mac地址, 可能会冲突; 也有些网卡支持用户配置mac地址).&lt;/p>
+&lt;p>它和IP地址有什么关系？&lt;/p>
+&lt;h3 id="ip地址和mac地址">IP地址和MAC地址
+&lt;/h3>&lt;p>IP地址&lt;/p>
+&lt;ul>
+&lt;li>描述路途总体的 起点 和 终点;&lt;/li>
+&lt;li>它是逻辑层面的地址&lt;/li>
+&lt;/ul>
+&lt;p>MAC地址&lt;/p>
+&lt;ul>
+&lt;li>描述的是路途上的每一个区间的起点和终点;&lt;/li>
+&lt;li>它是物理层的地址&lt;/li>
+&lt;/ul>
+&lt;p>问题：为什么要分别用IP地址和MAC地址来作为逻辑层面和物理层面的地址，不能用MAC地址作为统一的地址吗？&lt;/p>
+&lt;p>答：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>基于分层设计和职责分离的原则&lt;/strong>：计算机网络协议栈采用分层设计，每层具有不同的功能。MAC地址用于数据链路层，负责在同一局域网内传输数据包；IP地址用于网络层，负责跨网络的路由和传输。分层设计使得每层可以独立发展和优化，增强了整个网络系统的灵活性和可扩展性。&lt;/li>
+&lt;li>&lt;strong>兼容性&lt;/strong>：不同的网络技术（如以太网、Wi-Fi、光纤、卫星等）都有自己独特的物理层和数据链路层协议。通过在网络层使用统一的IP地址，可以在各种不同底层技术上实现互操作性和兼容性，促进不同网络之间的无缝通信。&lt;/li>
+&lt;/ol>
+&lt;hr>
+&lt;p>我们在IP报文如果太大需要分片，这里的“大”是相对数据链路层而言，具体来说是相对于MTU&lt;/p>
+&lt;h1 id="mtu">MTU
+&lt;/h1>&lt;p>网络链路上的最大传输单元（MTU，Maximum Transmission Unit）：&lt;strong>不同的网络类型有不同的MTU&lt;/strong>，最常用的以太网就规定其 MTU 值是 &lt;strong>1500 字节&lt;/strong>。如果一个数据包从以太网路由到拨号链路上,数据包长度大于拨号链路的MTU了,则需要对数据包进行分片(fragmentation。&lt;/p>
+&lt;p>&lt;strong>以太网帧中的数据长度规定最小46字节,最大1500字节&lt;/strong>&lt;/p>
+&lt;p>注：ARP数据包的长度不够46字节,要在后面补填充位;&lt;/p>
+&lt;h3 id="mtu对ip层的影响">MTU对IP层的影响
+&lt;/h3>&lt;p>由于数据链路层MTU的限制, 对于较大的IP数据包要进行分包.&lt;/p>
+&lt;p>将较大的IP包分成多个小包, 并给每个小包打上标签;&lt;/p>
+&lt;p>每个小包IP协议头的 16位标识(id) 都是相同的;&lt;/p>
+&lt;p>每个小包的IP协议头的3位标志字段中, 第2位置为0, 表示允许分片, 第3位来表示结束标记(当前是否是最&lt;/p>
+&lt;p>后一个小包, 是的话置为1, 否则置为0);&lt;/p>
+&lt;p>到达对端时再将这些小包, 会按顺序重组, 拼装到一起返回给传输层;&lt;/p>
+&lt;p>一旦这些小包中任意一个小包丢失, 接收端的重组就会失败. 但是IP层不会负责重新传输数据;&lt;/p>
+&lt;h3 id="mtu对udp和tcp的影响">MTU对UDP和TCP的影响
+&lt;/h3>&lt;p>让我们回顾一下UDP协议:&lt;/p>
+&lt;p>一旦UDP携带的数据超过1472(1500 - 20(IP首部) - 8(UDP首部)), 那么就会在网络层分成多个IP数据报.&lt;/p>
+&lt;p>这多个IP数据报有任意一个丢失, 都会引起接收端网络层重组失败. 那么这就意味着, 如果UDP数据报在&lt;/p>
+&lt;p>网络层被分片, 整个数据被丢失的概率就大大增加了.&lt;/p>
+&lt;p>让我们再回顾一下TCP协议:&lt;/p>
+&lt;p>TCP的一个数据报也不能无限大, 还是受制于MTU. TCP的单个数据报的最大消息长度, 称为MSS(Max Segment Size);&lt;/p>
+&lt;p>TCP在建立连接的过程中, 通信双方会进行MSS协商.&lt;/p>
+&lt;p>最理想的情况下, MSS的值正好是在IP不会被分片处理的最大长度(这个长度仍然是受制于数据链路层的MTU), 双方在发送SYN的时候会在TCP头部写入自己能支持的MSS值.然后双方得知对方的MSS值之后, 选择较小的作为最终MSS.&lt;/p>
+&lt;p>MSS的值就是在TCP首部的40字节变长选项中(kind=2);&lt;/p>
+&lt;p>如果MTU = 1500, 则max有效载荷 = 1500-20((P)) - 20(TCP) = 1460&lt;/p>
+&lt;ul>
+&lt;li>源地址和目的地址是指网卡的硬件地址(也叫MAC地址), 长度是48位,是在网卡出厂时固化的;&lt;/li>
+&lt;li>帧协议类型字段有三种值,分别对应IP、ARP、RARP;&lt;/li>
+&lt;li>数据 = &lt;strong>网络层的数据报&lt;/strong>&lt;/li>
+&lt;li>帧末尾是CRC校验码&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;p>介绍完MAC帧，下面具体看看MAC帧是如何进行局网络通信的。&lt;/p>
+&lt;h2 id="mac帧在局域网通信">MAC帧在局域网通信
+&lt;/h2>&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240527102109461.png"
+width="874"
+height="350"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240527102109461_hu_bf84118e658cdd71.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240527102109461_hu_5cfd002508675560.png 1024w"
+loading="lazy"
+alt="image-20240527102109461"
+class="gallery-image"
+data-flex-grow="249"
+data-flex-basis="599px"
+>&lt;/p>
+&lt;p>场景：主机A想发送消息给主机D&lt;/p>
+&lt;p>过程：&lt;/p>
+&lt;ol>
+&lt;li>主机A封装好MAC帧，在目的地址填入主机D的MAC地址&lt;/li>
+&lt;li>主机A将消息发送到&lt;strong>广播信道&lt;/strong>（共享信道）里，于是所有主机都会收到消息&lt;/li>
+&lt;li>然后主机会在数据链路层会检测MAC帧里的&lt;strong>目的地址&lt;/strong>，如果不符合则直接丢弃，符合则向上层传递。&lt;/li>
+&lt;/ol>
+&lt;h4 id="碰撞冲突">碰撞冲突
+&lt;/h4>&lt;p>局域网通信，一台发送的消息，其他主机都会收到。如果多台主机同时发送消息，那么消息就会产生冲突。这就是&lt;strong>碰撞冲突&lt;/strong>。&lt;/p>
+&lt;p>为了减少碰撞的发生，局域网通常会采用一些措施，如使用碰撞避免算法，交换机。&lt;/p>
+&lt;p>碰撞避免算法是从软件层面上&lt;/p>
+&lt;p>交换机则是从硬件层面上：&lt;/p>
+&lt;p>在数据链路层，主要采用2种信道：&lt;strong>广播信道&lt;/strong>和&lt;strong>点对点信道&lt;/strong>&lt;/p>
+&lt;p>(l) 点对点信道。这种信道使用一对一的点对点通信方式。&lt;/p>
+&lt;p>(2) 广播信道。这种信道使用一对多的广播通信方式，因此过程比较复杂。广播信道上连接的主机很多，因此必须使用专用的共享信道协议来协调这些主机的数据发送。&lt;/p>
+&lt;p>广播信道存在碰撞冲突问题。&lt;/p>
+&lt;p>交换机(switch)：支持点对点和广播&lt;/p>
+&lt;h4 id="局域网瘫痪小知识">局域网瘫痪（小知识）
+&lt;/h4>&lt;p>一台主机不断发送垃圾消息到局域网内。&lt;/p>
+&lt;p>前文我们了解，具体某一跳在局域网是如何进行的，下面我们从局域网道广域网来整体看待这个过程。&lt;/p>
+&lt;h1 id="从局域网到广域网">从局域网到广域网
+&lt;/h1>&lt;h2 id="mac帧在广域网通信">MAC帧在广域网通信
+&lt;/h2>&lt;p>在网络传输的过程，MAC帧不断解包、丢弃、封包，这样每一跳就和前文描述的一样。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240527102228614.png"
+width="868"
+height="297"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240527102228614_hu_cb341eb51f596480.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240527102228614_hu_ae83577e1861d806.png 1024w"
+loading="lazy"
+alt="image-20240527102228614"
+class="gallery-image"
+data-flex-grow="292"
+data-flex-basis="701px"
+>&lt;/p>
+&lt;p>但现在有个问题：前文提到的局域网通信地址都是MAC地址，但实际我们在通信过程使用的是IP地址，如何理解二者在数据传输过程的关系？&lt;/p>
+&lt;h2 id="arp协议">ARP协议
+&lt;/h2>&lt;p>虽然我们在这里介绍ARP协议, 但是需要强调, ARP不是一个单纯的数据链路层的协议, 而是一个介于数据链路层和网络层之间的协议;&lt;/p>
+&lt;h3 id="arp协议的作用">ARP协议的作用
+&lt;/h3>&lt;p>&lt;strong>ARP协议建立了主机 IP地址 和 MAC地址 的映射关系.&lt;/strong>&lt;/p>
+&lt;p>在网络通讯时,源主机的应用程序知道目的主机的IP地址和端口号,却不知道目的主机的硬件地址;数据包首先是被网卡接收到再去处理上层协议的,如果接收到的数据包的硬件地址与本机不符,则直接丢弃;因此在通讯前必须获得目的主机的硬件地址;&lt;/p>
+&lt;img src="image/image-20240527131432082.png" alt="image-20240527131432082" style="zoom:80%;" />
+&lt;p>源主机发出ARP请求,询问“IP地址是192.168.0.1的主机的硬件地址是多少”, 并将这个请求广播到本地网段(以太网帧首部的硬件地址填FF:FF:FF:FF:FF:FF表示广播);&lt;/p>
+&lt;p>主机1的ARP缓存表中不存在主机2的MAC地址，所以主机1会发送ARP Request来获取目的MAC地址。
+•ARP Request报文封装在以太帧里。帧头中的源MAC地址为发送端主机1的MAC地址。此时，由于主机1不知道主机2的MAC地址，所以目的MAC地址为广播地址FF-FF-FF-FF-FF-FF。
+•ARP Request报文中包含发送端MAC地址、发送端IP地址、目的端MAC地址（未知）、目的端IP地址（已知），其中目的端MAC地址的值为0。ARP Request报文会在整个网络上传播，该网络中所有主机包括网关都会接收到此ARP Request报文。并对报文进行泛洪操作。&lt;/p>
+&lt;p>总结：以太帧帧头中目的地址为FF-FF-FF-FF-FF-FF（广播地址）则所有端口都会接受此报文。
+以太帧里封装着的ARP Request报文中目的地址为00-00-00-00-00-00 那么网络中的所有主机和网关接收到这帧数据，都会检查它的目的端IP地址字段与自身的IP地址是否匹配。如果匹配，该主机会将ARP请求报文中的发送端MAC地址和发送端IP地址信息记录到自己的ARP缓存表中，然后通过ARP Reply报文进行响应。如果不匹配，主机将不会响应此报文。&lt;/p>
+&lt;p>每台主机都维护一个ARP缓存表,可以用arp -a命令查看。缓存表中的表项有过期时间(一般为20分钟),如果20分钟内没有再次使用某个表项,则该表项失效,下次还要发ARP请求来获得目的主机的硬件地址&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240529203411211.png"
+width="772"
+height="238"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240529203411211_hu_2e38fa65b835e66e.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240529203411211_hu_8ec6812b9c36ee3f.png 1024w"
+loading="lazy"
+alt="image-20240529203411211"
+class="gallery-image"
+data-flex-grow="324"
+data-flex-basis="778px"
+>&lt;/p>
+&lt;h3 id="arp数据报格式">ARP数据报格式
+&lt;/h3>&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/image-20240527131458233.png"
+width="982"
+height="190"
+srcset="https://sfw003.github.io/p/data-link-layer/image/image-20240527131458233_hu_4a6b37cce41262d4.png 480w, https://sfw003.github.io/p/data-link-layer/image/image-20240527131458233_hu_f9374f13bc7077fd.png 1024w"
+loading="lazy"
+alt="image-20240527131458233"
+class="gallery-image"
+data-flex-grow="516"
+data-flex-basis="1240px"
+>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>注意到源MAC地址、目的MAC地址在以太网首部和ARP请求中各出现一次,对于链路层为以太网的情况是多余的,但如果链路层是其它类型的网络则有可能是必要的。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>硬件类型指链路层网络类型,1为以太网;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>协议类型指要转换的地址类型,0x0800为IP地址;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>硬件地址长度对于以太网地址为6字节;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>协议地址长度对于和IP地址为4字节;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>op字段为1表示ARP请求,op字段为2表示ARP应答。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://sfw003.github.io/p/data-link-layer/image/wps2-17192977261373.jpg"
+width="1517"
+height="521"
+srcset="https://sfw003.github.io/p/data-link-layer/image/wps2-17192977261373_hu_67f22169352f9619.jpg 480w, https://sfw003.github.io/p/data-link-layer/image/wps2-17192977261373_hu_3e5295e39ff8cf9f.jpg 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="291"
+data-flex-basis="698px"
+>&lt;/p>
+&lt;p>ARP请求过程：&lt;/p>
+&lt;ol>
+&lt;li>主机A向信道内发送APR请求，其余主机都会收到&lt;/li>
+&lt;li>非目的主机，如主机c：收到ARP请求后，进行有效载荷的分离。1. 检查&lt;strong>以太网目的地址&lt;/strong>，为全F，表明是广播地址，因此需要进行处理。2. 查看帧类型，为1，传到ARP层。3. 查看op字段，为1，表示为ARP请求。 4. 查看目的IP地址，为ipB, 与主机C的ipC不同, 因此丢弃&lt;/li>
+&lt;li>目的主机，如主机B：经过2的流程后，主机B需要做出ARP应答，填充格式如图。&lt;/li>
+&lt;/ol>
+&lt;p>ARP应答过程：&lt;/p>
+&lt;ol>
+&lt;li>非目的主机收到ARP应答后，在数据链路层比对目的MAC地址时，就会丢弃。&lt;/li>
+&lt;li>目的主机收到ARP应答后，会生成一组 IP:MAC 的映射关系&lt;/li>
+&lt;/ol>
+&lt;h3 id="arp协议相关的周边问题">ARP协议相关的周边问题
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>ARP缓存为什么要有时间限制？ip:mac的映射关系可能会更改，&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>多次ARP请求以最新一次为准&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>ARP欺骗：ARP欺骗（ARP Spoofing），也称为ARP中毒（ARP Poisoning），是一种网络攻击技术，通过发送伪造的ARP（地址解析协议）消息，使目标设备更新其ARP缓存中的IP地址与MAC地址的对应关系，从而将流量误导到攻击者的设备上。这种攻击可以导致多种安全问题，如数据窃取、中间人攻击（Man-in-the-Middle Attack）、网络瘫痪等。&lt;/p>
+&lt;/li>
+&lt;/ul></description></item><item><title>网络层</title><link>https://sfw003.github.io/p/network-layer/</link><pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/network-layer/</guid><description>&lt;h2 id="网络层网际层">网络层（网际层）
+&lt;/h2>&lt;p>作用：负责跨网络传输，并在传输过程中选择最合适的路径。&lt;/p>
+&lt;p>设计方案：&lt;strong>网络层要设计得尽量简单，向其上层只提供简单灵活的无连接的、尽最大努力交付的数据报服务&lt;/strong>&lt;/p>
+&lt;img src="image/image-20240527151114201-17192977940315.png" alt="image-20240527151114201" style="zoom: 67%;" />
+&lt;p>网络层最重要的任务是&lt;strong>路由选择和分组转发&lt;/strong>&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/image-20240522192211783.png"
+width="1249"
+height="469"
+srcset="https://sfw003.github.io/p/network-layer/image/image-20240522192211783_hu_e725350697868553.png 480w, https://sfw003.github.io/p/network-layer/image/image-20240522192211783_hu_7d80478dc6c54ccd.png 1024w"
+loading="lazy"
+alt="image-20240522192211783"
+class="gallery-image"
+data-flex-grow="266"
+data-flex-basis="639px"
+>&lt;/p>
+&lt;p>要想将数据送到网络世界的某一台主机，首先必须要用一个&lt;strong>唯一的标识符&lt;/strong>来标识主机。网络层给出的解决方式是用&lt;strong>IP地址&lt;/strong>来区别主机。&lt;/p>
+&lt;h2 id="ip地址">IP地址
+&lt;/h2>&lt;p>IP地址的设计可分为两个主要版本：IPv4和IPv6。&lt;/p>
+&lt;h3 id="ipv4">IPv4
+&lt;/h3>&lt;h4 id="格式">格式
+&lt;/h4>&lt;ul>
+&lt;li>IPv4地址是32位的二进制数，通常表示为四个十进制数，即点分十进制，每个数取值范围为0到255，用点号分隔（例如：192.168.0.1）。&lt;/li>
+&lt;/ul>
+&lt;p>问题1：为什么设计成这样？&lt;/p>
+&lt;p>以一个生活中例子来讲解：有个计院的学生，他的学号为0101，现在他捡到了一个校园卡，校园卡上标注的学号为0202。他想将校园卡交给失主，该怎么做？&lt;/p>
+&lt;ol>
+&lt;li>学校人那么多，不可能自己慢慢找，于是他将校园卡交给了计院的学生会&lt;/li>
+&lt;li>计院的学生会首先查看学号的前2位：02，而计院学生的学号开头统一为01，因此不可能为计院的学生。于是计院学生会在学校学生会群里询问。&lt;/li>
+&lt;li>经院学生会发现，02与经院学号开头匹配，表明该校园卡属于经院的学生。于是拿走了校园卡&lt;/li>
+&lt;li>然后经院学生会根据学号的后两位：02，找到了失主。&lt;/li>
+&lt;/ol>
+&lt;img src="image/image-20240525155528302.png" alt="image-20240525155528302" style="zoom: 67%;" />
+&lt;p>网络查找主机的方式，类似于上面找失主的例子，只是网络的层次更多。&lt;/p>
+&lt;p>IP地址相当于学号，众所周知，学号是被划分的，即前n位代表学院，后m位代表该学院的某个学生，IP地址有划分吗? 有！&lt;/p>
+&lt;h4 id="ipv4地址的划分">IPv4地址的划分
+&lt;/h4>&lt;h5 id="分类划分法">分类划分法
+&lt;/h5>&lt;p>IP地址分为两个部分, 网络号和主机号&lt;/p>
+&lt;p>网络号: 保证相互连接的两个网段具有不同的标识;&lt;/p>
+&lt;p>主机号: 用于标识网络和网络中的具体设备，同一网段内, 主机之间具有相同的网络号, 但是必须有不同的主机号;&lt;/p>
+&lt;p>不同的子网其实就是把网络号相同的主机放到一起.如果在子网中新增一台主机, 则这台主机的网络号和这个子网的网络号一致, 但是主机号必须不能和子网中的其他主机重复.&lt;/p>
+&lt;img src="image/image-20240525095931247.png" alt="image-20240525095931247" style="zoom:67%;" />
+&lt;p>初始设计中，地址被分为A、B、C、D和E类，以不同的方式划分网络和主机部分：&lt;/p>
+&lt;img src="image/image-20240525161520938.png" alt="image-20240525161520938" style="zoom:67%;" />
+&lt;p>这种划分称为&lt;strong>分类划分法&lt;/strong>。&lt;/p>
+&lt;hr>
+&lt;p>随着Internet的飞速发展,这种划分方案的局限性很快显现出来,大多数组织都申请B类网络地址, 导致B类地址很快就分配完了, 而A类却浪费了大量地址;例如, 申请了一个B类地址, 理论上一个子网内能允许6万5千多个主机. A类地址的子网内的主机数更多. 然而实际网络架设中, 不会存在一个子网内有这么多的情况. &lt;strong>因此大量的IP地址都被浪费掉了&lt;/strong>&lt;/p>
+&lt;p>针对这种情况提出了新的划分方案, 称为&lt;strong>CIDR(Classless Interdomain Routing):无分类域间路由选择&lt;/strong>&lt;/p>
+&lt;hr>
+&lt;h5 id="无分类域间路由选择-cidr">无分类域间路由选择-CIDR
+&lt;/h5>&lt;ul>
+&lt;li>
+&lt;p>引入一个额外的子网掩码(subnet mask)来区分网络号和主机号;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>子网掩码也是一个32位的正整数. 通常用一串 &amp;ldquo;0&amp;rdquo; 来结尾;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>将IP地址和子网掩码进行 &amp;ldquo;&lt;strong>按位与&lt;/strong>&amp;rdquo; 操作, 得到的结果就是网络号;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>网络号和主机号的划分与这个IP地址是A类、B类还是C类无关;&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>此时IP地址 = {&amp;lt;网络前缀&amp;gt;，&amp;lt;主机号&amp;gt;}&lt;/p>
+&lt;p>&lt;strong>子网掩码(地址掩码)&lt;/strong>：分类的IP地址划分的主要问题就是网络号和主机号的比例只有3类：7:24, 14:16, 21:8，我们想要的根据实际情况，动态更改网络号和主机号的比例。子网掩码可以解决这个问题。&lt;/p>
+&lt;p>那如何求子网掩码呢？&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>定长子网掩码&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>不定长子网掩码&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>CIDR在一定程度上缓解了IP地址不够用的问题(提高了利用率, 减少了浪费, 但是IP地址的绝对上限并没有增加), 仍然&lt;/p>
+&lt;p>不是很够用. 这时候有三种方式来解决:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>动态分配IP地址: 只给接入网络的设备分配IP地址. 因此同一个MAC地址的设备, 每次接入互联网中, 得到的IP地址不一定是相同的;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>NAT技术&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>IPv6: IPv6并不是IPv4的简单升级版. 这是互不相干的两个协议, 彼此并不兼容; IPv6用16字节128位来表示一个IP地址; 但是目前IPv6还没有普及;&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="特殊的ip地址">特殊的IP地址
+&lt;/h4>&lt;h3 id="nat技术">NAT技术
+&lt;/h3>&lt;h4 id="公网ip和私网ip">公网IP和私网IP
+&lt;/h4>&lt;p>如果一个组织内部组建局域网,IP地址只用于局域网内的通信,而不直接连到Internet上,理论上 使用任意的IP地址都可以,但是RFC 1918规定了用于组建局域网的私有IP地址&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>10.*,前8位是网络号,共16,777,216个地址&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>172.16.* 到 172.31.*,前12位是网络号,共1,048,576个地址&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>192.168.*,前16位是网络号,共65,536个地址&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>包含在这个范围中的, 都成为私有IP, 其余的则称为全局IP(或公网IP);&lt;/p>
+&lt;p>问题1:为什么要分公网和私网？公网IP和私网IP是如何工作的？&lt;/p>
+&lt;p>主要是因为IPv4地址不够，因此我们需要复用一些IP地址，一台主机的IP地址不是唯一的吗？怎么还能复用。&lt;/p>
+&lt;p>工作原理如下：&lt;/p>
+&lt;p>一台主机的IP的地址是在联网时由路由器进行分配，为私有IP地址，在不同的局域网内，私有IP地址可能相同。主机发送请求到路由器，如果主机访问的IP不属于该路由器的局域网内，则路由器会更改数据报里的源IP地址，&lt;strong>更改为路由器的WAN口IP&lt;/strong>，向上一级转发。也就是说，数据报在传输过程，&lt;strong>源IP地址一直在变化&lt;/strong>。这样我们只需要给部分路由器赋予唯一的公网IP，而这些路由器下的子网使用私网IP进行管理。&lt;/p>
+&lt;p>这种技术就是&lt;strong>NAT技术&lt;/strong>（网络地址转换）：私网IP地址通常在内部网络中使用，并通过网络地址转换（NAT）设备（如路由器）将私网IP映射到一个或多个公网IP地址。NAT允许多个设备共享一个公网IP地址访问互联网，有效地减少了对公网IP地址的需求。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/image-20240526114735516.png"
+width="1490"
+height="967"
+srcset="https://sfw003.github.io/p/network-layer/image/image-20240526114735516_hu_df3095e513e34673.png 480w, https://sfw003.github.io/p/network-layer/image/image-20240526114735516_hu_292a6949452d3080.png 1024w"
+loading="lazy"
+alt="image-20240526114735516"
+class="gallery-image"
+data-flex-grow="154"
+data-flex-basis="369px"
+>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>一个路由器可以配置两个IP地址, 一个是WAN口IP, 一个是LAN口IP(子网IP).&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>路由器LAN口连接的主机, 都从属于当前这个路由器的子网中.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>不同的路由器, 子网IP其实都是一样的(通常都是192.168.1.1). 子网内的主机IP地址不能重复. 但是子网之间的IP地址就可以重复了.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>每一个家用路由器, 其实又作为运营商路由器的子网中的一个节点. 这样的运营商路由器可能会有很多级,&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>最外层的运营商路由器, WAN口IP就是一个公网IP了.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>子网内的主机需要和外网进行通信时, 路由器将IP首部中的IP地址进行替换(替换成WAN口IP), 这样逐级替换, 最终数据包中的IP地址成为一个公网IP. 这种技术称为NAT(Network Address Translation，网络地址转换).&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>如果希望我们自己实现的服务器程序, 能够在公网上被访问到, 就需要把程序部署在一台具有外网IP的服务器上. 这样的服务器可以在阿里云/腾讯云上进行购买.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>那现在有个问题：主机通过私有IP访问互联网时，路由器会不断更改源IP地址，那么目的主机，也就是服务器，服务器的响应该怎么返回呢？&lt;/p>
+&lt;p>答：当设备在私有网络中访问互联网时，路由器使用NAT将设备的私有IP地址替换为路由器的公网IP地址，**并记录这个映射关系。**这样当服务器返回的响应到路由器后，会根据映射关系跳到下一级路由器，最后到主机。&lt;/p>
+&lt;hr>
+&lt;p>了解完IP地址，那有个问题：谁给主机设置IP地址？&lt;/p>
+&lt;h3 id="ip地址的分配">IP地址的分配
+&lt;/h3>&lt;h4 id="静态配置">静态配置
+&lt;/h4>&lt;p>人手动配置&lt;/p>
+&lt;h4 id="动态配置---dhcp应用层协议">动态配置 - DHCP（应用层协议）
+&lt;/h4>&lt;p>动态主机配置协议DHCP是&lt;strong>应用层&lt;/strong>协议，使用客户/服务器方式，客户端和服务端通过广播方式进行交互，基于UDP。
+DHCP提供即插即用联网的机制，主机可以从服务器动态获取IP地址、子网掩码、默认网关、DNS服务器名称与IP地址,
+允许地址重用，支持移动用户加入网络，支持在用地址续租。&lt;/p>
+&lt;p>1.主机广播DHCP发现报文
+2.DHCP服务器广播DHCP提供报文
+3.主机广播DHCP请求报文
+4.DHCP服务器广播DHCP确认报文&lt;/p>
+&lt;hr>
+&lt;p>那IP地址与数据是如何包装的？&lt;/p>
+&lt;h2 id="网际协议ip">网际协议IP
+&lt;/h2>&lt;h3 id="ip报文格式">IP报文格式
+&lt;/h3>&lt;img src="image/image-20240522192202291.png" alt="image-20240522192202291" style="zoom:80%;" />
+&lt;ul>
+&lt;li>4位版本号(version):指定IP协议的版本,对于IPv4来说,就是4.&lt;/li>
+&lt;li>4位头部长度(header length): IP头部的长度是多少个32bit,也就是 length * 4 的字节数4bit表示最大的数字是15,因此IP头部最大长度是60字节.&lt;/li>
+&lt;li>8位服务类型(Type of Service): 3位优先权字段(已经弃用),4位TOS字段 和1位保留字段(必须置为0).4位TOS分别表示: **最小延时,最大吞吐量,最高可靠性,最小成本,**这四者相互冲突,只能选择一个，需要根据不同的情况选择不同的对于ssh/telnet这样的应用程序,最小延时比较重要; 对于ftp这样的程序,最大吞吐量比较重要.&lt;/li>
+&lt;li>16位总长度(totallength): IP数据报整体占多少个字节.&lt;/li>
+&lt;li>16位标识(id): 唯一的标识主机发送的报文.如果IP报文在数据链路层被分片了,那么每一个片里面的这个id都是相同的.&lt;/li>
+&lt;li>3位标志字段: 第一位保留(保留的意思是现在不用,但是还没想好说不定以后要用到)第二位置为1表示禁止分片,这时候如果报文长度超过MTU,IP模块就会丢弃报文,第三位表示&amp;quot;更多分片”,如果分片了的话最后一个分片置为1，其他是0.类似于一个结束标记.&lt;/li>
+&lt;li>13位分片偏移(framegament offset): 是分片相对于原始IP报文开始处的偏移.其实就是在表示当前分片在原报文中处在哪个位置实际偏移的字节数是这个值*8 得到的.因此，除了最后一个报文之外,其他报文的长度必须是8的整数倍(否则报文就不连续了).&lt;/li>
+&lt;li>8位生存时间(Time To Live, TTL): 数据报到达目的地的最大报文跳数,一般是64.每次经过一个路由,TTL-= 1，一直减到0还没到达,那么就丢弃了.这个字段主要是用来防止出现路由循环&lt;/li>
+&lt;li>8位协议: 表示上层协议的类型&lt;/li>
+&lt;li>16位头部校验和: 使用CRC进行校验,来鉴别头部是否损坏.&lt;/li>
+&lt;li>32位源地址和32位目标地址: 表示发送端和接收端&lt;/li>
+&lt;li>选项字段(不定长,最多40字节): 略&lt;/li>
+&lt;/ul>
+&lt;h3 id="ip层的分组转发">IP层的分组转发
+&lt;/h3>&lt;p>IP（Internet Protocol）报文有时会由于其大小超过了数据链路层的最大传输单元（MTU，Maximum Transmission Unit）而需要进行分片（fragmentation）。&lt;/p>
+&lt;p>控制分片的字段是IP报头里的3位标志和13位片偏移。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/image-20240527093950676.png"
+width="532"
+height="106"
+srcset="https://sfw003.github.io/p/network-layer/image/image-20240527093950676_hu_2fe7eb4a8b2d22f6.png 480w, https://sfw003.github.io/p/network-layer/image/image-20240527093950676_hu_dde79ec519a4b416.png 1024w"
+loading="lazy"
+alt="image-20240527093950676"
+class="gallery-image"
+data-flex-grow="501"
+data-flex-basis="1204px"
+>&lt;/p>
+&lt;p>3位标志&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>第0位（保留位，Reserved Bit，RB）&lt;/strong>：
+&lt;ul>
+&lt;li>始终为0，保留为将来使用。&lt;/li>
+&lt;li>在处理IP报文时，应忽略这个位的值。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>第1位（不分片位，Don&amp;rsquo;t Fragment，DF）&lt;/strong>：
+&lt;ul>
+&lt;li>如果设置为1，则表示不允许对该IP报文进行分片。如果报文大小超过MTU，则报文将被丢弃并返回ICMP错误消息。&lt;/li>
+&lt;li>如果设置为0，则表示允许对该IP报文进行分片。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>第2位（更多分片位，More Fragments，MF）&lt;/strong>：
+&lt;ul>
+&lt;li>如果设置为1，则表示后面还有更多的分片。&lt;/li>
+&lt;li>如果设置为0，则表示这是最后一个分片或者报文没有被分片。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>13位片偏移：片偏移指出：较长的分组在分片后，某片在原分组中的相对付置，也就是说，相对于用户数据字段的起点，该片从何处开始。片偏移以8个字节为偏移单位。这就是说，除最后一个数据报片外，&lt;strong>其他每个分片的长度一定是8字节 (64 位）的整数倍。&lt;/strong>&lt;/p>
+&lt;p>分片过程：&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/image-20240616220046061.png"
+width="1481"
+height="541"
+srcset="https://sfw003.github.io/p/network-layer/image/image-20240616220046061_hu_86bd344c23ee72de.png 480w, https://sfw003.github.io/p/network-layer/image/image-20240616220046061_hu_4a0bb128d212d1ee.png 1024w"
+loading="lazy"
+alt="image-20240616220046061"
+class="gallery-image"
+data-flex-grow="273"
+data-flex-basis="657px"
+>&lt;/p>
+&lt;p>（1）广播地址是网络地址中主机号全l的地址（主机号全0的地址代表网络本身）。销售部和技术部均分配了192.168.1.0/24的IP地址空间，IP地址的前24位为子网的网络号。于是在后8位中划分部门的子网，选择前1位作为部门子网的网络号。令销售部子网的网络号为0，技术部子网的网络号为1，则技术部子网的完整地址为192.168.1.128；令销售部子网的主机号全1，可以得到该部门的广播地址为192.168.1.127。每个主机仅分配一个IP地址，计算目前还可以分配的主机数，用技术部可以分配的主机数减去已分配的主机数，技术部总共可以分配给计算机的主机数为27-2=126(减去全0和全l的主机号）。已经分配了208-129+1=80个，此外还有1个IP地址分配给了路由器的端口(192.168.1.254)，因此还可以分配126-80-1=45台。&lt;/p>
+&lt;p>（2）判断分片的大小，需要考虑各个网段的MTU，而且注意分片的数据长度必须是8B的整数倍。由题可知，在技术部子网内，MTU=800B，IP分组头部长20B，最大1P分片封装数据的字节数为L[(800-20)/8]*8=776。至少需要的分片数[(1500-20)/776=2。第1个分片的偏移量为0；第2个分片的偏移量为776/8=97。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/wps2-17167747939121.jpg"
+width="630"
+height="258"
+srcset="https://sfw003.github.io/p/network-layer/image/wps2-17167747939121_hu_8ad42010d9dc39fa.jpg 480w, https://sfw003.github.io/p/network-layer/image/wps2-17167747939121_hu_8712c04d1f7ee54f.jpg 1024w"
+loading="lazy"
+alt="img"
+class="gallery-image"
+data-flex-grow="244"
+data-flex-basis="586px"
+>&lt;/p>
+&lt;p>丢片问题：&lt;/p>
+&lt;ol>
+&lt;li>第一个丢了：找不到片偏移=0 ==&amp;gt; 第一个丢了&lt;/li>
+&lt;li>中间丢了：根据片偏移和报文大小进行计算，可以得出。比如上面收到1和3，但3片偏移=2000，而1只有1000字节，因此少了1000字节 ==&amp;gt; 2丢了&lt;/li>
+&lt;li>最后一个丢了：找不到MF=0的报文 ==&amp;gt; 最后一个丢了&lt;/li>
+&lt;/ol>
+&lt;p>推荐分片吗？ &lt;strong>不推荐&lt;/strong>。增加了丢包概率，少一个分片都要重发。&lt;/p>
+&lt;h2 id="icmp协议">ICMP协议
+&lt;/h2>&lt;p>为了更有效地转发 IP 数据报和提高交付成功的机会，在网际层使用了网际控制报文协ICMP (Internet Control Message Protocol) 。&lt;/p>
+&lt;p>ICMP协议是一个 &lt;strong>网络层协议&lt;/strong>，它的位置在IP协议上方，简单来说，ICMP的数据是包装在IP报文里。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/image-20240616192603849.png"
+width="682"
+height="444"
+srcset="https://sfw003.github.io/p/network-layer/image/image-20240616192603849_hu_8ad840f5947285d4.png 480w, https://sfw003.github.io/p/network-layer/image/image-20240616192603849_hu_4051fe6e99eda0eb.png 1024w"
+loading="lazy"
+alt="image-20240616192603849"
+class="gallery-image"
+data-flex-grow="153"
+data-flex-basis="368px"
+>&lt;/p>
+&lt;p>”为了更有效地转发 IP 数据报和提高交付成功的机会“， 那ICMP如何提高效率？&lt;/p>
+&lt;p>首先，在发送数据之前，先探探路。&lt;/p>
+&lt;p>因此ICMP报文分为了2种：&lt;strong>ICMP 差错报告报文和 ICMP 询间报文。&lt;/strong>&lt;/p>
+&lt;h3 id="icmp报文的种类">ICMP报文的种类
+&lt;/h3>&lt;h4 id="差错报文的种类">差错报文的种类
+&lt;/h4>&lt;p>(I) 终点不可达&lt;/p>
+&lt;p>当路由器或主机不能交付数据报时就向源点发送终点不可达报文。&lt;/p>
+&lt;p>(2) 时间超过&lt;/p>
+&lt;p>当路由器收到生存时间为零的数据报时，除丢弃该数据报外，还要向&lt;/p>
+&lt;p>源点发送时间超过报文。当终点在预先规定的时间内不能收到一个数据报的全部数据报片时，&lt;/p>
+&lt;p>就把已收到的数据报片都丢弃，并向源点发送时间超过报文。&lt;/p>
+&lt;p>(3) 参数问题&lt;/p>
+&lt;p>当路由器或目的主机收到的数据报的首部中有的字段的伯不正确时，&lt;/p>
+&lt;p>就丢弃该数据报，并向源点发送参数问题报文。&lt;/p>
+&lt;p>(4) 改变路由（重定向）&lt;/p>
+&lt;p>路由器把改变路由报文发送给主机，让主机知道下次应将&lt;/p>
+&lt;p>数据报发送给另外的路由器（也就是说，找到了更好的路由）。&lt;/p>
+&lt;h4 id="询问报文的种类">询问报文的种类
+&lt;/h4>&lt;p>在应用层有个工具：Ping，它是之间跨过&lt;/p>
+&lt;h3 id="icmp的应用">ICMP的应用
+&lt;/h3>&lt;h4 id="ping">PING
+&lt;/h4>&lt;hr>
+&lt;p>前文描述了一个数据报通过NAT技术不断转发的过程，那么具体的某一次转发过程是什么样子的呢？&lt;/p>
+&lt;p>路由的过程, 就是这样一跳一跳(Hop by Hop) &amp;ldquo;问路&amp;rdquo; 的过程.&lt;/p>
+&lt;p>所谓 &amp;ldquo;一跳&amp;rdquo; 就是数据链路层中的一个区间. 具体在以太网中指从源MAC地址到目的MAC地址之间的帧传输区间.&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/image-20240526150101121.png"
+width="1225"
+height="507"
+srcset="https://sfw003.github.io/p/network-layer/image/image-20240526150101121_hu_a6381fc663b2af75.png 480w, https://sfw003.github.io/p/network-layer/image/image-20240526150101121_hu_9807eb87f767df6a.png 1024w"
+loading="lazy"
+alt="image-20240526150101121"
+class="gallery-image"
+data-flex-grow="241"
+data-flex-basis="579px"
+>&lt;/p>
+&lt;p>IP数据包的传输过程也和问路一样.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>当IP数据包, 到达路由器时, 路由器会先查看目的IP;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>路由器决定这个数据包是能直接发送给目标主机, 还是需要发送给下一个路由器;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>依次反复, 一直到达目标IP地址;&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>那么如何判定当前这个数据包该发送到哪里呢?&lt;/p>
+&lt;p>不同网络中的两个主机之间的通信，要经过若干个路由器转发分组来完成，分组查找路由器中的转发表，从指明的按口转发到下个路由器。但转发表是怎样得出的呢？是从路由表导出的。而路山表又是由互联网中许多的路由器，按照共同选定的路由选择协议，通过许多次的相互交换路由信息而产生的。&lt;/p>
+&lt;h2 id="路由">路由
+&lt;/h2>&lt;p>因此路由器传输的信息可以分为两类：&lt;/p>
+&lt;ol>
+&lt;li>数据&lt;/li>
+&lt;li>路由信息&lt;/li>
+&lt;/ol>
+&lt;p>在计算机网络种，将2这抽象为数据平面和控制平面。&lt;/p>
+&lt;p>数据&amp;ndash;数据平面 &amp;ndash;根据转发表进行转发，时间短，直接用硬件解决&lt;/p>
+&lt;p>路由信息&amp;ndash;控制平面 &amp;ndash;根据路由算法得出，时间长，用软件解决&lt;/p>
+&lt;p>控制平面有2种方式：&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>传统方法：每个路由器都有控制平面和数据平面，路由器自己计算路由选择算法。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>SDN（software-Defined Networking) 方法：控制平面在远程控制器，然后远程控制器分发给各路由器。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="路由算法">路由算法
+&lt;/h3>&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/image-20240613222103201.png"
+width="1471"
+height="332"
+srcset="https://sfw003.github.io/p/network-layer/image/image-20240613222103201_hu_82114f1e6d0ac83a.png 480w, https://sfw003.github.io/p/network-layer/image/image-20240613222103201_hu_b8227ac35006d68e.png 1024w"
+loading="lazy"
+alt="image-20240613222103201"
+class="gallery-image"
+data-flex-grow="443"
+data-flex-basis="1063px"
+>&lt;/p>
+&lt;h3 id="路由选择协议--动态路由">路由选择协议 &amp;ndash; 动态路由
+&lt;/h3>&lt;p>路由选择分层:&lt;/p>
+&lt;ul>
+&lt;li>互联网太大：如果让所们的路由器知道所付的网络应怎样到达，则这种路由器将非常大，处理起来也太花时间&lt;/li>
+&lt;li>许多单位也不愿意暴露自己单位网络的细节给外界。&lt;/li>
+&lt;/ul>
+&lt;p>为此，可以把整个互联网划分为许多较小的&lt;strong>自治系统&lt;/strong>(autonomous system), 一般都记为&lt;strong>AS&lt;/strong> 。&lt;/p>
+&lt;img src="image/image-20240616194211665.png" alt="image-20240616194211665" style="zoom: 80%;" />
+&lt;h3 id="rip协议">RIP协议
+&lt;/h3>&lt;blockquote>
+&lt;p>&lt;strong>RIP(Routing Information Protocol)&lt;/strong> 是一种分布式的基于&lt;strong>距离向量&lt;/strong>的路由选择协议，是因特网的协议标准，&lt;strong>最大优点是简单。&lt;/strong>
+RIP协议要求网络中每一个路由器都&lt;strong>维护&lt;/strong>从它自己到其他每一个目的网络的唯一最佳距离记录(即一组距离)。&lt;/p>
+&lt;p>&lt;strong>距离:通常为“跳数”，即从源端口到目的端口所经过的路由器个数，经过一个路由器跳数+1。&lt;/strong>&lt;/p>
+&lt;p>特别的，从一路由器到直接连接的网络距离为1。&lt;/p>
+&lt;p>RIP允许一条路由最多只能包含15个路由器，因此距离为16表示网络不可达。这就表明RIP协议只适用于小互联网。&lt;/p>&lt;/blockquote>
+&lt;p>路由器如何维护这个最佳距离？路由器刚开始就知道这个最佳距离吗？不知道，它需要去“询问”，准确来说“交换”，与其他路由器交换各自的路由信息。&lt;/p>
+&lt;p>问题：和谁交换？何时交换？如何根据交换的路由信息更新自己的路由信息？&lt;/p>
+&lt;ul>
+&lt;li>和谁交换信息：仅和相邻路由器交换信息&lt;/li>
+&lt;li>交换什么信息：自己的路由表&lt;/li>
+&lt;li>何时交换信息：&lt;strong>周期性交换&lt;/strong>(例如每30秒)&lt;/li>
+&lt;/ul>
+&lt;p>路由器刚开始工作时，只知道自己到直连网络的距离为1，经过若干次交换和更新后，每个路由器都知道到达本AS内各网络的最短距离和下一跳地址，这一过程称为&lt;strong>收敛&lt;/strong>。&lt;/p>
+&lt;p>具体的更新方式：&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/image-20240614220632507.png"
+width="1090"
+height="412"
+srcset="https://sfw003.github.io/p/network-layer/image/image-20240614220632507_hu_6961e5c232df22fa.png 480w, https://sfw003.github.io/p/network-layer/image/image-20240614220632507_hu_3d909d9b9b822edf.png 1024w"
+loading="lazy"
+alt="image-20240614220632507"
+class="gallery-image"
+data-flex-grow="264"
+data-flex-basis="634px"
+>&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/note_typora/%e7%bd%91%e7%bb%9c%e7%bc%96%e7%a8%8b/%e8%ae%a1%e7%ae%97%e6%9c%ba%e7%bd%91%e7%bb%9c/%e7%bd%91%e7%bb%9c%e5%b1%82.assets/image-20240614220502629.png"
+loading="lazy"
+alt="image-20240614220502629"
+>&lt;/p>
+&lt;h4 id="rip协议的格式">RIP协议的格式
+&lt;/h4>&lt;p>现在较新的 RIP 版本是 1998 11 月公布的 RlP2 [RFC 2453, STD57], 新版本协议本身并无多大变化，但性能上有些改进。 RIP2 可以支持九分类域间路由选择 CIDR 。此外，RIP2 还提供简单的鉴别过程支持多插。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/image-20240616203227620.png"
+width="687"
+height="290"
+srcset="https://sfw003.github.io/p/network-layer/image/image-20240616203227620_hu_d0e075d1ebe150f9.png 480w, https://sfw003.github.io/p/network-layer/image/image-20240616203227620_hu_e0cdd12e344e1214.png 1024w"
+loading="lazy"
+alt="image-20240616203227620"
+class="gallery-image"
+data-flex-grow="236"
+data-flex-basis="568px"
+>&lt;/p>
+&lt;p>RIP 报义由首部和路由部分组成。在路由部分要填入自治系统号 ASN (Autonomous System Number)，这是考虑使 RIP 有可能收到本自治系统以外的路由选择信息。还要指出目的网络地址（包括网络的子网掩码）、下一跳路由器地址以及到此网络的距离。一个 RIP报文最多可包括 25 个路由。如超过，必须再用一个 RIP报文来传送。&lt;/p>
+&lt;h4 id="rip的缺点">RIP的缺点
+&lt;/h4>&lt;p>RTP 存在的一个问题是当网络出现故障时，要经过比较长的时间才能将此信息传送到所有的路由器。我们可以用图 4-41 的简单例子来说明。设三个网络通过两个路由器互连起来，并且都已建寸了各自的路由表。图中路由器交换的信息只给出了我们感兴趣的一行内容。路&lt;/p>
+&lt;p>路由器 R, 中的 “Net 1,1, 直接”表示”到网 Net1的距离是 I, 直接交付&lt;/p>
+&lt;p>路由器 R2 中的&amp;quot;Net 1,2, R1&amp;quot; 表示”到网 Net1的距离是 2, 下一跳经过 R1&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/image-20240616203801681.png"
+width="1057"
+height="570"
+srcset="https://sfw003.github.io/p/network-layer/image/image-20240616203801681_hu_fc5d1b3131c800a1.png 480w, https://sfw003.github.io/p/network-layer/image/image-20240616203801681_hu_fa7d312017eaf641.png 1024w"
+loading="lazy"
+alt="image-20240616203801681"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="445px"
+>&lt;/p>
+&lt;p>现在假定路由器R1到Net1的线路出问题了，因R1更新自己的路由信息并发送：Net1的距离改为 16, 表示不可达。因而传输的路由表中的相应项目变为 “Net1, 16, 直接“ 。但是，很可能要经过 30 秒钟后才把更新信息发送给 R2 。然而 R2 可能已经先把自己的路由表发送给了 R1，其中有 “Net1, 2, R1&amp;quot; 这一项。&lt;/p>
+&lt;p>R1收到 R2 的更新报文后，便将“Net1, 2, R1&amp;quot; &amp;ndash;&amp;gt; “Net1, 3, R2”，误认为可以通过R2到达Net1，于是又更新自己的路由表。&lt;/p>
+&lt;p>而此时，R2收到了R1不可达Net1的信息,更新了自己路由表。但是R1却认为R2可达Net1。之后二者便互相交换信息，都以为对方可以到达Net1, 由于每次交换都会使路由表中的Net1的距离增加。这样的更新一直继续下去，直到 R1 R2 到Net1 的距离都增大到 16 时，R1和R2才知道原来网 Ne 是不可达的。&lt;/p>
+&lt;p>协议 RIP 的这一特点叫作：&lt;strong>好消息传播得快，而坏消息传播得慢&lt;/strong>。网络出故障的传播时间往往较长（例如数分钟）。这是 RIP 的一个主要缺点。&lt;/p>
+&lt;p>但如果一个路由器发现了更短的路由，那么这种更新信息就传播得很快。&lt;/p>
+&lt;h3 id="路由表">路由表
+&lt;/h3>&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/image-20240526204952824.png"
+width="1059"
+height="345"
+srcset="https://sfw003.github.io/p/network-layer/image/image-20240526204952824_hu_a81d42b59aab7a05.png 480w, https://sfw003.github.io/p/network-layer/image/image-20240526204952824_hu_8eb918997dd58641.png 1024w"
+loading="lazy"
+alt="image-20240526204952824"
+class="gallery-image"
+data-flex-grow="306"
+data-flex-basis="736px"
+>&lt;/p>
+&lt;h4 id="路由表的转发">路由表的转发
+&lt;/h4>&lt;p>路由器转发分组的算法:
+1.提取目的IP地址
+2.是否直接交付
+3.特定主机路由
+4.检测路由表中有无路径
+5.默认路由 0.0.0.0
+6.丢弃，报告转发分组出错&lt;/p>
+&lt;h2 id="网络层设备">网络层设备
+&lt;/h2>&lt;h4 id="路由器">路由器
+&lt;/h4>&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/image-20240616204643269.png"
+width="1511"
+height="645"
+srcset="https://sfw003.github.io/p/network-layer/image/image-20240616204643269_hu_aab17738d70038b5.png 480w, https://sfw003.github.io/p/network-layer/image/image-20240616204643269_hu_a51429ca0d4f3ab.png 1024w"
+loading="lazy"
+alt="image-20240616204643269"
+class="gallery-image"
+data-flex-grow="234"
+data-flex-basis="562px"
+>&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/network-layer/image/image-20240616204738186.png"
+width="1032"
+height="516"
+srcset="https://sfw003.github.io/p/network-layer/image/image-20240616204738186_hu_a3214c74157918e.png 480w, https://sfw003.github.io/p/network-layer/image/image-20240616204738186_hu_e51415100704f74f.png 1024w"
+loading="lazy"
+alt="image-20240616204738186"
+class="gallery-image"
+data-flex-grow="200"
+data-flex-basis="480px"
+>&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/.assets/image-20240616204801265.png"
+loading="lazy"
+alt="image-20240616204801265"
+>&lt;/p></description></item><item><title>应用层</title><link>https://sfw003.github.io/p/application-layer/</link><pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/application-layer/</guid><description>&lt;h2 id="应用层">应用层
+&lt;/h2>&lt;img src="image/image-20240527151104647-17192977497754.png" alt="image-20240527151104647" style="zoom:67%;" />
+&lt;h2 id="dns">DNS
+&lt;/h2>&lt;h3 id="dns的由来">DNS的由来
+&lt;/h3>&lt;p>TCP/IP中使用IP地址和端口号来确定网络上的一台主机的一个程序. 但是IP地址不方便记忆.&lt;/p>
+&lt;p>于是人们发明了一种叫主机名的东西, 是一个字符串, 并且使用hosts文件来描述主机名和IP地址的关系. 。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20240530141941436.png"
+width="1897"
+height="498"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20240530141941436_hu_32aacd5f75cfab4c.png 480w, https://sfw003.github.io/p/application-layer/image/image-20240530141941436_hu_7a42af5b86425d1a.png 1024w"
+loading="lazy"
+alt="image-20240530141941436"
+class="gallery-image"
+data-flex-grow="380"
+data-flex-basis="914px"
+>&lt;/p>
+&lt;p>最初, 通过互连网信息中心(SRI-NIC)来管理这个hosts文件的.&lt;/p>
+&lt;ul>
+&lt;li>如果一个新计算机要接入网络, 或者某个计算机IP变更, 都需要到信息中心申请变更hosts文件.&lt;/li>
+&lt;li>其他计算机也需要定期下载更新新版本的hosts文件才能正确上网&lt;/li>
+&lt;/ul>
+&lt;p>这样就太麻烦了, 于是产生了DNS系统.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>一个组织的系统管理机构, 维护系统内的每个主机的IP和主机名的对应关系. 如果新计算机接入网络, 将这个信息注册到数据库中;&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>用户输入域名的时候, 会自动查询DNS服务器, 由DNS服务器检索数据库, 得到对应的IP地址.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="域名的组成">域名的组成
+&lt;/h3>&lt;p>通常我们称形如&amp;quot;www.sina.com.cn&amp;quot;是一个域名，但从严格意义上讲，&amp;ldquo;sina.com.cn&amp;quot;才被称为域名(全球唯一)，而&amp;quot;www&amp;quot;是主机名。&amp;ldquo;主机名.域名&amp;quot;称为完全限定域名(FQDN)。一个域名下可以有多个主机，域名全球唯一，那么&amp;quot;主机名.域名&amp;quot;肯定也是全球唯一的。&lt;/p>
+&lt;ol>
+&lt;li>顶级域名（TLD）&lt;/li>
+&lt;/ol>
+&lt;p>这是域名的最高级部分，位于最右边。顶级域名有几种类型：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>通用顶级域名（gTLD）&lt;/strong>：如&lt;code>.com&lt;/code>、&lt;code>.org&lt;/code>、&lt;code>.net&lt;/code>、&lt;code>.info&lt;/code>、&lt;code>.biz&lt;/code>等。&lt;/li>
+&lt;li>&lt;strong>国家和地区顶级域名（ccTLD）&lt;/strong>：如&lt;code>.cn&lt;/code>（中国）、&lt;code>.us&lt;/code>（美国）、&lt;code>.uk&lt;/code>（英国）等。&lt;/li>
+&lt;li>&lt;strong>行业和专业领域的（gTLD）&lt;/strong>：如&lt;code>.edu&lt;/code>（教育机构）、&lt;code>.gov&lt;/code>（政府机构）、&lt;code>.mil&lt;/code>（军事机构）、&lt;code>.int&lt;/code>（国际组织）。&lt;/li>
+&lt;li>&lt;strong>新通用顶级域名（new gTLD）&lt;/strong>：如&lt;code>.app&lt;/code>、&lt;code>.tech&lt;/code>、&lt;code>.xyz&lt;/code>、&lt;code>.shop&lt;/code>等。&lt;/li>
+&lt;/ul>
+&lt;ol start="2">
+&lt;li>二级域名（SLD）&lt;/li>
+&lt;/ol>
+&lt;p>位于顶级域名的左边，是域名的一部分，通常代表组织或公司的名称。例如，在&lt;code>example.com&lt;/code>中，&lt;code>example&lt;/code>是二级域名。&lt;/p>
+&lt;ol start="3">
+&lt;li>子域名&lt;/li>
+&lt;/ol>
+&lt;p>这是在二级域名的左边，可以有多个层级，用于更具体的组织和管理。例如，在&lt;code>blog.example.com&lt;/code>中，&lt;code>blog&lt;/code>是子域名。子域名可以进一步分层，如&lt;code>support.blog.example.com&lt;/code>。&lt;/p>
+&lt;ol start="4">
+&lt;li>主机名&lt;/li>
+&lt;/ol>
+&lt;p>主机名指向特定的设备或服务器，通常是子域名中的最左边部分。例如，在&lt;code>mail.example.com&lt;/code>中，&lt;code>mail&lt;/code>是主机名，指向邮件服务器。&lt;/p>
+&lt;h3 id="dns查询">DNS查询
+&lt;/h3>&lt;p>DNS服务器采用分层的结构，整体看上去像一颗&lt;strong>树&lt;/strong>。为什么采用分层的结构？在启用域名功能之前，单凭主机名还无法完全管理IP地址，因为在不同的组织机构中不允许有同名的主机。然而，当出现了带有层次结构的域名之后，每一个组织机构就可以自由地为主机命名了。&lt;/p>
+&lt;p>当在浏览器输入一个域名，查询顺序如下：&lt;/p>
+&lt;p>&lt;strong>（1）查看浏览器缓存&lt;/strong>&lt;/p>
+&lt;p>当用户通过浏览器访问某域名时，本地DNS解析器首先会在浏览器的缓存中查找是否有该域名对应的 IP 地址（若曾经访问过该域名且没有清空缓存便存在）。&lt;/p>
+&lt;p>&lt;strong>（2）查看hosts文件&lt;/strong>&lt;/p>
+&lt;p>由于&lt;code>hosts&lt;/code> 文件是一个静态配置文件，系统会首先查找这个文件中的条目。任何匹配的域名都会直接使用&lt;code>hosts&lt;/code> 文件中的IP地址，而不会进行后续查询。&lt;/p>
+&lt;p>windows: &lt;code>C:\Windows\System32\drivers\etc\hosts&lt;/code>&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20240602154449621.png"
+width="746"
+height="187"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20240602154449621_hu_18d2304176ba4768.png 480w, https://sfw003.github.io/p/application-layer/image/image-20240602154449621_hu_f072ded1b123d68f.png 1024w"
+loading="lazy"
+alt="image-20240602154449621"
+class="gallery-image"
+data-flex-grow="398"
+data-flex-basis="957px"
+>&lt;/p>
+&lt;p>&lt;strong>（3）查看系统DNS缓存&lt;/strong>&lt;/p>
+&lt;p>如果hosts文件里没有，检测系统DNS缓存。windows主机查询DNS缓存的命令：&lt;code>ipconfig /displaydns&lt;/code> , &lt;code>ipconfig /flushdns&lt;/code>命令用于清除系统的DNS缓存&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20240530145414067.png"
+width="677"
+height="244"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20240530145414067_hu_4332cceabe1ae463.png 480w, https://sfw003.github.io/p/application-layer/image/image-20240530145414067_hu_264cad1d0f0cc9eb.png 1024w"
+loading="lazy"
+alt="image-20240530145414067"
+class="gallery-image"
+data-flex-grow="277"
+data-flex-basis="665px"
+>&lt;/p>
+&lt;p>&lt;strong>（4）查看路由器缓存&lt;/strong>&lt;/p>
+&lt;p>路由器通常配置为DNS中继器，转发DNS查询请求，某些路由器可能有DNS缓存功能，如果有，则会检测路由器缓存&lt;/p>
+&lt;p>&lt;strong>（5）查看ISP DNS 缓存&lt;/strong>&lt;/p>
+&lt;p>当在用户客服端查找不到域名对应 IP 地址，则将进入 ISP DNS 缓存中进行查询。比如你用的是电信的网络，则会进入电信的 DNS 缓存服务器中进行查找。&lt;/p>
+&lt;p>&lt;strong>（6）递归\迭代查询&lt;/strong>&lt;/p>
+&lt;ol>
+&lt;li>询问根域名服务器&lt;/li>
+&lt;/ol>
+&lt;p>当以上均未完成，则进入根服务器进行查询。全球仅有 13 台根域名服务器，1 个主根域名服务器，其余 12 为辅根域名服务器。根域名收到请求后会查看区域文件记录，若无则将其管辖范围内顶级域名（如.com、.cn等）服务器 IP 告诉本地 DNS 服务器。&lt;/p>
+&lt;ol start="2">
+&lt;li>询问顶级域名服务器&lt;/li>
+&lt;/ol>
+&lt;p>顶级域名服务器收到请求后查看区域文件记录，若无记录则将其管辖范围内权威域名服务器的 IP 地址告诉本地 DNS 服务器。&lt;/p>
+&lt;ol start="3">
+&lt;li>询问权威域名（主域名）服务器&lt;/li>
+&lt;/ol>
+&lt;p>权威域名服务器接收到请求后查询自己的缓存，如果没有则进入下一级域名服务器进行查找，并重复该步骤直至找到正确记录。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20240602104743988.png"
+width="1596"
+height="767"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20240602104743988_hu_4e92e61eb5d08df1.png 480w, https://sfw003.github.io/p/application-layer/image/image-20240602104743988_hu_844714c86a607c44.png 1024w"
+loading="lazy"
+alt="image-20240602104743988"
+class="gallery-image"
+data-flex-grow="208"
+data-flex-basis="499px"
+>&lt;/p>
+&lt;p>递归查询一般不常用，而是将递归和迭代相结合的形式：&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20240602105327086.png"
+width="1807"
+height="729"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20240602105327086_hu_777a9876c613c5c4.png 480w, https://sfw003.github.io/p/application-layer/image/image-20240602105327086_hu_f6d2a1e21ec5521f.png 1024w"
+loading="lazy"
+alt="image-20240602105327086"
+class="gallery-image"
+data-flex-grow="247"
+data-flex-basis="594px"
+>&lt;/p>
+&lt;p>实验：修改hosts文件，修改www.baidu.com 对应的ip，导致浏览器无法访问百度&lt;/p>
+&lt;p>以谷歌浏览器为例：&lt;/p>
+&lt;ol>
+&lt;li>首先清除谷歌的DNS缓存&lt;/li>
+&lt;/ol>
+&lt;p>谷歌浏览器输入：chrome://net-internals/#sockets 在出现的页面中分别点击&lt;/p>
+&lt;ul>
+&lt;li>「DNS」-&amp;gt;「Clear host cache」&lt;/li>
+&lt;li>「Socket」-&amp;gt;「Flush socket pools」&lt;/li>
+&lt;/ul>
+&lt;img src="image/image-20240530151709220.png" alt="image-20240530151709220" style="zoom: 80%;" />
+&lt;ol start="2">
+&lt;li>以管理员身份运行记事本，修改hosts, windows系统下hosts文件路径 &lt;code>C:\Windows\System32\drivers\etc\hosts&lt;/code>&lt;/li>
+&lt;/ol>
+&lt;p>添加：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">192.0.2.1 baidu.com
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">192.0.2.1 www.baidu.com
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">#为注释
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ol start="3">
+&lt;li>刷新本地缓存：&lt;code>ipconfig /flushdns&lt;/code>&lt;/li>
+&lt;/ol>
+&lt;p>此时在谷歌浏览器输入www.baidu.com则进不去。&lt;/p>
+&lt;h2 id="url">URL
+&lt;/h2>&lt;p>URL: （Uniform Resource Locator，统一资源定位符）是互联网上用于指定资源位置的标准格式。
+&lt;img src="https://sfw003.github.io/p/application-layer/image/8a5a3af309d5afb265482b0b8b6924a7.png"
+width="1355"
+height="321"
+srcset="https://sfw003.github.io/p/application-layer/image/8a5a3af309d5afb265482b0b8b6924a7_hu_6ade9270ae54005d.png 480w, https://sfw003.github.io/p/application-layer/image/8a5a3af309d5afb265482b0b8b6924a7_hu_c64fe9c030ed2c7f.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="422"
+data-flex-basis="1013px"
+>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>协议&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>登录信息&lt;/strong>：现在一般很少见到，多数的登录信息会通过登录界面来解决。&lt;/li>
+&lt;li>&lt;strong>服务器地址&lt;/strong>：可以直接使用IP地址，也可以使用域名。一般情况我们看到的是域名。&lt;/li>
+&lt;li>&lt;strong>端口号&lt;/strong>：一般情况下我们看不到。多数协议是有固定的端口号的。比如：http &amp;ndash; 80端口， ftp &amp;ndash; 21。因此浏览器会自动&lt;strong>根据协议确定端口号&lt;/strong>。当然也可以手动添加。&lt;/li>
+&lt;li>&lt;strong>文件路径&lt;/strong>：指定了资源在服务器上的位置。路径由斜杠（/）分隔成多个部分，每个部分表示资源在服务器文件系统中的一个目录或文件。这个路径可以是&lt;strong>绝对路径&lt;/strong>，也可以是&lt;strong>相对路径&lt;/strong>。具体的实现方式在后文讲解。&lt;/li>
+&lt;li>&lt;strong>查询字符串&lt;/strong>：可选的部分，用于向服务器传递参数。查询字符串以问号（?）开头，参数的形式为key=value，即形式为参数=参数值，不同参数之间用和号（&amp;amp;）连接。&lt;/li>
+&lt;li>&lt;strong>片段标识符&lt;/strong>：可选的部分，指定了资源中的特定片段或位置。片段标识符以井号（#）开头。&lt;/li>
+&lt;/ul>
+&lt;p>一个典型的URL如下：
+&lt;code>https://www.example.com/path/to/resource?param1=value1&amp;amp;param2=value2#section1 &lt;/code>&lt;/p>
+&lt;p>特殊字符：在标准的URL是有一些特殊字符的，如&lt;code>: . / ? #&lt;/code>等。
+这些字符是有特殊含义的，如果用户输入的信息也包含特殊字符呢？
+&lt;img src="https://sfw003.github.io/p/application-layer/image/d0d22e77ce718cdb1a6c7cb59f4d0d51.png"
+width="1654"
+height="211"
+srcset="https://sfw003.github.io/p/application-layer/image/d0d22e77ce718cdb1a6c7cb59f4d0d51_hu_43242300dbd79cef.png 480w, https://sfw003.github.io/p/application-layer/image/d0d22e77ce718cdb1a6c7cb59f4d0d51_hu_5723b73eb755a1d9.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="783"
+data-flex-basis="1881px"
+>
+&lt;code>https://www.baidu.com/s?ie=utf-8&amp;amp;f=8&amp;amp;rsv_bp=1&amp;amp;tn=44004473_8_oem_dg&amp;amp;wd=%2F%2F%2F%2F%3F%3F%3F%3F&amp;amp;oq=%25E5%25BE%25AE%25E4%25BF%25A1&amp;amp;rsv_pq=9096029e0051298e&amp;amp;rsv_t=9c9fTtRQZn57sCTrXfNf5Nd12s3mvBMGfVc9IDGDaHxz%2FHsJqX5ofYHt5v9i5psyTgxUV%2BXp6wU&amp;amp;rqlang=cn&amp;amp;rsv_enter=1&amp;amp;rsv_dl=tb&amp;amp;rsv_sug3=16&amp;amp;rsv_sug1=6&amp;amp;rsv_sug7=100&amp;amp;bs=%E5%BE%AE%E4%BF%A1&lt;/code>&lt;/p>
+&lt;p>显然不能直接将带有&lt;strong>特殊字符的内容&lt;/strong>传参到URL里面，因此要进行编码（encode）。&lt;/p>
+&lt;ul>
+&lt;li>urlencode：编码&lt;/li>
+&lt;li>urldecode：解码&lt;/li>
+&lt;/ul>
+&lt;p>浏览器会将用户的搜索信息进行编码，发给服务器，服务器再进行解码。&lt;/p>
+&lt;p>转义的规则如下:
+将需要转码的字符转为16进制，然后从右到左，取4位(不足4位直接处理)，每2位做一位，前面加上%，编码成%XY&lt;/p>
+&lt;p>如：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">+ %2B
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/ %2F
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">? %3F
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">% %25
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># %23
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;amp; %26
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;hr>
+&lt;h2 id="http协议">HTTP协议
+&lt;/h2>&lt;p>Web的应用层协议是超文本传输协议（HyperText TransferProtocol，HTTP），它是Web的核心，在[RFC1945］和[RFC2616］中进行了定义。HTTP由两个程序实现：一个客户程序和一个服务器程序。客户程序和服务器程序运行在不同的端系统中，通过交换HTTP报文进行会话。HTTP定义了这些报文的结构以及客户和服务器进行报文交换的方式。&lt;/p>
+&lt;h3 id="http请求-request">HTTP请求 request
+&lt;/h3>&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20240522193056733.png"
+width="1107"
+height="424"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20240522193056733_hu_bf2a077cd1c7c239.png 480w, https://sfw003.github.io/p/application-layer/image/image-20240522193056733_hu_e1c030c9292d3a0c.png 1024w"
+loading="lazy"
+alt="image-20240522193056733"
+class="gallery-image"
+data-flex-grow="261"
+data-flex-basis="626px"
+>&lt;/p>
+&lt;h4 id="method">Method
+&lt;/h4>&lt;img src="image/image-20240522193958081.png" alt="image-20240522193958081" style="zoom: 67%;" />
+&lt;p>GET和POST是安全和幂等的吗？&lt;/p>
+&lt;p>先说明下安全和幂等的概念：&lt;/p>
+&lt;ul>
+&lt;li>在HTTP 协议里，所谓的「安全」是指请求方法不会「破坏」服务器上的资源。&lt;/li>
+&lt;li>所谓的「幂等」，意思是多次执行相同的操作，结果都是「相同」的。&lt;/li>
+&lt;/ul>
+&lt;p>如果从 RFC 规范定义的语义来看:&lt;/p>
+&lt;ul>
+&lt;li>GET方法就是安全且幂等的，因为它是「只读」操作，无论操作多少次，服务器上的数据都是安全的，
+且每次的结果都是相同的。所以，可以对GET请求的数据做缓存，这个缓存可以做到浏览器本身上
+（彻底避免浏览器发请求），也可以做到代理上（如nginx），而且在浏览器中GET请求可以保存为书
+签。&lt;/li>
+&lt;li>POST因为是「新增或提交数据」的操作，会修改服务器上的资源，所以是不安全的，且多次提交数据就会创建多个资源，所以不是幂等的。所以，浏览器一般不会缓存POST请求，也不能把POST请求保存为书签。&lt;/li>
+&lt;/ul>
+&lt;p>做个简要的小结。
+GET的语义是请求获取指定的资源。GET方法是安全、幂等、可被缓存的。
+POST的语义是根据请求负荷（报文主体）对指定的资源做出处理，具体的处理方式视资源类型而不同。
+POST不安全，不幂等，（大部分实现）不可缓存。
+注意，上面是从 RFC 规范定义的语义来分析的。
+但是实际过程中，开发者不一定会按照 RFC 规范定义的语义来实现 GET 和 POST方法。比如：
+·可以用GET方法实现新增或删除数据的请求，这样实现的GET方法自然就不是安全和幂等。
+·可以用POST方法实现查询数据的请求，这样实现的POST方法自然就是安全和幂等。&lt;/p>
+&lt;p>GET请求主要用于从服务器获取实体资源，资源可被缓存，可以记录历史记录&lt;/p>
+&lt;p>POST请求主要用于向服务器提交表单数据，因此POST请求不会被缓存，POST请求不会保留在浏览器历史记录当中，POST请求不能被保存为书签，POST请求对数据长度没有要求&lt;/p>
+&lt;p>PUT方法请求服务器去把请求里的实体存储在请求URI（Request-URI）标识下。&lt;/p>
+&lt;ul>
+&lt;li>如果请求URI（Request-URI）指定的的资源已经在源服务器上存在，那么此请求里的实体应该被当作是源服务器关于此URI所指定资源实体的最新修改版本。&lt;/li>
+&lt;li>如果请求URI（Request-URI）指定的资源不存在，并且此URI被用户代理定义为一个新资源，那么源服务器就应该根据请求里的实体创建一个此URI所标识下的资源。如果一个新的资源被创建了，源服务器必须能向用户代理（user agent） 发送201（已创建）响应。如果已存在的资源被改变了，那么源服务器应该发送200（Ok）或者204（无内容）响应&lt;/li>
+&lt;/ul>
+&lt;h4 id="请求头选项">请求头选项
+&lt;/h4>&lt;p>格式：&lt;code>key: value&lt;/code>&lt;/p>
+&lt;p>&lt;strong>Connection&lt;/strong>：指明长短连接&lt;/p>
+&lt;ul>
+&lt;li>close 表示短连接&lt;/li>
+&lt;li>keep-alive表示长连接&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>Content-Type&lt;/strong>：用于告诉客户实际返回的内容的内容类型或者说编码类型&lt;/p>
+&lt;p>比如 Content-Type: text/html; charset=utf-8 用于表示正文是 text/html文档类型，字符集为utf-8&lt;/p>
+&lt;p>&lt;strong>Content-Language&lt;/strong>：用于表示用户希望采用的语言或语言组合&lt;/p>
+&lt;p>比如 Content-Language: de-DE 表示该文件为说德语的人提供，但是要注意者不代表文件内容就是德语的。&lt;/p>
+&lt;p>这里理解 Content-Type 和 Content-Language 区别： Content-Language更多表示上层语言的表示， 而Content-Type用于底层数据编码的表示。因此在响应报文头部设置字符编码是在Content-Type中设置charset属性，大小写不敏感&lt;/p>
+&lt;p>&lt;strong>cookie&lt;/strong>：cookie的中文翻译是曲奇，小甜饼的意思。cookie其实就是一些数据信息，类型为“&lt;strong>小型文本文件&lt;/strong>”，存储于电脑上的文本文件中。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20240522201824467.png"
+width="2441"
+height="1198"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20240522201824467_hu_5c20ca5c4ac44d42.png 480w, https://sfw003.github.io/p/application-layer/image/image-20240522201824467_hu_5959d309dc256ff5.png 1024w"
+loading="lazy"
+alt="image-20240522201824467"
+class="gallery-image"
+data-flex-grow="203"
+data-flex-basis="489px"
+>&lt;/p>
+&lt;p>为什么有cookie?&lt;/p>
+&lt;p>HTTP里的Cookie是一种用于在客户端（如浏览器）和服务器之间存储和交换信息的小数据片段。Cookie的主要作用是保持状态信息，因为HTTP协议本身是无状态的，其无状态性主要体现在每个请求都是独立的，服务器不会自动保存任何关于客户端的上下文信息。这种设计简化了协议，但也带来了一些挑战，需要其他机制来管理会话和状态。Cookie可以用于各种用途，如用户身份验证、会话管理、用户偏好保存等。&lt;/p>
+&lt;p>下面为cookie用作会话管理的示意图：&lt;/p>
+&lt;p>cookie不能直接存放用户的邮箱和密码，这会有安全问题，因此会用sessionID来替代用户的邮箱和密码。&lt;/p>
+&lt;p>sessionID通常实验token，一串字符串。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20240522202132932.png"
+width="1269"
+height="549"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20240522202132932_hu_73197442004e55de.png 480w, https://sfw003.github.io/p/application-layer/image/image-20240522202132932_hu_9f948e90119d693d.png 1024w"
+loading="lazy"
+alt="image-20240522202132932"
+class="gallery-image"
+data-flex-grow="231"
+data-flex-basis="554px"
+>&lt;/p>
+&lt;h3 id="http响应-response">HTTP响应 response
+&lt;/h3>&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20240522193113564.png"
+width="1106"
+height="549"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20240522193113564_hu_1c2ec54d2fea7b9b.png 480w, https://sfw003.github.io/p/application-layer/image/image-20240522193113564_hu_3a34756643fde06d.png 1024w"
+loading="lazy"
+alt="image-20240522193113564"
+class="gallery-image"
+data-flex-grow="201"
+data-flex-basis="483px"
+>&lt;/p>
+&lt;h4 id="状态码">状态码
+&lt;/h4>&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20240522195301476.png"
+width="1209"
+height="428"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20240522195301476_hu_b9ef102a424c9ebc.png 480w, https://sfw003.github.io/p/application-layer/image/image-20240522195301476_hu_daa72efb4d3f2b1b.png 1024w"
+loading="lazy"
+alt="image-20240522195301476"
+class="gallery-image"
+data-flex-grow="282"
+data-flex-basis="677px"
+>&lt;/p>
+&lt;h5 id="1xx-接受的请求正在处理">&lt;strong>1xx-接受的请求正在处理&lt;/strong>
+&lt;/h5>&lt;h5 id="2xx---请求正常处理完毕">&lt;strong>2xx - 请求正常处理完毕&lt;/strong>
+&lt;/h5>&lt;p>200: ok&lt;/p>
+&lt;h5 id="3xx---需要进行附加操作以完成请求">&lt;strong>3xx - 需要进行附加操作以完成请求&lt;/strong>
+&lt;/h5>&lt;p>301：&lt;/p>
+&lt;ul>
+&lt;li>301 状态码表明目标资源被永久的移动到了一个新的 URI，任何未来对这个资源的引用都应该使用新的 URI。&lt;/li>
+&lt;/ul>
+&lt;p>302：&lt;/p>
+&lt;ul>
+&lt;li>302 状态码表示目标资源临时移动到了另一个 URI 上。由于重定向是临时发生的，所以客户端在之后的请求中还应该使用原本的 URI。&lt;/li>
+&lt;li>由于历史原因，用户代理可能会在重定向后的请求中把 POST 方法改为 GET方法。如果不想这样，应该使用 307（Temporary Redirect） 状态码&lt;/li>
+&lt;/ul>
+&lt;p>303：&lt;/p>
+&lt;ul>
+&lt;li>303 状态码表示服务器要将浏览器重定向到另一个资源。从语义上讲，重定向到的资源并不是你所请求的资源，而是对你所请求资源的一些描述。&lt;/li>
+&lt;li>比如303 常用于将 POST 请求重定向到 GET 请求，比如你上传了一份个人信息，服务器发回一个 303 响应，将你导向一个“上传成功”页面。&lt;/li>
+&lt;/ul>
+&lt;p>307：&lt;/p>
+&lt;ul>
+&lt;li>307 的定义实际上和 302 是一致的，唯一的区别在于，307 状态码不允许浏览器将原本为 POST 的请求重定向到 GET 请求上。&lt;/li>
+&lt;/ul>
+&lt;p>308：&lt;/p>
+&lt;ul>
+&lt;li>308 的定义实际上和 301 是一致的，唯一的区别在于，308 状态码不允许浏览器将原本为 POST 的请求重定向到 GET 请求上。&lt;/li>
+&lt;/ul>
+&lt;h5 id="4xx-服务器无法处理请求-客户端的问题">&lt;strong>4xx-服务器无法处理请求-客户端的问题&lt;/strong>
+&lt;/h5>&lt;p>403：&lt;/p>
+&lt;p>禁止访问，服务器理解请求客户端的请求，但是拒绝执行此请求（比如权限不足，ip被拉黑。。。等一系列原因）&lt;/p>
+&lt;p>404：NOT FOUND&lt;/p>
+&lt;p>表示客户端请求的资源不存在&lt;/p>
+&lt;h5 id="5xx-服务器处理出错-服务器的问题">&lt;strong>5xx-服务器处理出错-服务器的问题&lt;/strong>
+&lt;/h5>&lt;p>503 由于临时的服务器维护或者过载，服务器当前无法处理请求。. 这个状况是临时的，并且将在一段时间以后恢复。&lt;/p>
+&lt;h3 id="http-header">HTTP Header
+&lt;/h3>&lt;p>http的请求报头和响应报头的内容是一些key:value的参数。
+常见有以下几个：&lt;/p>
+&lt;ul>
+&lt;li>Content-Type: 数据类型(text/html等)&lt;/li>
+&lt;li>Content-Length: Body的长度&lt;/li>
+&lt;li>Host: 客户端告知服务器, 所请求的资源是在哪个主机的哪个端口上;&lt;/li>
+&lt;li>User-Agent: 声明用户的操作系统和浏览器版本信息;&lt;/li>
+&lt;li>referer: 当前页面是从哪个页面跳转过来的;&lt;/li>
+&lt;li>location: 搭配3xx状态码使用, 告诉客户端接下来要去哪里访问;&lt;/li>
+&lt;li>Cookie: 用于在客户端存储少量信息. 通常用于实现会话(session)的功能;&lt;/li>
+&lt;/ul>
+&lt;p>下面介绍一下cookie:
+我们平时访问某些网站，会观察到以下现象：第一次访问，它会要求你进行登录，但在之后的几天内进行访问，它会自动登录，又过了几天后，它又会要求你重新输入账号密码进行登录。
+这是为什么呢？
+首先我要明确一个概念：http协议默认是无状态的。它并不会关心你以前访问哪些资源，比如我们刷新一次网页，浏览器便会再次提交http请求。（当然，现在的浏览器可能会进行在本地缓存，但对http协议本身来说，是需要再次提交请求）
+这就导致当我们登录网站后，刷新一下页面或者访问网站的资源，又会要求我们输入账号和密码，这显然对用户很不友好。而cookie便可以解决这个问题。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/b6222a831a732e1ce3dfa1770aaf2597.png"
+width="3004"
+height="1292"
+srcset="https://sfw003.github.io/p/application-layer/image/b6222a831a732e1ce3dfa1770aaf2597_hu_2e248c279a885137.png 480w, https://sfw003.github.io/p/application-layer/image/b6222a831a732e1ce3dfa1770aaf2597_hu_8873d073416efd6b.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="232"
+data-flex-basis="558px"
+>
+第一次登录后，网站会响应一个Set Cookie给浏览器，浏览器会将Set Cookie的信息保存到一个文件里，这个文件我们叫作Cookie文件。之后再次进行访问时，浏览器会自动将Cookie文件的信息发给网站，自动完成登录。
+如何验证？以edge浏览器为例。
+&lt;img src="https://sfw003.github.io/p/application-layer/image/11285886352ca3e44a23d613d572e997.png"
+width="1354"
+height="874"
+srcset="https://sfw003.github.io/p/application-layer/image/11285886352ca3e44a23d613d572e997_hu_a8ce45457b665d89.png 480w, https://sfw003.github.io/p/application-layer/image/11285886352ca3e44a23d613d572e997_hu_8155dd7294cb2a02.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="154"
+data-flex-basis="371px"
+>&lt;/p>
+&lt;p>Location：重定向&lt;/p>
+&lt;p>目的资源改变了路径，但是保持原链接依然可用，或者用于将客户端资源请求导向新的URL，通过3xx状态码表示重定向，通过头部字段中设定新的请求URL&lt;/p>
+&lt;ul>
+&lt;li>301：表示永久重定向&lt;/li>
+&lt;li>302：表示临时重定向&lt;/li>
+&lt;/ul>
+&lt;h2 id="https">HTTPS
+&lt;/h2>&lt;p>HTTPS 也是⼀个应⽤层协议. 是在 HTTP 协议的基础上引⼊了⼀个加密层&lt;/p>
+&lt;h3 id="对称加密和非对称加密">对称加密和非对称加密
+&lt;/h3>&lt;p>&lt;strong>对称加密&lt;/strong>其实就是通过同一个&amp;quot;密钥”，把明文加密成密文，并且也能把密文解密成明文.
+一个简单的对称加密，按位异或
+假设明文a=1234，密钥key=8888
+则加密a^key得到的密文b为9834.
+然后针对密文9834再次进行运算b^key，得到的就是原来的明文1234.
+（对于字符串的对称加密也是同理，每一个字符都可以表示成一个数字)
+当然，按位异或只是最简单的对称加密.HTTPS中并不是使用按位异或.&lt;/p>
+&lt;p>但事情没这么简单.服务器同一时刻其实是给很多客户端提供服务的.这么多客户端，每个人用的秘钥都必须是不同的（如果是相同那密钥就太容易扩散了，黑客就也能拿到了）.因此服务器就需要维护每个客户端和每个密钥之间的关联关系，这也是个很麻烦的事情～&lt;/p>
+&lt;img src="image/image-20241126164557409.png" alt="image-20241126164557409" style="zoom:67%;" />
+&lt;p>比较理想的做法，就是能在客户端和服务器建立连接的时候，双方协商确定这次的密钥是啥～&lt;/p>
+&lt;p>但是如果直接把密钥明文传输，那么黑客也就能获得密钥了~～此时后续的加密操作就形同虚设了，
+&lt;strong>因此密钥的传输也必须加密传输！&lt;/strong>
+但是要想对密钥进行对称加密，就仍然需要先协商确定一个“密钥的密钥&amp;quot;这就成了&amp;quot;先有鸡还是先有
+蛋”的问题了.此时密钥的传输再用对称加密就行不通了，&lt;/p>
+&lt;img src="image/image-20241126165624456.png" alt="image-20241126165624456" style="zoom:67%;" />
+&lt;p>再引入非对称密钥&lt;/p>
+&lt;p>&lt;strong>非对称加密&lt;/strong>要用到两个密钥，一个叫做“公钥&amp;rdquo;，一个叫做&amp;quot;私钥&amp;rdquo;
+公钥和私钥是配对的.最大的缺点就是运算速度非常慢，比对称加密要慢很多，&lt;/p>
+&lt;ul>
+&lt;li>通过公钥对明文加密，变成密文&lt;/li>
+&lt;li>通过私钥对密文解密，变成明文&lt;/li>
+&lt;/ul>
+&lt;p>也可以反着用&lt;/p>
+&lt;ul>
+&lt;li>通过私钥对明文加密，变成密文&lt;/li>
+&lt;li>通过公钥对密文解密，变成明文&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20241126164824351.png"
+width="1416"
+height="605"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20241126164824351_hu_b82629669aa97d8f.png 480w, https://sfw003.github.io/p/application-layer/image/image-20241126164824351_hu_e0578ee10cef2b9f.png 1024w"
+loading="lazy"
+alt="image-20241126164824351"
+class="gallery-image"
+data-flex-grow="234"
+data-flex-basis="561px"
+>&lt;/p>
+&lt;p>客户端在本地生成对称密钥，通过公钥加密，发送给服务器，
+由于中间的网络设备没有私钥，即使截获了数据，也无法还原出内部的原文，也就无法获取到对称密钥
+服务器通过私钥解密，还原出客户端发送的对称密钥.并且使用这个对称密钥加密给客户端返回的响应数据.
+后续客户端和服务器的通信都只用对称加密即可.由于该密钥只有客户端和服务器两个主机知道，其他主机/设备不知道密钥即使截获数据也没有意义，&lt;/p>
+&lt;p>由于对称加密的效率比非对称加密高很多，因此只是在开始阶段协商密钥的时候使用非对称加密，后续的传输仍然使用对称加密，&lt;/p>
+&lt;p>但问题来了：服务器生成公钥和私钥&lt;/p>
+&lt;ul>
+&lt;li>客户端如何获取到公钥？&lt;/li>
+&lt;li>客户端如何确定这个公钥不是黑客伪造的？&lt;/li>
+&lt;/ul>
+&lt;p>正是存在这个问题，可以使用中间人攻击。&lt;/p>
+&lt;h3 id="中间人攻击">中间人攻击
+&lt;/h3>&lt;ol>
+&lt;li>服务器具有非对称加密算法的公钥S，私钥S'&lt;/li>
+&lt;li>中间人具有非对称加密算法的公钥M，私钥M'&lt;/li>
+&lt;li>客户端向服务器发起请求，服务器明文传送公钥S给客户端&lt;/li>
+&lt;li>&lt;strong>中间人劫持数据报文，提取公钥S并保存好，然后将被劫持报文中的公钥S替换成为自己的公钥M，并将伪造报文发给客户端&lt;/strong>&lt;/li>
+&lt;li>客户端收到报文，提取公钥M(自己当然不知道公钥被更换过了)，自己形成对称秘钥X，用公钥M加密X，形成报文发送给服务器&lt;/li>
+&lt;li>&lt;strong>中间人劫持后，直接用自己的私钥M&amp;rsquo;进行解密，得到通信秘钥X，再用曾经保存的服务端公钥S加密后，将报文推送给服务器&lt;/strong>&lt;/li>
+&lt;li>服务器拿到报文，用自己的私钥S&amp;rsquo;解密，得到通信秘钥X&lt;/li>
+&lt;li>双方开始采用X进行对称加密，进行通信。但是一切都在中间人的掌握中，劫持数据，进行窃听甚
+至修改，都是可以的&lt;/li>
+&lt;/ol>
+&lt;p>这个问题的关键在于：&lt;strong>客户端无法分辨服务器发送公钥是否被调包&lt;/strong>。&lt;/p>
+&lt;p>因此可以引入一个第三方结构，通过第三方结构来作证&lt;strong>客户端收到的公钥&lt;/strong>是正确的。&lt;/p>
+&lt;h3 id="引入证书">引入证书
+&lt;/h3>&lt;p>服务端在使用HTTPS前，需要向CA机构申领一份数字证书，数字证书里含有证书申请者信息、公钥信息等。服务器把证书传输给浏览器，浏览器从证书里获取公钥就行了，证书就如身份证，证明服务端公钥的权威性&lt;/p>
+&lt;img src="image/image-20241126170950421.png" alt="image-20241126170950421" style="zoom:67%;" />
+&lt;p>这个证书可以理解成是一个结构化的字符串，里面包含了以下信息：&lt;/p>
+&lt;ul>
+&lt;li>证书发布机构&lt;/li>
+&lt;li>证书有效期&lt;/li>
+&lt;li>公钥&lt;/li>
+&lt;li>证书所有者&lt;/li>
+&lt;li>签名&lt;/li>
+&lt;/ul>
+&lt;p>需要注意的是：申请证书的时候，需要在特定平台生成查，会同时生成一对儿密钥对儿，即公钥和私钥。这对密钥对儿就是用来在网络通信中进行明文加密以及数字签名的。&lt;/p>
+&lt;h3 id="数字签名">数字签名
+&lt;/h3>&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20241126171036464.png"
+width="880"
+height="684"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20241126171036464_hu_7bc553eb98f70039.png 480w, https://sfw003.github.io/p/application-layer/image/image-20241126171036464_hu_5b6abc0bff7720c0.png 1024w"
+loading="lazy"
+alt="image-20241126171036464"
+class="gallery-image"
+data-flex-grow="128"
+data-flex-basis="308px"
+>&lt;/p>
+&lt;h3 id="解决中间人攻击">解决中间人攻击
+&lt;/h3>&lt;ul>
+&lt;li>在客户端和服务器刚一建立连接的时候，服务器给客户端返回一个响应（包含证书、服务器信息）.&lt;/li>
+&lt;li>这个证书包含了刚才的公钥，也包含了网站的身份信息&lt;/li>
+&lt;li>当客户端获取到这个证书之后，会对证书进行校验(防止证书是伪造的).
+&lt;ul>
+&lt;li>判定证书的有效期是否过期&lt;/li>
+&lt;li>判定证书的发布机构是否受信任(&lt;strong>操作系统中已内置的受信任的证书发布机构&lt;/strong>).&lt;/li>
+&lt;li>验证证书是否被篡改：从操作系统中拿到该证书发布机构的公钥，对签名解密，得到一个hash值（称为数据摘要)，设为hash1.然后计算整个证书的hash值，设为hash2.对比hash1和hash2是否相等.如果相等，则说明证书是没有被篡改过的，&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>由此可以判断证书没有被更改，没有被更改，可以保证收到的是服务器发送的消息，从中获取公钥。&lt;/p>
+&lt;p>问题：中间人不能伪造证书吗？&lt;/p>
+&lt;p>中间人有没有可能篡改该证书？&lt;/p>
+&lt;ul>
+&lt;li>中间人篡改了证书的明文&lt;/li>
+&lt;li>由于他没有CA机构的私钥，所以无法hash之后用私钥加密形成签名，那么也就没法办法对篡改后
+的证书形成匹配的签名&lt;/li>
+&lt;li>如果强行篡改，客户端收到该证书后会发现明文和签名解密后的值不一致，则说明证书已被篡改，
+证书不可信，从而终止向服务器传输信息，防止信息泄露给中间人&lt;/li>
+&lt;/ul>
+&lt;p>中间人整个掉包证书？&lt;/p>
+&lt;ul>
+&lt;li>因为中间人没有CA私钥，所以无法制作假的证书(为什么？）&lt;/li>
+&lt;li>所以中间人只能向CA申请真证书，然后用自己申请的证书进行掉包&lt;/li>
+&lt;li>这个确实能做到证书的整体掉包，但是别忘记，证书明文中包含了域名等服务端认证信息，如果整
+体掉包，客户端依旧能够识别出来。&lt;/li>
+&lt;li>永远记住：中间人没有CA私钥，所以对任何证书都无法进行合法修改，包括自己的&lt;/li>
+&lt;/ul>
+&lt;p>但还是有漏洞，&lt;strong>受信任的证书发布机构&lt;/strong>是内置在操作系统中，如果黑客伪装为一个证书发布机构，将自己的证书公钥下载到客户端的操作系统中，还是会出问题。&lt;/p>
+&lt;h2 id="ftp协议和tftp">FTP协议和TFTP
+&lt;/h2>&lt;p>基于TCP的FTP和基于UDP的TFTP,它们都是文件共享协议的一大类，即复制整个文件。&lt;/p>
+&lt;blockquote>
+&lt;p>特点：&lt;strong>若要存取一个文件，就必须先获得一个本地的文件副本。如果要修改文件，只能对文件的副本进行修改，然后再将修改后的文件副本传回到原节点。&lt;/strong>&lt;/p>&lt;/blockquote>
+&lt;p>FTP 使用客户-服务器方式。&lt;/p>
+&lt;p>FTP的服务器进程由2大部分组成：&lt;/p>
+&lt;ul>
+&lt;li>1个主进程，负责接受新的请求&lt;/li>
+&lt;li>n个从属进程，负责处理单个请求&lt;/li>
+&lt;/ul>
+&lt;p>工作流程：client向server发起建立连接的请求，通过FTP熟知的端口号21，找到server进程，同时告诉server自己的IP:PORT. 服务器用FTP进行数据传输的端口号20与client告知的IP:PORT找到client，建立数据传送连接。&lt;/p>
+&lt;p>总结：&lt;/p>
+&lt;ul>
+&lt;li>FTP会建立2个TCP连接：控制连接 + 数据传送连接&lt;/li>
+&lt;li>控制连接在整个会话期间保持打开，数据传送连接在传送完毕后关闭&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20240618160723968.png"
+width="947"
+height="317"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20240618160723968_hu_a82109bd47f527ca.png 480w, https://sfw003.github.io/p/application-layer/image/image-20240618160723968_hu_86fb59e857bae442.png 1024w"
+loading="lazy"
+alt="image-20240618160723968"
+class="gallery-image"
+data-flex-grow="298"
+data-flex-basis="716px"
+>&lt;/p>
+&lt;p>TFTP 的主要优点有两个。第一， TFTP 可用于 UDP 环境。例如，当需要将程序或文件同&lt;/p>
+&lt;p>时向许多机器下载时就往往衙要使用 TFTP 。第二， TFTP 代码所占的内存较小。这对较小的&lt;/p>
+&lt;p>计算机或某些特殊用途的设备是很重要的&lt;/p>
+&lt;p>TFTP 的工作很像停止等待协议。发送完一个文件块后就等待对方&lt;/p>
+&lt;p>的确认，确认时应指明所确认的块编号。发完数据后在规定时间内收不到确认就要重发数据&lt;/p>
+&lt;p>PDU 。发送确认 PDU 的一方若在规定时间内收不到下一个文件块，也要重发确认 PDU 。这&lt;/p>
+&lt;p>样就可保证文件的传送不致因某一个数据报的丢失而告失败。&lt;/p>
+&lt;h2 id="电子邮件格式">电子邮件格式
+&lt;/h2>&lt;img src="image/image-20240602110000921.png" alt="image-20240602110000921" style="zoom:50%;" />
+&lt;h2 id="电子邮件相关协议">电子邮件相关协议
+&lt;/h2>&lt;img src="image/image-20240602110121557.png" alt="image-20240602110121557" style="zoom:67%;" />
+&lt;h3 id="smtp--发送邮件">SMTP &amp;ndash; 发送邮件
+&lt;/h3>&lt;h3 id="pop3imap--接受邮件">POP3/IMAP &amp;ndash; 接受邮件
+&lt;/h3>&lt;h3 id="mime--扩充邮件内容">MIME &amp;ndash; 扩充邮件内容
+&lt;/h3>&lt;p>前面所述的电子邮件协议 SMTP 有以下缺点：&lt;/p>
+&lt;ol>
+&lt;li>SMTP 不能传送可执行文件或其他的二进制对象。人们曾试图将二进制文件转换为SMTP 使用的 ASCII 文本，例如流行的 UNIX UUencode/UUdecode 方案，但这些均未形成正式标准或事实上的标准。&lt;/li>
+&lt;li>SMTP 限于传送 位的 ASCII 码。许多其他非英语国家的文字（如中文、俄文，甚至带呕音符号的法文或德文）就无法传送。即使在 SMTP 网关将 EBCDIC 码（即扩充的二／十进制交换码）转换为 ASCII 码，也会遇到一些麻烦.&lt;/li>
+&lt;li>SMTP 服务器会拒绝超过一定长度的邮件。&lt;/li>
+&lt;li>某些 SMTP 的实现并没有完全按照 SMTP 的互联网标准。常见的问题如下：&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>
+&lt;p>回车、换行的删除和增加；&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>超过 76 个字符时的处理；截断或自动换行；&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>后面多余空格的删除；&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>将制表符tab 转换为若干个空格。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>MIME（多用途互联网邮件扩展）&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/application-layer/image/image-20240602141110275.png"
+width="674"
+height="316"
+srcset="https://sfw003.github.io/p/application-layer/image/image-20240602141110275_hu_6e1e8ef7a9a7e538.png 480w, https://sfw003.github.io/p/application-layer/image/image-20240602141110275_hu_d036f14cb305d821.png 1024w"
+loading="lazy"
+alt="image-20240602141110275"
+class="gallery-image"
+data-flex-grow="213"
+data-flex-basis="511px"
+>&lt;/p>
+&lt;p>TCP/IP 体系的电子邮件系统规定电子&lt;/p>
+&lt;h4 id="基于万维网的电子邮件">基于万维网的电子邮件
+&lt;/h4>&lt;p>基于万维网的电子邮件系统是指通过网页浏览器来访问和管理电子邮件的系统。邮件传输：SMTP协议，用户访问邮件服务器：HTTP协议&lt;/p></description></item></channel></rss>

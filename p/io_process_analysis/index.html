@@ -1,0 +1,466 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="从IO过程分析到IO效率优化，带你了解IO的演进过程，以及如何优化IO效率"><title>IO效率优化</title>
+<link rel=canonical href=https://sfw003.github.io/p/io_process_analysis/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="IO效率优化"><meta property='og:description' content="从IO过程分析到IO效率优化，带你了解IO的演进过程，以及如何优化IO效率"><meta property='og:url' content='https://sfw003.github.io/p/io_process_analysis/'><meta property='og:site_name' content='石某人'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='IO'><meta property='article:published_time' content='2025-04-03T00:00:00+00:00'><meta property='article:modified_time' content='2025-04-03T00:00:00+00:00'><meta name=twitter:title content="IO效率优化"><meta name=twitter:description content="从IO过程分析到IO效率优化，带你了解IO的演进过程，以及如何优化IO效率"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_a0516c4ce0480f39.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>石某人</a></h1><h2 class=site-description>成为一名强大的程序员</h2></div></header><ol class=menu-social><li><a href=https://blog.csdn.net/ProcedureStone target=_blank title=CSDN rel=me><svg class="icon icon-tabler icon-tabler-brand-csdn" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12c0 4.97 4.03 9 9 9s9-4.03 9-9-4.03-9-9-9-9 4.03-9 9z"/><path d="M12 8c-2.21.0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/><path d="M12 12m-2 0a2 2 0 104 0 2 2 0 10-4 0"/></svg></a></li><li><a href=https://gitee.com/sfw003 target=_blank title=Gitee rel=me><svg class="icon icon-tabler icon-tabler-brand-gitee" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2c5.523.0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z"/><path d="M12 6c-3.314.0-6 2.686-6 6s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6z"/><path d="M12 10c-1.105.0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2z"/></svg></a></li><li><a href=https://github.com/sfw003 target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>友情链接</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#io过程分析>io过程分析</a><ol><li><a href=#pio模式>PIO模式</a></li><li><a href=#dma模式>DMA模式</a></li></ol></li><li><a href=#传统io的效率分析>传统IO的效率分析</a><ol><li><a href=#多次切换和拷贝>多次切换和拷贝</a></li><li><a href=#等待数据就绪>等待数据就绪</a></li></ol></li><li><a href=#如何提高io效率>如何提高IO效率</a></li><li><a href=#关于内核缓存区>关于内核缓存区</a></li><li><a href=#减少上下文切换和数据拷贝次数>减少上下文切换和数据拷贝次数</a><ol><li><a href=#零拷贝技术>零拷贝技术</a><ol><li><a href=#内存映射>内存映射</a></li><li><a href=#sendfile-系统调用>sendfile 系统调用</a></li></ol></li></ol></li><li><a href=#减少等待时间>减少等待时间</a><ol><li><a href=#5种io模型>5种IO模型</a><ol><li><a href=#阻塞io>阻塞IO</a></li><li><a href=#非阻塞io>非阻塞IO</a></li><li><a href=#信号驱动io>信号驱动IO</a></li><li><a href=#io多路转接-多路复用>IO多路转接 （多路复用）</a></li><li><a href=#异步io>异步IO</a></li></ol></li><li><a href=#io多路复用详解>IO多路复用详解</a><ol><li><a href=#select>select</a></li><li><a href=#poll>poll</a></li><li><a href=#epoll>epoll</a></li></ol></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/>后端开发</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/io_process_analysis/>IO效率优化</a></h2><h3 class=article-subtitle>从IO过程分析到IO效率优化，带你了解IO的演进过程，以及如何优化IO效率</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Apr 03, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><section class=article-content><h2 id=io过程分析>io过程分析</h2><h3 id=pio模式>PIO模式</h3><p>编程式IO（Process IO)：数据需通过 CPU 寄存器中转，<strong>完全占用 CPU</strong>（早期设备的实现方式）</p><ul><li>CPU发出对应的指令给磁盘控制器，然后返回；</li><li>磁盘控制器收到指令后，于是就开始准备数据，会把数据放入到磁盘控制器的内部缓冲区中，然后产生一个中断;</li><li>CPU收到中断信号后，停下手头的工作，接着把磁盘控制器的缓冲区的数据一次一个字节地读进自己的寄存器，然后再把寄存器里的数据写入到内存。在数据传输的期间CPU是无法执行其他任务的。</li></ul><pre class=mermaid>%% 时序图：CPU与磁盘控制器的交互（PIO模式）
+sequenceDiagram
+    participant 用户进程
+    participant CPU
+    participant 磁盘控制器
+    participant 内存
+
+    用户进程->>CPU: read() 系统调用（用户态→内核态）
+    CPU->>磁盘控制器: 发送读取指令
+    Note over CPU: CPU返回继续执行其他任务
+    磁盘控制器->>磁盘控制器: 准备数据到内部缓冲区
+    磁盘控制器->>CPU: 产生中断信号
+    loop 逐个字节传输
+        磁盘控制器->>CPU: 从缓冲区读取一个字节到寄存器
+        CPU->>内存: 将寄存器数据写入内存
+        Note over CPU: CPU 无法执行其他任务
+    end
+    CPU->>用户进程: 完成中断处理（内核态→用户态）
+    CPU->>用户进程: read() 返回数据
+  </pre><h3 id=dma模式>DMA模式</h3><p>直接内存访问（Direct Memory Access）技术：DMA将数据从磁盘控制器缓冲区搬运到内存，<strong>不需要 CPU 逐字节参与</strong>（现代通用方案）</p><ul><li>用户进程调用read方法，向操作系统发出I/O请求，请求读取数据到自己的内存缓冲区中，进程进入阻塞状态;</li><li>操作系统收到请求后，进一步将I/O请求发送DMA，然后让CPU执行其他任务；</li><li>DMA进一步将I/O请求发送给磁盘；</li><li>磁盘收到DMA的I/O请求，把数据从磁盘读取到磁盘控制器的缓冲区中，当磁盘控制器的缓冲区被读满后，向DMA发起中断信号，告知自己缓冲区已满；</li><li>DMA收到磁盘的信号，将磁盘控制器缓冲区中的数据拷贝到内核缓冲区中，此时不占用CPU，CPU可以执行其他任务；</li><li>当DMA读取了足够多的数据，就会发送中断信号给CPU;</li><li>CPU收到DMA的信号，知道数据已经准备好，于是将数据从内核拷贝到用户空间，系统调用返回；</li></ul><pre class=mermaid>sequenceDiagram
+    participant 用户空间
+    participant CPU
+    participant DMA
+    participant 磁盘控制器
+    participant 内核空间
+
+    用户空间->>CPU: read() 系统调用
+    CPU->>DMA: 配置传输参数（内存地址、数据长度等）
+    Note over CPU: CPU返回继续执行其他任务
+    DMA->>磁盘控制器: 发送IO请求
+    磁盘控制器->>磁盘控制器: 准备数据到内部缓冲区
+    磁盘控制器->>DMA: 数据就绪中断
+    DMA->>内核空间: DMA自动搬运数据（无需CPU参与）
+    DMA->>CPU: 传输完成中断
+    CPU->>用户空间: 返回数据
+  </pre><blockquote><p>早期DMA只存在在主板上，如今由于I/O 设备越来越多，数据传输的需求也不尽相同，所以每个I/O设
+备里面都有自己的DMA控制器。</p></blockquote><h2 id=传统io的效率分析>传统IO的效率分析</h2><p>IO可以划分为2个过程：等待数据就绪+数据拷贝</p><p>我们先说传统IO的数据拷贝</p><h3 id=多次切换和拷贝>多次切换和拷贝</h3><p>对于一次read + write，总共发生<strong>4次用户态和内核态的上下文切换</strong>和<strong>4次数据拷贝</strong></p><p>上下文切换</p><ul><li>read的调用和返回：2次</li><li>write的调用和返回：2次</li></ul><p>数据拷贝</p><ul><li>外存（如磁盘、网卡）到内核空间，内核空间再到用户空间：2次</li><li>用户空间到内核空间，内核空间到外存：2次</li></ul><p><img src=/p/io_process_analysis/image/image-20250402202101581.png width=452 height=231 srcset="/p/io_process_analysis/image/image-20250402202101581_hu_f42bc94e11ec94d9.png 480w, /p/io_process_analysis/image/image-20250402202101581_hu_48a627203ecd0161.png 1024w" loading=lazy alt=image-20250402202101581 class=gallery-image data-flex-grow=195 data-flex-basis=469px></p><p>上下文切换到成本并不小，一次切换需要耗时几十纳秒到几微秒，虽然时间看上去很短，但是在高并发的场景下，这类时间容易被累积和放大，从而影响系统的性能，数据拷贝同理。</p><h3 id=等待数据就绪>等待数据就绪</h3><p>对于本地，多数情况下数据都是就绪的，但到了网络，情况就不同了，等待时间往往大于数据拷贝时间。在传统IO中，往往是阻塞式等待，导致用户进程浪费了很多时间。</p><h2 id=如何提高io效率>如何提高IO效率</h2><p>2个维度：</p><ol><li>减少等待时间（即在等待时间内做其他事）</li><li>减少上下文切换和数据拷贝的次数</li></ol><h2 id=关于内核缓存区>关于内核缓存区</h2><p>前文一直提到一个叫名词：内核缓存区，内核缓存区是什么？内核缓冲区实际上是<strong>磁盘高速缓存（PageCache）</strong>。</p><p>它采用<strong>局部型原理</strong>来提高速度，举例：用户需要读取磁盘某部分0-50字节的内容，PageCache会<strong>预读</strong>0-100字节的内容。</p><p>多数情况下，PageCache能提高速率，但如果文件很大，PageCache的作用就体现不了，原因有2：</p><ul><li>PageCache 本身容量较小，读取大文件时，导致PageCache长时间被大文件占据，其他<strong>热点</strong>小文件可能就无法充分使用到 PageCache，于是磁盘读写的性能就会下降了</li><li>PageCache 中的大文件数据，不但没有享受到缓存带来的好处，还耗费 DMA 多拷贝到 PageCache一次；</li></ul><p>那如何解决大文件的读取呢？</p><p>综上，我们留下了3个问题：</p><ol><li><p>如何减少等待时间（即在等待时间内做其他事）</p></li><li><p>如何减少上下文切换和数据拷贝的次数</p></li><li><p>如何高效读取大文件</p></li></ol><h2 id=减少上下文切换和数据拷贝次数>减少上下文切换和数据拷贝次数</h2><h3 id=零拷贝技术>零拷贝技术</h3><p>零拷贝技术的核心目标是通过减少或消除用户空间与内核空间之间的数据复制次数，从而提升性能并降低资源消耗。</p><p>实现零拷贝技术的方式有很多。</p><h4 id=内存映射>内存映射</h4><blockquote><p>我目前就使用过这个</p></blockquote><p>原理如下图，将文件直接映射到进程的虚拟内存地址空间，用户程序通过操作内存指针访问文件数据，无需通过<code>read</code>/<code>write</code>系统调用复制数据</p><p><img src=/p/io_process_analysis/image/image-20250402202118025.png width=452 height=231 srcset="/p/io_process_analysis/image/image-20250402202118025_hu_95a0a224166d162d.png 480w, /p/io_process_analysis/image/image-20250402202118025_hu_fb0885cf82ec7b43.png 1024w" loading=lazy alt=image-20250402202118025 class=gallery-image data-flex-grow=195 data-flex-basis=469px></p><p>windows的api</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback></code></pre></td></tr></table></div></div><p>linux的api</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=c1>// 直接通过addr指针访问文件数据
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kt>void</span> <span class=o>*</span><span class=n>addr</span> <span class=o>=</span> <span class=nf>mmap</span><span class=p>(</span><span class=n>file_fd</span><span class=p>,</span> <span class=n>file_size</span><span class=p>,</span> <span class=n>PROT_READ</span><span class=p>,</span> <span class=n>MAP_SHARED</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>基本流程：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>void* addr = mmap(file, len);
+</span></span><span class=line><span class=cl>write(fd, addr, len);
+</span></span></code></pre></td></tr></table></div></div><pre class=mermaid>graph TD
+    A[磁盘文件] -->|DMA 拷贝| B[缓存区]
+    B -->|CPU 拷贝| C[socket 缓冲区]
+    C -->|DMA 拷贝| D[网卡]
+  </pre><p>上下文切换次数：4次</p><ul><li>mmap的调用和返回</li><li>write的调用和返回</li></ul><p>数据拷贝次数：3次</p><p><strong>优势</strong>：减少用户态与内核态之间的数据拷贝次数，适用于频繁访问文件的场景（如数据库、视频处理）</p><h4 id=sendfile-系统调用>sendfile 系统调用</h4><p><strong>原理</strong>：直接在内核空间完成文件数据到网络套接字的传输，绕过用户空间。
+• 传统流程：磁盘 → 内核缓冲区 → 用户缓冲区 → 内核缓冲区 → 网络。
+• sendfile流程：磁盘 → 内核缓冲区 → 网络（无需用户空间参与）。
+• <strong>适用场景</strong>：文件传输（如Web服务器发送静态文件）。
+• <strong>代码示例</strong>（Linux）：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl>  <span class=nf>sendfile</span><span class=p>(</span><span class=n>out_fd</span><span class=p>,</span> <span class=n>in_fd</span><span class=p>,</span> <span class=nb>NULL</span><span class=p>,</span> <span class=n>file_size</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><hr><div class=table-wrapper><table><thead><tr><th>技术</th><th>实现方式</th><th>适用场景</th><th>引用来源</th></tr></thead><tbody><tr><td>内存映射</td><td>文件映射到虚拟内存</td><td>频繁文件读写（数据库、视频）</td><td></td></tr><tr><td>sendfile</td><td>内核直接传输文件到网络</td><td>Web服务器文件传输</td><td></td></tr><tr><td>splice</td><td>管道传输数据</td><td>文件/网络间高效复制</td><td></td></tr><tr><td>分散-聚集</td><td>单次操作多缓冲区</td><td>网络协议分片处理</td><td></td></tr><tr><td>DMA</td><td>硬件直接访问内存</td><td>高速I/O设备数据传输</td><td></td></tr></tbody></table></div><h2 id=减少等待时间>减少等待时间</h2><p>感觉叫减少等待时间不是很准确，应该叫利用等待时间。我们怎么做到在数据未就绪的时候干其他事呢？通过采用高效的IO模型。</p><p>我们常见的IO模型有以下5种：</p><h3 id=5种io模型>5种IO模型</h3><h4 id=阻塞io>阻塞IO</h4><p><img src=/p/io_process_analysis/image/d64703dc7e204e7784905198a8cb5f7a.png width=1412 height=607 srcset="/p/io_process_analysis/image/d64703dc7e204e7784905198a8cb5f7a_hu_cb5f8fa06ae030f0.png 480w, /p/io_process_analysis/image/d64703dc7e204e7784905198a8cb5f7a_hu_c7b7d2c3eba5df7.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=232 data-flex-basis=558px>
+一直等，直到数据就绪。</p><h4 id=非阻塞io>非阻塞IO</h4><p>非阻塞IO往往需要程序员循环的方式反复尝试读写文件描述符, 这个过程称为轮询. 这对CPU来说是较大的浪费, 一般只有特定场景下才使用.
+<img src=/p/io_process_analysis/image/95e2198630f845b88abb77f9ae9dfa72.png width=1455 height=733 srcset="/p/io_process_analysis/image/95e2198630f845b88abb77f9ae9dfa72_hu_2db45c22e45b3f52.png 480w, /p/io_process_analysis/image/95e2198630f845b88abb77f9ae9dfa72_hu_de46250a40ef10f2.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=198 data-flex-basis=476px>
+不等，但会一直询问数据是否就绪，一旦就绪就处理。</p><h4 id=信号驱动io>信号驱动IO</h4><p><img src=/p/io_process_analysis/image/0f71b8c818854affa576dcb489787cd9.png width=1421 height=789 srcset="/p/io_process_analysis/image/0f71b8c818854affa576dcb489787cd9_hu_245aa40e7fa4852e.png 480w, /p/io_process_analysis/image/0f71b8c818854affa576dcb489787cd9_hu_435acda24cf06ef6.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=180 data-flex-basis=432px>
+不等，数据就绪后，系统通过信号来通知进程处理。</p><h4 id=io多路转接-多路复用>IO多路转接 （多路复用）</h4><p>IO多路转接: 虽然从流程图上看起来和阻塞IO类似. 实际上最核心在于IO多路转接能够同时等待多个文件描述符的就绪状态.
+<img src=/p/io_process_analysis/image/38c9874a858d4701b53ee36dcb7d100d.png width=1487 height=853 srcset="/p/io_process_analysis/image/38c9874a858d4701b53ee36dcb7d100d_hu_4b71227cc6ed8cda.png 480w, /p/io_process_analysis/image/38c9874a858d4701b53ee36dcb7d100d_hu_6dcb901620d75694.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=174 data-flex-basis=418px></p><h4 id=异步io>异步IO</h4><p>由内核在数据拷贝完成时, 通知应用程序(而信号驱动是告诉应用程序何时可以开始拷贝数据).
+<img src=/p/io_process_analysis/image/cce6fdfa8d9340348343a61921248167.png width=1364 height=751 srcset="/p/io_process_analysis/image/cce6fdfa8d9340348343a61921248167_hu_1d856d636957c395.png 480w, /p/io_process_analysis/image/cce6fdfa8d9340348343a61921248167_hu_b987b6fb4ddc5f91.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=181 data-flex-basis=435px></p><p>总结：5种IO好比5种钓鱼方式</p><ul><li>阻塞IO: 一直盯着鱼竿直到中鱼</li><li>非阻塞IO: 看会手机，看会鱼竿，发现中鱼，收杆</li><li>信号驱动IO: 一直看手机，直到鱼竿抖动，收杆</li><li>多路复用IO: 同时使用多个鱼竿，一直等，直到中鱼</li><li>异步IO: 让小弟去等鱼竿，自己干其他事，等中鱼了，让小弟打电话通知我</li></ul><p>前4种都属于同步IO，</p><p>同步和异步关注的是消息通信机制.</p><ul><li>所谓同步，就是在发出一个调用时，在没有得到结果之前，该调用就不返回. 但是一旦调用返回，就得到返回值了; 换句话说，就是由调用者主动等待这个调用的结果;</li><li>异步则是相反，调用在发出之后，这个调用就直接返回了，所以没有返回结果; 换句话说，当一个异步过程调用发出后，调用者不会立刻得到结果; 而是在调用发出后，被调用者通过状态、通知来通知调用者，或通过<strong>回调函数</strong>处理这个调用</li></ul><p>现在回答：哪种IO模型最能充分利用等待时间？异步IO</p><div class=table-wrapper><table><thead><tr><th style=text-align:center>模型</th><th style=text-align:center>开发难度</th><th style=text-align:center>性能</th><th style=text-align:center>典型应用场景</th></tr></thead><tbody><tr><td style=text-align:center>阻塞I/O</td><td style=text-align:center>简单</td><td style=text-align:center>低</td><td style=text-align:center>低并发文件读写</td></tr><tr><td style=text-align:center>非阻塞I/O</td><td style=text-align:center>中等</td><td style=text-align:center>中</td><td style=text-align:center>传感器轮询</td></tr><tr><td style=text-align:center>信号驱动I/O</td><td style=text-align:center>复杂</td><td style=text-align:center>中高</td><td style=text-align:center>UDP协议通信</td></tr><tr><td style=text-align:center>多路复用I/O</td><td style=text-align:center>复杂</td><td style=text-align:center>高</td><td style=text-align:center>Web服务器（Nginx）</td></tr><tr><td style=text-align:center>异步I/O</td><td style=text-align:center>复杂</td><td style=text-align:center>极高</td><td style=text-align:center>分布式存储系统</td></tr></tbody></table></div><p><strong>技术演进趋势</strong>：现代高并发系统（如Kafka、Netty）普遍采用<strong>多路复用+异步I/O组合模型</strong>，在降低线程开销的同时实现高吞吐量</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>+-------------------+       +------------------+       +-------------------+
+</span></span><span class=line><span class=cl>|  多路复用线程       |       |  异步I/O线程池     |       |  业务处理线程池    |
+</span></span><span class=line><span class=cl>| (epoll_wait循环)  | ----&gt; | (io_uring提交任务) | ----&gt; | (处理HTTP请求等)   |
+</span></span><span class=line><span class=cl>+-------------------+       +-------------------+       +-------------------+
+</span></span><span class=line><span class=cl>       ↑                           ↑                           ↑
+</span></span><span class=line><span class=cl>       监控事件就绪                 提交异步任务                 处理完成回调
+</span></span></code></pre></td></tr></table></div></div><h3 id=io多路复用详解>IO多路复用详解</h3><h4 id=select>select</h4><p>I/O多路转接之select
+系统提供select函数来实现多路复用输入/输出模型.</p><ul><li>select系统调用是用来让我们的程序监视多个文件描述符的状态变化的;</li><li>程序会停在select这里等待，直到被监视的文件描述符有一个或多个发生了状态改变;</li></ul><p>select接口介绍</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl>       <span class=cp>#include</span> <span class=cpf>&lt;sys/select.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=nf>select</span><span class=p>(</span><span class=kt>int</span> <span class=n>nfds</span><span class=p>,</span> <span class=n>fd_set</span> <span class=o>*</span><span class=n>readfds</span><span class=p>,</span> <span class=n>fd_set</span> <span class=o>*</span><span class=n>writefds</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                  <span class=n>fd_set</span> <span class=o>*</span><span class=n>exceptfds</span><span class=p>,</span> <span class=k>struct</span> <span class=nc>timeval</span> <span class=o>*</span><span class=n>timeout</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li><p><strong>int nfds</strong>
+参数类型：<strong>输入型参数</strong>
+说明：待检测的文件描述符中最大的文件描述符值加一</p></li><li><p><strong>fd_set * readfds/writefds/exceptfds</strong>
+参数类型：<strong>输入输出型参数</strong>
+说明：fed_set是内核提供的一种数据类型，本质是位图.它的作用如下图：
+<img src=/p/io_process_analysis/image/90d61ffc813fd01a464c88388d972520.png width=1410 height=915 srcset="/p/io_process_analysis/image/90d61ffc813fd01a464c88388d972520_hu_4a034fc1824a7f07.png 480w, /p/io_process_analysis/image/90d61ffc813fd01a464c88388d972520_hu_7517a8687a2f2728.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=154 data-flex-basis=369px>
+readfds &ndash; 监控可读
+writefds &ndash; 监控可写
+exceptfds - -监控错误</p></li><li><p><strong>struct timeval * timeout</strong>
+参数类型：<strong>输入输出型参数</strong>
+说明：超时时间，如果为 NULL，则 select 函数会一直阻塞直到有事件发生；如果为非 NULL，则表示最长等待时间。
+<img src=/p/io_process_analysis/image/364b13400c0b35aa7d2af5d4d7ca8389.png width=1809 height=268 srcset="/p/io_process_analysis/image/364b13400c0b35aa7d2af5d4d7ca8389_hu_e453ef6914e8a128.png 480w, /p/io_process_analysis/image/364b13400c0b35aa7d2af5d4d7ca8389_hu_70f1cd4a9a8237d6.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=675 data-flex-basis=1620px>
+struct timeval timeout = {1, 0}; 就表示最长等待时间为1秒</p></li><li><p>返回值
+int n = select()
+如果n > 0 表明有n个fd就绪
+如果n == 0 表明超时
+如果n &lt; 0 表明出错</p></li></ul><p>先介绍几个select的附属函数：select的参数fd_set是位图，如果让用户自己修改，不安全也不方便，与开发者也提供了几个专门修改fd_set的函数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=kt>void</span> <span class=nf>FD_CLR</span><span class=p>(</span><span class=kt>int</span> <span class=n>fd</span><span class=p>,</span> <span class=n>fd_set</span> <span class=o>*</span><span class=n>set</span><span class=p>);</span> <span class=o>--</span> <span class=err>清空</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span>  <span class=n>FD_ISSET</span><span class=p>(</span><span class=kt>int</span> <span class=n>fd</span><span class=p>,</span> <span class=n>fd_set</span> <span class=o>*</span><span class=n>set</span><span class=p>);</span> <span class=o>--</span> <span class=err>是否已经设置</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>FD_SET</span><span class=p>(</span><span class=kt>int</span> <span class=n>fd</span><span class=p>,</span> <span class=n>fd_set</span> <span class=o>*</span><span class=n>set</span><span class=p>);</span> <span class=o>--</span> <span class=err>设置</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>FD_ZERO</span><span class=p>(</span><span class=n>fd_set</span> <span class=o>*</span><span class=n>set</span><span class=p>);</span> <span class=o>--</span> <span class=err>清</span><span class=mi>0</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>select的例子</strong></p><p>这里不会对select的例子进行讲解，因此select太麻烦了。
+select需要一个辅助数组，这个数组是用来保存sockfd（包括listensockfd， 已经客户端连接的sockfd)。为什么？原因在于select的参数。
+第1个参数：nfds = maxfd+1，每次使用select时，都要遍历辅助数组来获得最大的fd，麻烦（当然你也可以设置成员来专门存储maxfd, 真正麻烦在后面）。
+第2，3、4个参数：由于它们在调用select前后，比特位的含义发生了变化。（前表示是否监控，后表示是否就绪）因此你每次在调用之前都要重新设置。但你怎么知道要保存哪些fd？因此需要一个辅助数组来记录fd。在调用select前，遍历辅助数据来设置fd_set。
+因此，select会出现很多遍历。代码如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#pragma once
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/select.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/time.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;Socket.hpp&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=k>namespace</span> <span class=n>std</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=k>const</span> <span class=kt>uint16_t</span> <span class=n>defaultport</span> <span class=o>=</span> <span class=mi>8888</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>static</span> <span class=k>const</span> <span class=kt>int</span> <span class=n>fd_num_max</span> <span class=o>=</span> <span class=p>(</span><span class=k>sizeof</span><span class=p>(</span><span class=n>fd_set</span><span class=p>)</span> <span class=o>*</span> <span class=mi>8</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=n>defaultfd</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SelectServer</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>public</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>SelectServer</span><span class=p>(</span><span class=kt>uint16_t</span> <span class=n>port</span> <span class=o>=</span> <span class=n>defaultport</span><span class=p>)</span> <span class=o>:</span> <span class=n>_port</span><span class=p>(</span><span class=n>port</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>fd_num_max</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>fd_array</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=n>defaultfd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// std::cout &lt;&lt; &#34;fd_array[&#34; &lt;&lt; i &lt;&lt; &#34;]&#34; &lt;&lt; &#34; : &#34; &lt;&lt; fd_array[i] &lt;&lt; std::endl;
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kt>bool</span> <span class=nf>Init</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>_listensock</span><span class=p>.</span><span class=n>Socket</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>_listensock</span><span class=p>.</span><span class=n>Bind</span><span class=p>(</span><span class=n>_port</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>_listensock</span><span class=p>.</span><span class=n>Listen</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nb>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>Accepter</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 我们的连接事件就绪了
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>std</span><span class=o>::</span><span class=n>string</span> <span class=n>clientip</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>uint16_t</span> <span class=n>clientport</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>sock</span> <span class=o>=</span> <span class=n>_listensock</span><span class=p>.</span><span class=n>Accept</span><span class=p>(</span><span class=o>&amp;</span><span class=n>clientip</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>clientport</span><span class=p>);</span> <span class=c1>// 会不会阻塞在这里？不会
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>if</span> <span class=p>(</span><span class=n>sock</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span> <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// sock -&gt; fd_array[]
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kt>int</span> <span class=n>pos</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(;</span> <span class=n>pos</span> <span class=o>&lt;</span> <span class=n>fd_num_max</span><span class=p>;</span> <span class=n>pos</span><span class=o>++</span><span class=p>)</span> <span class=c1>// 第二个循环
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>fd_array</span><span class=p>[</span><span class=n>pos</span><span class=p>]</span> <span class=o>!=</span> <span class=n>defaultfd</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span>
+</span></span><span class=line><span class=cl>                <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>pos</span> <span class=o>==</span> <span class=n>fd_num_max</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>lg</span><span class=p>(</span><span class=n>Warning</span><span class=p>,</span> <span class=s>&#34;server is full, close %d now!&#34;</span><span class=p>,</span> <span class=n>sock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>close</span><span class=p>(</span><span class=n>sock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>fd_array</span><span class=p>[</span><span class=n>pos</span><span class=p>]</span> <span class=o>=</span> <span class=n>sock</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>PrintFd</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>Recver</span><span class=p>(</span><span class=kt>int</span> <span class=n>fd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>pos</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// demo
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=kt>char</span> <span class=n>buffer</span><span class=p>[</span><span class=mi>1024</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=n>ssize_t</span> <span class=n>n</span> <span class=o>=</span> <span class=n>read</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>buffer</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>buffer</span><span class=p>)</span> <span class=o>-</span> <span class=mi>1</span><span class=p>);</span> <span class=c1>// bug?
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=k>if</span> <span class=p>(</span><span class=n>n</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>buffer</span><span class=p>[</span><span class=n>n</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;get a messge: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>buffer</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>n</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>lg</span><span class=p>(</span><span class=n>Info</span><span class=p>,</span> <span class=s>&#34;client quit, me too, close fd is : %d&#34;</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>fd_array</span><span class=p>[</span><span class=n>pos</span><span class=p>]</span> <span class=o>=</span> <span class=n>defaultfd</span><span class=p>;</span> <span class=c1>// 这里本质是从select中移除
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>lg</span><span class=p>(</span><span class=n>Warning</span><span class=p>,</span> <span class=s>&#34;recv error: fd is : %d&#34;</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>fd_array</span><span class=p>[</span><span class=n>pos</span><span class=p>]</span> <span class=o>=</span> <span class=n>defaultfd</span><span class=p>;</span> <span class=c1>// 这里本质是从select中移除
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>Dispatcher</span><span class=p>(</span><span class=n>fd_set</span> <span class=o>&amp;</span><span class=n>rfds</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>fd_num_max</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=c1>// 这是第三个循环
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span> <span class=n>fd</span> <span class=o>=</span> <span class=n>fd_array</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>fd</span> <span class=o>==</span> <span class=n>defaultfd</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>FD_ISSET</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>rfds</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=n>fd</span> <span class=o>==</span> <span class=n>_listensock</span><span class=p>.</span><span class=n>Fd</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>Accepter</span><span class=p>();</span> <span class=c1>// 连接管理器
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=k>else</span> <span class=c1>// non listenfd
+</span></span></span><span class=line><span class=cl><span class=c1></span>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>Recver</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>i</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>Start</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>listensock</span> <span class=o>=</span> <span class=n>_listensock</span><span class=p>.</span><span class=n>Fd</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>fd_array</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=n>listensock</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(;;)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>fd_set</span> <span class=n>rfds</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>FD_ZERO</span><span class=p>(</span><span class=o>&amp;</span><span class=n>rfds</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span> <span class=n>maxfd</span> <span class=o>=</span> <span class=n>fd_array</span><span class=p>[</span><span class=mi>0</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>fd_num_max</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=c1>// 第一次循环
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=n>fd_array</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=n>defaultfd</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                    <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=n>FD_SET</span><span class=p>(</span><span class=n>fd_array</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=o>&amp;</span><span class=n>rfds</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=n>maxfd</span> <span class=o>&lt;</span> <span class=n>fd_array</span><span class=p>[</span><span class=n>i</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>maxfd</span> <span class=o>=</span> <span class=n>fd_array</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span> <span class=n>n</span> <span class=o>=</span> <span class=n>select</span><span class=p>(</span><span class=n>maxfd</span> <span class=o>+</span> <span class=mi>1</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>rfds</span><span class=p>,</span> <span class=k>nullptr</span><span class=p>,</span> <span class=k>nullptr</span><span class=p>,</span><span class=k>nullptr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>switch</span> <span class=p>(</span><span class=n>n</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>case</span> <span class=mi>0</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;time out, timeout: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>timeout</span><span class=p>.</span><span class=n>tv_sec</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;.&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>timeout</span><span class=p>.</span><span class=n>tv_usec</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>case</span> <span class=o>-</span><span class=mi>1</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>cerr</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;select error&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>default</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;get a new link!!!!!&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=n>Dispatcher</span><span class=p>(</span><span class=n>rfds</span><span class=p>);</span> 
+</span></span><span class=line><span class=cl>                <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kt>void</span> <span class=nf>PrintFd</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;online fd list: &#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>fd_num_max</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>fd_array</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=n>defaultfd</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>fd_array</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;&lt;</span> <span class=s>&#34; &#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>~</span><span class=n>SelectServer</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>_listensock</span><span class=p>.</span><span class=n>Close</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>private</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>Sock</span> <span class=n>_listensock</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>uint16_t</span> <span class=n>_port</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>fd_array</span><span class=p>[</span><span class=n>fd_num_max</span><span class=p>];</span>   <span class=c1>// 数组, 用户维护的！
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// int wfd_array[fd_num_max];
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>总结一下：select实现多路复用的方式是，将已连接的Socket都放到一个文件描述符集合，然后调用select函数将文件描述符集合拷贝到内核里，让内核来检查是否有网络事件产生（通过遍历的方式）当检查到有事件产生后，将此Socket标记为可读或可写，接着再把整个文件描述符集合拷贝回用户态里，然后用户态再通过遍历的方法找到可读或可写的Socket，然后再对其处理。</p><p><strong>select的缺点</strong></p><ul><li><p>固定的文件描述符集合大小：select 使用 fd_set 数据结构来管理文件描述符集合，其大小由宏 FD_SETSIZE 决定，通常默认为 1024。这意味着 select 一次最多只能处理 1024 个文件描述符，这在某些需要处理大量并发连接的场景下可能会成为限制。</p></li><li><p>复杂的代码逻辑：由于 select 的参数有很多输入输出型参数。<strong>这导致每次使用都要遍历辅助数组来重新设置。</strong>（这个辅助数组是常数大小，因此算法优化遍历，效率不会改变多少）因此使用 select 编写的代码可能会比较麻烦、复杂，容易出错，并且难以维护和理解。</p></li><li><p>不支持高级别的事件通知：select 仅支持基本的事件通知，如可读、可写、异常等。在某些高级别的应用场景中，可能需要更多的事件类型和更细粒度的事件控制，而 select 无法满足这些需求。</p></li></ul><h4 id=poll>poll</h4><p>poll是对select的优化，它解决了select的一些缺点。
+哪些<strong>缺点</strong>？</p><ol><li>固定的文件描述符集合大小</li><li>不支持高级别的事件通知</li></ol><p><strong>poll的接口介绍</strong></p><p><img src=/p/io_process_analysis/image/60fadf4b6ea367f464a49c533dc648fb.png width=1592 height=435 srcset="/p/io_process_analysis/image/60fadf4b6ea367f464a49c533dc648fb_hu_96b33fbb26a2fd7b.png 480w, /p/io_process_analysis/image/60fadf4b6ea367f464a49c533dc648fb_hu_7e9ac1361c92f4a4.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=365 data-flex-basis=878px>
+events和revents的取值：
+<img src=/p/io_process_analysis/image/9c5bcca40609a6700b1365ce6e76dec3.png width=1163 height=239 srcset="/p/io_process_analysis/image/9c5bcca40609a6700b1365ce6e76dec3_hu_78539f860c4308e3.png 480w, /p/io_process_analysis/image/9c5bcca40609a6700b1365ce6e76dec3_hu_93527d467596541.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=486 data-flex-basis=1167px>
+<img src=/p/io_process_analysis/image/c28a6297bb1aa59ef34d1708bf5eb22d.png width=1158 height=302 srcset="/p/io_process_analysis/image/c28a6297bb1aa59ef34d1708bf5eb22d_hu_dfb9f45327c73f21.png 480w, /p/io_process_analysis/image/c28a6297bb1aa59ef34d1708bf5eb22d_hu_f922a20c568dcb5c.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=383 data-flex-basis=920px></p><p><strong>poll的优点</strong></p><ul><li>不同与select使用三个位图来表示三个 fdset的方式，poll使用一个pollfd的指针实现.pollfd结构包含了要监视的event和发生的event，不再使用select“参数-值”传递的方式. 接口使用比select更方便.</li><li>poll并没有最大数量限制 (但是数量过大后性能也是会下降).</li></ul><p><strong>poll的缺点</strong></p><p>poll中监听的文件描述符数目增多时，和select函数一样，poll返回后，需要轮询pollfd来获取就绪的描述符.每次调用poll都需要把大量的pollfd结构从用户态拷贝到内核中.同时连接的大量客户端在一时刻可能只有很少的处于就绪状态, 因此随着监视的描述符数量的增长, 其效率也会线性下降。</p><h4 id=epoll>epoll</h4><p>按照man手册的说法: 是为处理大批量句柄而作了改进的poll. 但其实epoll已经可以说是一个新东西了。
+它是在2.5.44内核中被引进的(epoll(4) is a new API introduced in Linux kernel 2.5.44)
+Linux2.6下性能最好的多路它几乎具备了之前所说的一切优点，被公认为性能最好的多路IO转接方案。</p><p><strong>epoll的接口</strong></p><p>epoll有3个系统调用接口：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=kt>int</span> <span class=nf>epoll_create</span><span class=p>(</span><span class=kt>int</span> <span class=n>size</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>epoll_ctl</span><span class=p>(</span><span class=kt>int</span> <span class=n>epfd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>op</span><span class=p>,</span> <span class=kt>int</span> <span class=n>fd</span><span class=p>,</span> <span class=k>struct</span> <span class=nc>epoll_event</span> <span class=o>*</span><span class=n>event</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>epoll_wait</span><span class=p>(</span><span class=kt>int</span> <span class=n>epfd</span><span class=p>,</span> <span class=k>struct</span> <span class=nc>epoll_event</span> <span class=o>*</span> <span class=n>events</span><span class=p>,</span> <span class=kt>int</span> <span class=n>maxevents</span><span class=p>,</span> <span class=kt>int</span> <span class=n>timeout</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>下面我们来看看epoll的具体流程：
+网卡接收数据，触发硬件中断，OS调用epoll的回调函数，执行以下4步</p><ol><li>根据网卡驱动信息，获取就绪的fd</li><li>将数据交付给TCP的接收缓冲区</li><li>以就绪的fd作为红黑树节点的key值，提取对应红黑树节点（内部包含events信息）</li><li>依据提取的信息创建就绪节点，连接到就绪队列中</li></ol><p><img src=/p/io_process_analysis/image/942b31f58aba4fd08fd5f5333bc6fb7e.png width=5324 height=4504 srcset="/p/io_process_analysis/image/942b31f58aba4fd08fd5f5333bc6fb7e_hu_85b40fafd66005dc.png 480w, /p/io_process_analysis/image/942b31f58aba4fd08fd5f5333bc6fb7e_hu_d450d9316afbc935.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=118 data-flex-basis=283px></p><script type=module>
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script></section><footer class=article-footer><section class=article-tags><a href=/tags/io/>IO</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/backend-development-series/><div class=article-details><h2 class=article-title>后端开发系列</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=sfw003/sfwblogtalks issue-term=title crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2025 石某人</section><section class=powerby>本站所有文章均为原创，转载请注明出处。<br>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

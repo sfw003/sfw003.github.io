@@ -1,0 +1,284 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Linux 网络命令"><title>Linux 网络命令</title>
+<link rel=canonical href=https://sfw003.github.io/p/linux-network-command/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="Linux 网络命令"><meta property='og:description' content="Linux 网络命令"><meta property='og:url' content='https://sfw003.github.io/p/linux-network-command/'><meta property='og:site_name' content='石某人'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:published_time' content='2025-04-03T00:00:00+00:00'><meta property='article:modified_time' content='2025-04-03T00:00:00+00:00'><meta name=twitter:title content="Linux 网络命令"><meta name=twitter:description content="Linux 网络命令"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_a0516c4ce0480f39.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>石某人</a></h1><h2 class=site-description>成为一名强大的程序员</h2></div></header><ol class=menu-social><li><a href=https://blog.csdn.net/ProcedureStone target=_blank title=CSDN rel=me><svg class="icon icon-tabler icon-tabler-brand-csdn" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12c0 4.97 4.03 9 9 9s9-4.03 9-9-4.03-9-9-9-9 4.03-9 9z"/><path d="M12 8c-2.21.0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/><path d="M12 12m-2 0a2 2 0 104 0 2 2 0 10-4 0"/></svg></a></li><li><a href=https://gitee.com/sfw003 target=_blank title=Gitee rel=me><svg class="icon icon-tabler icon-tabler-brand-gitee" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2c5.523.0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z"/><path d="M12 6c-3.314.0-6 2.686-6 6s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6z"/><path d="M12 10c-1.105.0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2z"/></svg></a></li><li><a href=https://github.com/sfw003 target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>友情链接</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#ifconfig>ifconfig</a></li><li><a href=#ip>ip</a></li><li><a href=#ping>ping</a></li><li><a href=#netstat>netstat</a></li><li><a href=#telnet>telnet</a></li><li><a href=#ftp>ftp</a><ol><li><a href=#应用说明>应用说明</a></li><li><a href=#作用>作用</a></li><li><a href=#格式>格式</a></li><li><a href=#应用实例>应用实例</a></li></ol></li><li><a href=#rlogin>rlogin</a><ol><li><a href=#作用-1>作用</a></li><li><a href=#格式-1>格式</a></li><li><a href=#使用说明>使用说明</a></li></ol></li><li><a href=#rcp>rcp</a><ol><li><a href=#作用-2>作用</a></li><li><a href=#格式-2>格式</a></li></ol></li><li><a href=#finger>finger</a><ol><li><a href=#作用-3>作用</a></li><li><a href=#格式-3>格式</a></li><li><a href=#应用实例-1>应用实例</a></li><li><a href=#应用说明-1>应用说明</a></li></ol></li><li><a href=#mail>mail</a><ol><li><a href=#作用-4>作用</a></li><li><a href=#格式-4>格式</a></li></ol></li><li><a href=#nslookup>nslookup</a><ol><li><a href=#作用-5>作用</a></li><li><a href=#格式-5>格式</a></li><li><a href=#应用实例-2>应用实例</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/linux/>Linux</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/linux-network-command/>Linux 网络命令</a></h2><h3 class=article-subtitle>Linux 网络命令</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Apr 03, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 3 分钟</time></div></footer></div></header><section class=article-content><p>相关文章链接</p><p><a class=link href=https://sfw003.github.io/p/linux-file-command/>Linux 文件操作命令</a>
+Linux 网络命令 &lt;== 本文</p><p>网络操作命令：ifconfig、ip、ping、netstat、telnet、ftp、route、rlogin、rcp、finger、mail、 nslookup；</p><h2 id=ifconfig>ifconfig</h2><p>ifconfig用于查看和更改网络接口的地址和参数，包括IP地址、网络掩码、广播地址，使用权限是超级用户。</p><p>命令参数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ifconfig -interface [options] address
+</span></span><span class=line><span class=cl>主要参数
+</span></span><span class=line><span class=cl>-interface：指定的网络接口名，如eth0和eth1。
+</span></span><span class=line><span class=cl>up：激活指定的网络接口卡。
+</span></span><span class=line><span class=cl>down：关闭指定的网络接口。
+</span></span><span class=line><span class=cl>broadcast address：设置接口的广播地址。
+</span></span><span class=line><span class=cl>pointopoint：启用点对点方式。
+</span></span><span class=line><span class=cl>address：设置指定接口设备的IP地址。
+</span></span><span class=line><span class=cl>netmask address：设置接口的子网掩码。
+</span></span></code></pre></td></tr></table></div></div><p>ifconfig是用来设置和配置网卡的命令行工具。</p><p>为了手工配置网络，这是一个必须掌握的命令。</p><p>使用该命令的好处是无须重新启动机器。</p><p>要赋给eth0接口IP地址207.164.186.2，并且马上激活它，使用下面命令：
+<code>#fconfig eth0 210.34.6.89 netmask 255.255.255.128 broadcast 210.34.6.127</code></p><p>该命令的作用是设置网卡eth0的IP地址、网络掩码和网络的本地广播地址。</p><p>若运行不带任何参数的ifconfig命令，这个命令将显示机器所有激活接口的信息。</p><p>带有“-a”参数的命令则显示所有接口的信息，包括没有激活的接口。</p><p>注意，用ifconfig命令配置的网络设备参数，机器重新启动以后将会丢失。</p><p>如果要暂停某个网络接口的工作，可以使用down参数：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl># ifconfig eth0 down
+</span></span></code></pre></td></tr></table></div></div><h2 id=ip>ip</h2><p>ip是iproute2软件包里面的一个强大的网络配置工具，它能够替代一些传统的网络管理工具，例如ifconfig、route等，使用权限为超级用户。</p><p>几乎所有的Linux发行版本都支持该命令。</p><p>ip [OPTIONS] OBJECT [COMMAND [ARGUMENTS]]
+主要参数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>OPTIONS是修改ip行为或改变其输出的选项。所有的选项都是以-字符开头，分为长、短两种形式。目前，ip支持如表1所示选项。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>OBJECT是要管理者获取信息的对象。目前ip认识的对象见表2所示。
+</span></span><span class=line><span class=cl>表1 ip支持的选项
+</span></span><span class=line><span class=cl>-V,-Version 打印ip的版本并退出。
+</span></span><span class=line><span class=cl>-s,-stats,-statistics 输出更为详尽的信息。如果这个选项出现两次或多次，则输出的信息将更为详尽。
+</span></span><span class=line><span class=cl>-f,-family 这个选项后面接协议种类，包括inet、inet6或link，强调使用的协议种类。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>如果没有足够的信息告诉ip使用的协议种类，ip就会使用默认值inet或any。link比较特殊，它表示不涉及任何网络协议。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>-4是-family inet的简写。
+</span></span><span class=line><span class=cl>-6 是-family inet6的简写。
+</span></span><span class=line><span class=cl>-0 是-family link的简写。
+</span></span><span class=line><span class=cl>-o,-oneline 对每行记录都使用单行输出，回行用字符代替。如果需要使用wc、grep等工具处理ip的输出，则会用到这个选项。
+</span></span><span class=line><span class=cl>-r,-resolve 查询域名解析系统，用获得的主机名代替主机IP地址
+</span></span></code></pre></td></tr></table></div></div><p>应用实例</p><p>添加IP地址192.168.2.2/24到eth0网卡上：
+<code>#ip addr add 192.168.1.1/24 dev eth0</code>
+丢弃源地址属于192.168.2.0/24网络的所有数据报：
+<code>#ip rule add from 192.168.2.0/24 prio 32777 reject</code></p><h2 id=ping>ping</h2><p>ping检测主机网络接口状态，使用权限是所有用户。</p><p>主要参数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ping [选项] 目标IP/域名
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>-d：使用Socket的SO_DEBUG功能。
+</span></span><span class=line><span class=cl>-c：设置完成要求回应的次数。
+</span></span><span class=line><span class=cl>-f：极限检测。
+</span></span><span class=line><span class=cl>-i：指定收发信息的间隔秒数。
+</span></span><span class=line><span class=cl>-I：网络界面使用指定的网络界面送出数据包。
+</span></span><span class=line><span class=cl>-l：前置载入，设置在送出要求信息之前，先行发出的数据包。
+</span></span><span class=line><span class=cl>-n：只输出数值。
+</span></span><span class=line><span class=cl>-p：设置填满数据包的范本样式。
+</span></span><span class=line><span class=cl>-q：不显示指令执行过程，开头和结尾的相关信息除外。
+</span></span><span class=line><span class=cl>-r：忽略普通的Routing Table，直接将数据包送到远端主机上。
+</span></span><span class=line><span class=cl>-R：记录路由过程。
+</span></span><span class=line><span class=cl>-s：设置数据包的大小。
+</span></span><span class=line><span class=cl>-t：设置存活数值TTL的大小。
+</span></span><span class=line><span class=cl>-v：详细显示指令的执行过程。
+</span></span></code></pre></td></tr></table></div></div><p>ping命令是使用最多的网络指令，通常我们使用它检测网络是否连通，它使用ICMP协议。</p><p>但是有时会有这样的情况，我们可以浏览器查看一个网页，但是却无法ping通，这是因为一些网站处于安全考虑安装了防火墙。</p><p>另外，也可以在自己计算机上试一试，通过下面的方法使系统对ping没有反应：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl># echo 1 &gt; /proc/sys/net/ipv4/icmp_echo_ignore_all
+</span></span></code></pre></td></tr></table></div></div><h2 id=netstat>netstat</h2><p>检查整个Linux网络状态。</p><p>命令参数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>-a--all：显示所有连线中的Socket。
+</span></span><span class=line><span class=cl>-A：列出该网络类型连线中的IP相关地址和网络类型。
+</span></span><span class=line><span class=cl>-c--continuous：持续列出网络状态。
+</span></span><span class=line><span class=cl>-C--cache：显示路由器配置的快取信息。
+</span></span><span class=line><span class=cl>-e--extend：显示网络其它相关信息。
+</span></span><span class=line><span class=cl>-F--fib：显示FIB。
+</span></span><span class=line><span class=cl>-g--groups：显示多重广播功能群组组员名单。
+</span></span><span class=line><span class=cl>-h--help：在线帮助。
+</span></span><span class=line><span class=cl>-i--interfaces：显示网络界面信息表单。
+</span></span><span class=line><span class=cl>-l--listening：显示监控中的服务器的Socket。
+</span></span><span class=line><span class=cl>-M--masquerade：显示伪装的网络连线。
+</span></span><span class=line><span class=cl>-n--numeric：直接使用IP地址，而不通过域名服务器。
+</span></span><span class=line><span class=cl>-N--netlink--symbolic：显示网络硬件外围设备的符号连接名称。
+</span></span><span class=line><span class=cl>-o--timers：显示计时器。
+</span></span><span class=line><span class=cl>-p--programs：显示正在使用Socket的程序识别码和程序名称。
+</span></span><span class=line><span class=cl>-r--route：显示Routing Table。
+</span></span><span class=line><span class=cl>-s--statistice：显示网络工作信息统计表。
+</span></span><span class=line><span class=cl>-t--tcp：显示TCP传输协议的连线状况。
+</span></span><span class=line><span class=cl>-u--udp：显示UDP传输协议的连线状况。
+</span></span><span class=line><span class=cl>-v--verbose：显示指令执行过程。
+</span></span><span class=line><span class=cl>-V--version：显示版本信息。
+</span></span><span class=line><span class=cl>-w--raw：显示RAW传输协议的连线状况。
+</span></span><span class=line><span class=cl>-x--unix：和指定“-A unix”参数相同。
+</span></span><span class=line><span class=cl>--ip--inet：和指定“-A inet”参数相同。
+</span></span></code></pre></td></tr></table></div></div><p>应用实例</p><p>netstat
+主要用于Linux察看自身的网络状况，如开启的端口、在为哪些用户服务，以及服务的状态等。此外，它还显示系统路由表、网络接口状态等。</p><p>可以说，它是一个综合性的网络状态的察看工具。</p><p>在默认情况下，netstat只显示已建立连接的端口。</p><p>如果要显示处于监听状态的所有端口，使用-a参数即可：
+#netstat -a
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address Foreign Address State
+tcp 0 0 *:32768 <em>:</em> LISTEN
+tcp 0 0 *:32769 <em>:</em> LISTEN
+tcp 0 0 *:nfs <em>:</em> LISTEN
+tcp 0 0 *:32770 <em>:</em> LISTEN
+tcp 0 0 *:868 <em>:</em> LISTEN
+tcp 0 0 *:617 <em>:</em> LISTEN
+tcp 0 0 *:mysql <em>:</em> LISTEN
+tcp 0 0 *:netbios-ssn <em>:</em> LISTEN
+tcp 0 0 *:sunrpc <em>:</em> LISTEN
+tcp 0 0 *:10000 <em>:</em> LISTEN
+tcp 0 0 *:http <em>:</em> LISTEN
+&mldr;&mldr;
+上面显示出，这台主机同时提供HTTP、FTP、NFS、MySQL等服务。</p><h2 id=telnet>telnet</h2><p>telnet表示开启终端机阶段作业，并登入远端主机。telnet是一个Linux命令，同时也是一个协议（远程登陆协议）。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>telnet [option] [主机名称IP地址]
+</span></span></code></pre></td></tr></table></div></div><p>主要参数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>-8：允许使用8位字符资料，包括输入与输出。
+</span></span><span class=line><span class=cl>-a：尝试自动登入远端系统。
+</span></span><span class=line><span class=cl>-b：使用别名指定远端主机名称。
+</span></span><span class=line><span class=cl>-c：不读取用户专属目录里的.telnetrc文件。
+</span></span><span class=line><span class=cl>-d：启动排错模式。
+</span></span><span class=line><span class=cl>-e：设置脱离字符。
+</span></span><span class=line><span class=cl>-E：滤除脱离字符。
+</span></span><span class=line><span class=cl>-f：此参数的效果和指定“-F”参数相同。
+</span></span><span class=line><span class=cl>-F：使用Kerberos V5认证时，加上此参数可把本地主机的认证数据上传到远端主机。
+</span></span><span class=line><span class=cl>-k：使用Kerberos认证时，加上此参数让远端主机采用指定的领域名，而非该主机的域名。
+</span></span><span class=line><span class=cl>-K：不自动登入远端主机。
+</span></span><span class=line><span class=cl>-l：指定要登入远端主机的用户名称。
+</span></span><span class=line><span class=cl>-L：允许输出8位字符资料。
+</span></span><span class=line><span class=cl>-n：指定文件记录相关信息。
+</span></span><span class=line><span class=cl>-r：使用类似rlogin指令的用户界面。
+</span></span><span class=line><span class=cl>-S：服务类型，设置telnet连线所需的IP TOS信息。
+</span></span><span class=line><span class=cl>-x：假设主机有支持数据加密的功能，就使用它。
+</span></span><span class=line><span class=cl>-X：关闭指定的认证形态。
+</span></span></code></pre></td></tr></table></div></div><p>用户使用telnet命令可以进行远程登录，并在远程计算机之间进行通信。</p><p>用户通过网络在远程计算机上登录，就像登录到本地机上执行命令一样。</p><p>为了通过telnet登录到远程计算机上，必须知道远程机上的合法用户名和口令。</p><p>虽然有些系统确实为远程用户提供登录功能，但出于对安全的考虑，要限制来宾的操作权限，因此，这种情况下能使用的功能是很少的。</p><p>telnet只为普通终端提供终端仿真，而不支持X-Window等图形环境。</p><p>当允许远程用户登录时，系统通常把这些用户放在一个受限制的Shell中，以防系统被怀有恶意的或不小心的用户破坏。</p><p>用户还可以使用telnet从远程站点登录到自己的计算机上，检查电子邮件、编辑文件和运行程序，就像在本地登录一样。</p><h2 id=ftp>ftp</h2><p>ftp命令进行远程文件传输。FTP是ARPANet的标准文件传输协议，该网络就是现今Internet的前身，所以ftp既是协议又是一个命令。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ftp [-dignv] [主机名称IP地址]
+</span></span></code></pre></td></tr></table></div></div><p>主要参数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>-d：详细显示指令执行过程，便于排错分析程序执行的情形。
+</span></span><span class=line><span class=cl>-i：关闭互动模式，不询问任何问题。
+</span></span><span class=line><span class=cl>-g：关闭本地主机文件名称支持特殊字符的扩充特性。
+</span></span><span class=line><span class=cl>-n：不使用自动登陆。
+</span></span><span class=line><span class=cl>-v：显示指令执行过程。
+</span></span></code></pre></td></tr></table></div></div><h3 id=应用说明>应用说明</h3><p>ftp命令是标准的文件传输协议的用户接口，是在TCP/IP网络计算机之间传输文件简单有效的方法，它允许用户传输ASCⅡ文件和二进制文件。</p><p>为了使用ftp来传输文件，用户必须知道远程计算机上的合法用户名和口令。</p><p>这个用户名/口令的组合用来确认ftp会话，并用来确定用户对要传输的文件进行什么样的访问。
+另外，用户需要知道对其进行ftp会话的计算机名字的IP地址。
+用户可以通过使用ftp客户程序，连接到另一台计算机上；</p><p>可以在目录中上下移动、列出目录内容；</p><p>可以把文件从远程计算机机拷贝到本地机上；</p><p>还可以把文件从本地机传输到远程系统中。</p><p>ftp内部命令有72个，下面列出主要几个内部命令：</p><p>ls：列出远程机的当前目录。
+cd：在远程机上改变工作目录。
+lcd：在本地机上改变工作目录。
+close：终止当前的ftp会话。
+hash：每次传输完数据缓冲区中的数据后就显示一个#号。
+get（mget）：从远程机传送指定文件到本地机。
+put（mput）：从本地机传送指定文件到远程机。
+quit：断开与远程机的连接，并退出ftp。</p><p>##route</p><h3 id=作用>作用</h3><p>route表示手工产生、修改和查看路由表。</p><h3 id=格式>格式</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>#route [-add][-net|-host] targetaddress [-netmask Nm][dev]If]  
+</span></span><span class=line><span class=cl>#route [－delete][-net|-host] targetaddress [gw Gw][-netmask Nm] [dev]If]  
+</span></span></code></pre></td></tr></table></div></div><p>主要参数
+-add：增加路由。
+-delete：删除路由。
+-net：路由到达的是一个网络，而不是一台主机。
+-host：路由到达的是一台主机。
+-netmask Nm：指定路由的子网掩码。
+gw：指定路由的网关。
+[dev]If：强迫路由链指定接口。</p><h3 id=应用实例>应用实例</h3><p>route命令是用来查看和设置Linux系统的路由信息，以实现与其它网络的通信。</p><p>要实现两个不同的子网之间的通信，需要一台连接两个网络的路由器，或者同时位于两个网络的网关来实现。
+在Linux系统中，设置路由通常是为了解决以下问题：该Linux系统在一个局域网中，局域网中有一个网关，能够让机器访问Internet，那么就需要将这台机器的IP地址设置为Linux机器的默认路由。</p><p>使用下面命令可以增加一个默认路由：
+route add 0.0.0.0 192.168.1.1</p><h2 id=rlogin>rlogin</h2><h3 id=作用-1>作用</h3><p>rlogin用来进行远程注册。</p><h3 id=格式-1>格式</h3><p>rlogin [ -8EKLdx ] [ -e char ] [-k realm ] [ - l username ] host
+主要参数
+-8：此选项始终允许8位输入数据通道。该选项允许发送格式化的ANSI字符和其它的特殊代码。如果不用这个选项，除非远端的不是终止和启动字符，否则就去掉奇偶校验位。
+-E：停止把任何字符当作转义字符。当和-8选项一起使用时，它提供一个完全的透明连接。
+-K：关闭所有的Kerberos确认。只有与使用Kerberos确认协议的主机连接时才使用这个选项。
+-L：允许rlogin会话在litout模式中运行。要了解更多信息，请查阅tty联机帮助。
+-d：打开与远程主机进行通信的TCP sockets的socket调试。要了解更多信息，请查阅setsockopt的联机帮助。
+-e：为rlogin会话设置转义字符，默认的转义字符是“～”。
+-k：请求rlogin获得在指定区域内远程主机的Kerberos许可，而不是获得由krb_realmofhost(3)确定的远程主机区域内的远程主机的Kerberos许可。
+-x：为所有通过rlogin会话传送的数据打开DES加密。这会影响响应时间和CPU利用率，但是可以提高安全性。</p><h3 id=使用说明>使用说明</h3><p>如果在网络中的不同系统上都有账号，或者可以访问别人在另一个系统上的账号，那么要访问别的系统中的账号，首先就要注册到系统中，接着通过网络远程注册到账号所在的系统中。</p><p>rlogin可以远程注册到别的系统中，它的参数应是一个系统名。</p><h2 id=rcp>rcp</h2><h3 id=作用-2>作用</h3><p>rcp代表远程文件拷贝，用于计算机之间文件拷贝，使用权限是所有用户。</p><h3 id=格式-2>格式</h3><p>rcp [-px] [-k realm] file1 file2 rcp [-px] [-r] [-k realm] file
+主要参数
+-r：递归地把源目录中的所有内容拷贝到目的目录中。要使用这个选项，目的必须是一个目录。
+-p：试图保留源文件的修改时间和模式，忽略umask。
+-k：请求rcp获得在指定区域内的远程主机的Kerberos许可，而不是获得由krb_relmofhost(3)确定的远程主机区域内的远程主机的Kerberos许可。
+-x：为传送的所有数据打开DES加密。</p><h2 id=finger>finger</h2><h3 id=作用-3>作用</h3><p>finger用来查询一台主机上的登录账号的信息，通常会显示用户名、主目录、停滞时间、登录时间、登录Shell等信息，使用权限为所有用户。</p><h3 id=格式-3>格式</h3><p>finger [选项] [使用者] [用户@主机]
+主要参数
+-s：显示用户注册名、实际姓名、终端名称、写状态、停滞时间、登录时间等信息。
+-l：除了用-s选项显示的信息外，还显示用户主目录、登录Shell、邮件状态等信息，以及用户主目录下的.plan、.project和.forward文件的内容。
+-p：除了不显示.plan文件和.project文件以外，与-l选项相同。</p><h3 id=应用实例-1>应用实例</h3><p>在计算机上使用finger：
+[root@localhost root]# Finger
+Login Name Tty Idle Login Time Office Office Phone
+root root tty1 2 Dec 15 11
+root root pts/0 1 Dec 15 11</p><p>root root *pts/1 Dec 15 11</p><h3 id=应用说明-1>应用说明</h3><p>如果要查询远程机上的用户信息，需要在用户名后面接“@主机名”，采用[用户名@主机名]的格式，不过要查询的网络主机需要运行finger守护进程的支持。</p><h2 id=mail>mail</h2><h3 id=作用-4>作用</h3><p>mail作用是发送电子邮件，使用权限是所有用户。此外，mail还是一个电子邮件程序。</p><h3 id=格式-4>格式</h3><p>mail [-s subject] [-c address] [-b address]
+mail -f [mailbox]mail [-u user]
+主要参数
+-b address：表示输出信息的匿名收信人地址清单。
+-c address：表示输出信息的抄送（）收信人地址清单。
+-f [mailbox]：从收件箱者指定邮箱读取邮件。
+-s subject：指定输出信息的主体行。
+[-u user]：端口指定优化的收件箱读取邮件。</p><h2 id=nslookup>nslookup</h2><h3 id=作用-5>作用</h3><p>nslookup命令的功能是查询一台机器的IP地址和其对应的域名。使用权限所有用户。</p><p>它通常需要一台域名服务器来提供域名服务。如果用户已经设置好域名服务器，就可以用这个命令查看不同主机的IP地址对应的域名。</p><h3 id=格式-5>格式</h3><p>nslookup［IP地址/域名］</p><h3 id=应用实例-2>应用实例</h3><p>（1）在本地计算机上使用nslookup命令
+$ nslookup
+Default Server: <a class=link href=http://name.cao.com.cn/ target=_blank rel=noopener>name.cao.com.cn</a>
+Address: 192.168.1.9</p><blockquote></blockquote><p>在符号“>”后面输入要查询的IP地址域名，并回车即可。如果要退出该命令，输入“exit”，并回车即可。
+（2）使用nslookup命令测试named
+输入下面命令：
+nslookup
+然后就进入交换式nslookup环境。</p><p>如果named正常启动，则nslookup会显示当前DNS服务器的地址和域名，否则表示named没能正常启动。
+下面简单介绍一些基本的DNS诊断。
+◆检查正向DNS解析，在nslookup提示符下输入带域名的主机名，<a class=link href=http://xn--hp712-gv5i.my.com/ target=_blank rel=noopener>如hp712.my.com</a>，nslookup应能显示该主机名对应的IP地址。</p><p>如果只输入hp712，nslookup会根据/etc/resolv.conf的定义，自动添加my.com域名，并回答对应的IP地址。</p><p>◆检查反向DNS解析，在nslookup提示符下输入某个IP地址，如192.22.33.20，nslookup应能回答该IP地址所对应的主机名。</p><p>◆检查MX邮件地址记录在nslookup提示符下输入：
+set q=mx
+然后输入某个域名，<a class=link href=http://xn--my-cz4c617u.xn--commail-bs4l.my.com/ target=_blank rel=noopener>输入my.com和mail.my.com</a>，nslookup应能够回答对应的邮件服务器地址，<a class=link href=http://xn--support-zx2l.my.xn--comsupport2-904s.my.com/ target=_blank rel=noopener>即support.my.com和support2.my.com</a>。</p></section><footer class=article-footer><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/linux-file-command/><div class=article-details><h2 class=article-title>Linux 文件操作命令</h2></div></a></article><article><a href=/p/linux-file-system/><div class=article-details><h2 class=article-title>Linux 文件系统</h2></div></a></article><article><a href=/p/linux-series/><div class=article-details><h2 class=article-title>Linux 系统系列文章</h2></div></a></article><article><a href=/p/linux-thread/><div class=article-details><h2 class=article-title>Linux 线程</h2></div></a></article><article><a href=/p/linux-process/><div class=article-details><h2 class=article-title>Linux 进程</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=sfw003/sfwblogtalks issue-term=title crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2025 石某人</section><section class=powerby>本站所有文章均为原创，转载请注明出处。<br>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

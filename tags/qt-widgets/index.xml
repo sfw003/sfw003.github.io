@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Qt Widgets on 石某人</title><link>https://sfw003.github.io/tags/qt-widgets/</link><description>Recent content in Qt Widgets on 石某人</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>石某人</copyright><lastBuildDate>Fri, 04 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://sfw003.github.io/tags/qt-widgets/index.xml" rel="self" type="application/rss+xml"/><item><title>【Qt Widgets】Qt 布局管理</title><link>https://sfw003.github.io/p/qt-widgets_layout_management/</link><pubDate>Fri, 04 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/qt-widgets_layout_management/</guid><description>&lt;h2 id="qt-布局管理">Qt 布局管理
+&lt;/h2>&lt;h3 id="基本布局">基本布局
+&lt;/h3>&lt;p>Qt 的布局管理系统提供了多种布局管理器类，用于自动排列和管理控件的位置与大小，确保界面在不同分辨率下保持美观和功能性。以下是其核心布局类及其特点的总结：&lt;/p>
+&lt;h4 id="qhboxlayout水平布局">&lt;code>QHBoxLayout&lt;/code>（水平布局）
+&lt;/h4>&lt;p>• &lt;strong>功能&lt;/strong>：将控件从左到右水平排列，适用于工具栏、按钮组等横向布局场景。
+• &lt;strong>特点&lt;/strong>：自动调整控件间距，支持拉伸系数（&lt;code>stretch&lt;/code>）控制控件宽度占比。
+• &lt;strong>代码示例&lt;/strong>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QHBoxLayout&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">layout&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">QHBoxLayout&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addWidget&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">button1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addWidget&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">button2&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="qvboxlayout垂直布局">&lt;code>QVBoxLayout&lt;/code>（垂直布局）
+&lt;/h4>&lt;p>• &lt;strong>功能&lt;/strong>：将控件从上到下垂直排列，常用于表单、列表等纵向布局。
+• &lt;strong>特点&lt;/strong>：支持设置空白区域（&lt;code>addStretch()&lt;/code>）和固定间距（&lt;code>addSpacing()&lt;/code>），灵活分配空间。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QVBoxLayout&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">layout&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">QVBoxLayout&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addWidget&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">label1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addWidget&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">lineEdit&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="qgridlayout网格布局">&lt;code>QGridLayout&lt;/code>（网格布局）
+&lt;/h4>&lt;p>• &lt;strong>功能&lt;/strong>：将控件按行和列排列成网格，支持控件跨行或跨列。
+• &lt;strong>特点&lt;/strong>：适用于复杂界面（如计算器、表格），通过 &lt;code>addWidget(widget, row, column, rowSpan, columnSpan)&lt;/code> 指定位置。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QGridLayout&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">layout&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">QGridLayout&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addWidget&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">button1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 第0行第0列
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addWidget&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">button2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 跨2列
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="qformlayout表单布局">&lt;code>QFormLayout&lt;/code>（表单布局）
+&lt;/h4>&lt;p>• &lt;strong>功能&lt;/strong>：专为表单设计，每行包含标签（如 &lt;code>QLabel&lt;/code>）和输入控件（如 &lt;code>QLineEdit&lt;/code>）。
+• &lt;strong>特点&lt;/strong>：自动对齐标签和输入框，简化登录界面、设置对话框的开发。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">QFormLayout&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">layout&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">QFormLayout&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addRow&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;用户名:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lineEditUser&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">layout&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">addRow&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;密码:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lineEditPass&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item></channel></rss>

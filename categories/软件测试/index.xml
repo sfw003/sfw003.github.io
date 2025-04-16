@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>软件测试 on 石某人</title><link>https://sfw003.github.io/categories/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/</link><description>Recent content in 软件测试 on 石某人</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>石某人</copyright><lastBuildDate>Mon, 07 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://sfw003.github.io/categories/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/index.xml" rel="self" type="application/rss+xml"/><item><title>bug</title><link>https://sfw003.github.io/p/soft-project-bug/</link><pubDate>Mon, 07 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/soft-project-bug/</guid><description>&lt;h2 id="bug">Bug
+&lt;/h2>&lt;p>定义：一个计算机bug指在计算机程序中存在的一个错误(error)、缺陷(flaw)、疏忽(mistake)或者故障（fault)，这些bug使程序无法正确的运行。Bug产生于程序的源代码或者程序设计阶段的疏忽或者错误。&lt;/p>
+&lt;h3 id="bug的描述">Bug的描述
+&lt;/h3>&lt;p>描述bug的基本要素：问题出现的版本、问题出现的环境、问题出现的步骤、预期结果、实际结果、解决方案（可以不提）&lt;/p>
+&lt;p>案例：&lt;/p>
+&lt;p>&lt;strong>问题出现的版本&lt;/strong>：谷歌浏览器版本123.0.6312.123（正式版本）(64位)
+&lt;strong>问题出现的环境&lt;/strong>：Windows家庭版
+&lt;strong>问题出现的步骤&lt;/strong>：
+1、打开谷歌浏览器，输入网址https://www.101eduyun.com/
+2、等待首页页面渲染完成
+&lt;strong>预期结果&lt;/strong>：二维码与登陆模块不会出现遮挡，二维码可以正常扫描
+&lt;strong>实际结果&lt;/strong>：二维码被登陆模块遮挡，二维码扫描失败&lt;/p>
+&lt;h3 id="bug的级别">Bug的级别
+&lt;/h3>&lt;p>bug级别⼀般分为：崩溃、严重、⼀般、次要。具体参考公司的Bug文档&lt;/p>
+&lt;h3 id="bug的流程">Bug的流程
+&lt;/h3>&lt;p>&lt;img src="https://sfw003.github.io/p/soft-project-bug/image/image-20250407160810821.png"
+width="563"
+height="692"
+srcset="https://sfw003.github.io/p/soft-project-bug/image/image-20250407160810821_hu_31c1bf736e85390e.png 480w, https://sfw003.github.io/p/soft-project-bug/image/image-20250407160810821_hu_26050c697fb12f75.png 1024w"
+loading="lazy"
+alt="image-20250407160810821"
+class="gallery-image"
+data-flex-grow="81"
+data-flex-basis="195px"
+>&lt;/p></description></item><item><title>测试分类</title><link>https://sfw003.github.io/p/soft-project-test-classification/</link><pubDate>Mon, 07 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/soft-project-test-classification/</guid><description/></item><item><title>测试用例</title><link>https://sfw003.github.io/p/soft-project-test-case/</link><pubDate>Mon, 07 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/soft-project-test-case/</guid><description>&lt;h2 id="测试用例">测试用例
+&lt;/h2>&lt;p>测试用例（TestCase）是为了实施测试而向被测试的系统提供的一组集合，这组集合包含：测试环境、操作步骤、测试数据、预期结果等要素。&lt;/p>
+&lt;h2 id="设计思想">设计思想
+&lt;/h2>&lt;p>&lt;strong>工具选择：&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>过去的方式：Excel&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>现在的方式：思维导图&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>设计思想：&lt;/strong>&lt;/p>
+&lt;p>正确设计测试用例的思想：&lt;strong>常规思维+逆向思维+发散性思维&lt;/strong>
+设计测试用例的原则二：&lt;/p>
+&lt;ol>
+&lt;li>测试用例的编写不仅应当根据有效和预料到的输入情况，而且也应该根据无效和未预料到的输入情况。&lt;/li>
+&lt;li>检查程序是否“未做其应该做的”仅是成功的一半，测试的另一半是检查程序是否“做了其不应该做的”。(是上一条原则的必然结果)&lt;/li>
+&lt;li>计划测试工作时不应默许假定不会发现错误。&lt;/li>
+&lt;/ol>
+&lt;h2 id="设计方法">设计方法
+&lt;/h2>&lt;p>设计测试用例的万能公式：&lt;strong>功能测试+界面测试+性能测试+兼容性测试+易用性测试+安全测试&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>特殊测试：弱网测试，安装和卸载测试&lt;/strong>&lt;/p>
+&lt;h3 id="基于需求的设计方法">基于需求的设计方法
+&lt;/h3>&lt;p>基于需求的设计方法也是总的设计测试用例的方法，在工作中，我们需要参考需求文档/产品规格说明书来设计测试用例。
+测试人员接到需求之后，要对需求进行分析和验证，从合理的需求中进一步分析细化需求，从细化的需求中找出测试点，根据这些测试点再去设计测试用例。
+以该注册邮箱账号需求为例，我们来设计测试用例。&lt;/p>
+&lt;p>需求如下：&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/soft-project-test-case/image/image-20250408132354814.png"
+width="516"
+height="169"
+srcset="https://sfw003.github.io/p/soft-project-test-case/image/image-20250408132354814_hu_df0be855c97f0d28.png 480w, https://sfw003.github.io/p/soft-project-test-case/image/image-20250408132354814_hu_b77688ae9f043e66.png 1024w"
+loading="lazy"
+alt="image-20250408132354814"
+class="gallery-image"
+data-flex-grow="305"
+data-flex-basis="732px"
+>&lt;/p>
+&lt;p>根据万能公式，我们可以设计出基本的轮廓&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/soft-project-test-case/image/image-20250408134329736.png"
+width="577"
+height="216"
+srcset="https://sfw003.github.io/p/soft-project-test-case/image/image-20250408134329736_hu_99cc5f28f8cf034c.png 480w, https://sfw003.github.io/p/soft-project-test-case/image/image-20250408134329736_hu_836b18b93b63fad7.png 1024w"
+loading="lazy"
+alt="image-20250408134329736"
+class="gallery-image"
+data-flex-grow="267"
+data-flex-basis="641px"
+>&lt;/p>
+&lt;p>以功能测试为例：
+&lt;img src="https://sfw003.github.io/p/soft-project-test-case/image/image-20250408134732381.png"
+width="998"
+height="722"
+srcset="https://sfw003.github.io/p/soft-project-test-case/image/image-20250408134732381_hu_98a8686e8619fe9f.png 480w, https://sfw003.github.io/p/soft-project-test-case/image/image-20250408134732381_hu_6cc72bc69521e6ea.png 1024w"
+loading="lazy"
+alt="image-20250408134732381"
+class="gallery-image"
+data-flex-grow="138"
+data-flex-basis="331px"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>上面的内容不包含具体的测试用例&lt;/p>&lt;/blockquote>
+&lt;h3 id="具体用例的设计方法">具体用例的设计方法
+&lt;/h3>&lt;h4 id="等价类和边界值法">等价类和边界值法
+&lt;/h4>&lt;p>上面的格式要求：6-15位字符，我们如何测试呢？分别测试6,7,8……15位吗。如果是6-1500位字符呢？显然穷举很麻烦， 我们采用方法是等价类。&lt;/p>
+&lt;p>依据需求将输入（特殊情况下会考虑输出）划分为若干个等价类，从等价类中选出一个测试用例，如果这个测试用例测试通过，则认为所代表的等价类测试通过，这样就可以用较少的测试用例达到尽量多的功能覆盖，解决了不能穷举测试的问题。&lt;/p>
+&lt;p>&lt;strong>等价类&lt;/strong>分类：&lt;/p>
+&lt;ul>
+&lt;li>有效等价类：对于程序的规格说明书是合理的、有意义的输入数据构成的集合，利用有效等价类验证程序是否实现了规格说明中所规定的功能和性能&lt;/li>
+&lt;li>无效等价类：根据需求说明书，不满足需求的集合。&lt;/li>
+&lt;/ul>
+&lt;p>6-15位则可以划为&lt;/p>
+&lt;ul>
+&lt;li>有效等价类：[6, 15]&lt;/li>
+&lt;li>无效等价类：[0, 6) (15 正无穷)&lt;/li>
+&lt;/ul>
+&lt;p>但这还是几个区间，如何设计具体的值？&lt;strong>边界值法&lt;/strong>&lt;/p>
+&lt;p>边界值分析法就是对输入或输出的边界值进行测试的一种黑盒测试方法。通常边界值分析法是作为对等价类划分法的补充，这种情况下，其测试用例来自等价类的边界。&lt;/p>
+&lt;p>边界值包含: &lt;strong>边界值、次边界值&lt;/strong>&lt;/p>
+&lt;p>[6, 15]&lt;/p>
+&lt;ul>
+&lt;li>边界值为 6， 15&lt;/li>
+&lt;li>次边界值为5，16&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://sfw003.github.io/p/soft-project-test-case/image/image-20250408140837719.png"
+width="598"
+height="298"
+srcset="https://sfw003.github.io/p/soft-project-test-case/image/image-20250408140837719_hu_1c8de8e2c3a31c39.png 480w, https://sfw003.github.io/p/soft-project-test-case/image/image-20250408140837719_hu_7c34d23a2d54567a.png 1024w"
+loading="lazy"
+alt="image-20250408140837719"
+class="gallery-image"
+data-flex-grow="200"
+data-flex-basis="481px"
+>&lt;/p>
+&lt;h4 id="正交法">正交法
+&lt;/h4>&lt;h2 id="测试用例案例">测试用例案例
+&lt;/h2>&lt;h3 id="对命令进行测试">对命令进行测试
+&lt;/h3>&lt;p>如对windows/linux的某个命令设计测试用例&lt;/p>
+&lt;p>功能测试：对不同的文件类型进行测试
+1）普通的txt文件能够生成zip文件
+2）图片/视频/zip文件能够生成zip文件
+3）多个文件能够生成zip文件(混合文件)
+4）空文件夹可以生成zip文件
+5）错误的命令是否可以解压 (zipzip/没有写压缩包文件名称/没有源文件)
+6）其他参数的测试
+界面测试：
+1）文件压缩成功命令行提示是否美观
+2）文件压缩报错命令行提示是否友好
+性能测试：
+1）文件大小超过1G时文件是否可以压缩
+2）文件大小超过1G时文件压缩消耗的时间是否在合理的时间范围内
+兼容性测试：
+1）zip工具可以在多系统上使用，如Windows、Linux、Mac
+易用性测试：
+1）zip命令有使用帮助教程，如zip&amp;ndash;help命令下会展示如何使用
+安全性：
+1）使用zip命令不会泄漏文件内容&lt;/p>
+&lt;h3 id="对接口进行测试">对接口进行测试
+&lt;/h3>&lt;p>假设一个论坛系统有接口&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">http://ip:port/get?id=10
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">如果接口为 http://ip:port/get 返回所有的帖子
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">如果接口为 http://ip:port/get?id=10 返回id=10的帖子
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>对于接口测试，我们就不考虑界面测试、易用性测试、兼容性测试等等，专注于功能测试、安全测试。&lt;/p></description></item><item><title>自动化测试</title><link>https://sfw003.github.io/p/soft-project-automation-test/</link><pubDate>Mon, 07 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/soft-project-automation-test/</guid><description/></item></channel></rss>

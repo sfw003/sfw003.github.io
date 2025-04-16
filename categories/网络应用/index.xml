@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>网络应用 on 石某人</title><link>https://sfw003.github.io/categories/%E7%BD%91%E7%BB%9C%E5%BA%94%E7%94%A8/</link><description>Recent content in 网络应用 on 石某人</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>石某人</copyright><lastBuildDate>Wed, 02 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://sfw003.github.io/categories/%E7%BD%91%E7%BB%9C%E5%BA%94%E7%94%A8/index.xml" rel="self" type="application/rss+xml"/><item><title>内网穿透</title><link>https://sfw003.github.io/p/intranet-penetration/</link><pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/intranet-penetration/</guid><description>&lt;h2 id="一内网穿透的基本原理">一、内网穿透的基本原理
+&lt;/h2>&lt;p>内网穿透的核心目标是&lt;strong>让外网设备访问内网资源&lt;/strong>，而内网设备通常位于NAT（网络地址转换）或防火墙之后，无法直接被外网访问。其原理主要分为两类：&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>&lt;strong>端口映射（NAT转发）&lt;/strong>&lt;br>
+通过路由器将内网设备的某个端口映射到公网IP的指定端口，外网用户通过公网IP+端口访问内网服务。例如，将内网服务器192.168.1.100的80端口映射到公网IP的8080端口，外网访问公网IP:8080即可访问内网服务。&lt;br>
+• &lt;strong>适用场景&lt;/strong>：家庭网络、小型企业等&lt;strong>有公网IP&lt;/strong>的环境。
+• &lt;strong>局限性&lt;/strong>：需手动配置路由器，且依赖公网IP，若运营商未分配公网IP则无法使用。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>代理服务器中转&lt;/strong>&lt;br>
+利用第三方服务器（如花生壳、frp）作为“桥梁”，内网设备主动连接服务器建立通道，外网请求通过服务器转发至内网。例如：内网设备向服务器发送心跳包保持连接，外网用户访问服务器时，数据通过已建立的通道传输。&lt;br>
+• &lt;strong>适用场景&lt;/strong>：无公网IP、需动态域名解析（DDNS）或跨运营商访问。
+• &lt;strong>优势&lt;/strong>：无需公网IP，支持动态IP环境；缺点是带宽受限于中转服务器。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;hr>
+&lt;h2 id="二实现方式对比">二、实现方式对比
+&lt;/h2>&lt;h3 id="1-端口转发的操作流程基础方案">1. 端口转发的操作流程（基础方案）
+&lt;/h3>&lt;p>• &lt;strong>步骤&lt;/strong>：&lt;br>
+① 登录路由器管理界面（如192.168.1.1）；&lt;br>
+② 找到“端口转发”或“虚拟服务器”选项；&lt;br>
+③ 配置规则：内网IP、内网端口、公网端口（如将公网8080映射到内网80端口）；&lt;br>
+④ 保存并重启路由器。&lt;br>
+• &lt;strong>适用性&lt;/strong>：适合有公网IP且路由器支持NAT转发的场景，例如家庭NAS对外共享文件。&lt;/p>
+&lt;h3 id="2-第三方工具进阶方案">2. 第三方工具（进阶方案）
+&lt;/h3>&lt;p>• &lt;strong>服务器中转工具（如frp、花生壳）&lt;/strong>：&lt;br>
+在公网服务器部署服务端，内网设备运行客户端，建立隧道转发请求。例如frp通过配置&lt;code>frps.ini&lt;/code>（服务端）和&lt;code>frpc.ini&lt;/code>（客户端）实现HTTP/TCP穿透。&lt;br>
+• &lt;strong>优势&lt;/strong>：支持无公网IP、跨网络穿透；&lt;br>
+• &lt;strong>缺点&lt;/strong>：需额外服务器资源，配置复杂度较高。&lt;/p>
+&lt;p>• &lt;strong>P2P穿透（如UDP打洞）&lt;/strong>：&lt;br>
+通过中间服务器协助，让两个NAT后的设备直接通信。例如：客户端A和B通过服务器交换地址信息后，尝试直接发送UDP包穿透NAT网关。&lt;br>
+• &lt;strong>适用场景&lt;/strong>：视频会议、P2P下载等低延迟需求场景；&lt;br>
+• &lt;strong>限制&lt;/strong>：受NAT类型影响（对称型NAT穿透难度大）。&lt;/p>
+&lt;hr>
+&lt;h2 id="三端口转发的局限性">三、端口转发的局限性
+&lt;/h2>&lt;p>虽然端口转发是基础手段，但实际应用中存在以下问题：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>依赖公网IP&lt;/strong>：多数家庭宽带无固定公网IP，需结合DDNS（动态域名解析）。&lt;/li>
+&lt;li>&lt;strong>安全性风险&lt;/strong>：直接暴露端口可能被攻击，需配合防火墙规则（如仅允许特定IP访问）。&lt;/li>
+&lt;li>&lt;strong>协议兼容性&lt;/strong>：某些协议（如FTP、VoIP）需要额外处理NAT穿透逻辑。&lt;/li>
+&lt;/ol></description></item><item><title>现代上网流程</title><link>https://sfw003.github.io/p/modern-internet-access-process/</link><pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/modern-internet-access-process/</guid><description>&lt;h2 id="家庭网络环境光猫路由器架构">家庭网络环境（光猫+路由器架构）
+&lt;/h2>&lt;h3 id="光猫拨号模式路由模式">光猫拨号模式（路由模式）
+&lt;/h3>&lt;p>流程：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>光猫拨号&lt;/strong>：光猫通过PPPoE协议向运营商认证，获取公网IP（如 &lt;code>218.207.128.66&lt;/code>）。&lt;/li>
+&lt;li>&lt;strong>内网分配&lt;/strong>：光猫内置DHCP服务器，为下级设备（如路由器）分配内网IP（如 &lt;code>192.168.1.2&lt;/code>）。&lt;/li>
+&lt;li>&lt;strong>路由器二次分配&lt;/strong>：路由器开启NAT功能，为终端设备（手机、电脑）分配二级内网IP（如 &lt;code>192.168.0.100&lt;/code>）。&lt;br>
+• &lt;strong>特点&lt;/strong>：&lt;br>
+• 设备通过两次NAT访问公网，可能影响P2P连接和端口映射。&lt;br>
+• 光猫需支持路由功能，常见于家庭宽带场景。&lt;/li>
+&lt;/ol>
+&lt;h3 id="光猫桥接模式路由器拨号">光猫桥接模式（路由器拨号）
+&lt;/h3>&lt;p>流程：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>光猫透传&lt;/strong>：光猫仅作为信号转换设备，不参与拨号（模式由运营商或用户修改）。&lt;/li>
+&lt;li>&lt;strong>路由器拨号&lt;/strong>：路由器通过PPPoE拨号获取公网IP，并直接分配内网IP（如 &lt;code>192.168.0.0/24&lt;/code> 网段）。&lt;br>
+• &lt;strong>特点&lt;/strong>：&lt;br>
+• 减少网络层级，提升性能（如游戏延迟降低）。&lt;br>
+• 需路由器支持PPPoE拨号功能。&lt;/li>
+&lt;/ol>
+&lt;h2 id="校园网环境集中式dhcp架构">校园网环境（集中式DHCP架构）
+&lt;/h2>&lt;h3 id="有线接入流程">有线接入流程
+&lt;/h3>&lt;p>&lt;strong>步骤&lt;/strong>：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>物理连接&lt;/strong>：设备通过网线直连宿舍/教室的网络接口。&lt;/li>
+&lt;li>&lt;strong>自动获取IP&lt;/strong>：校园网DHCP服务器分配内网IP（如 &lt;code>10.30.199.235&lt;/code>，子网掩码 &lt;code>255.255.0.0&lt;/code>）。&lt;/li>
+&lt;li>&lt;strong>认证跳转&lt;/strong>：浏览器自动弹出认证页面（如 &lt;code>https://network.nbu.edu.cn&lt;/code>），输入学号/密码完成登录。&lt;br>
+• &lt;strong>特点&lt;/strong>：&lt;br>
+• 禁止使用私人路由器，防止网络环路。&lt;br>
+• IP地址动态分配，租约时间通常为8天。&lt;/li>
+&lt;/ol>
+&lt;h4 id="无线接入流程">无线接入流程
+&lt;/h4>&lt;p>• &lt;strong>步骤&lt;/strong>：&lt;/p>
+&lt;ol>
+&lt;li>连接无线信号（如 &lt;code>nbu-wireless&lt;/code>）。&lt;/li>
+&lt;li>自动获取IP后，通过统一身份认证访问外网。&lt;br>
+• &lt;strong>特点&lt;/strong>：&lt;br>
+• 多终端支持（通常允许3台设备同时在线）。&lt;br>
+• 校内资源（如图书馆数据库）无需认证即可访问。&lt;/li>
+&lt;/ol></description></item></channel></rss>

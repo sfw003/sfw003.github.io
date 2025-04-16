@@ -1,0 +1,467 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="从入门到精通的 Linux 进程"><title>Linux 进程</title>
+<link rel=canonical href=https://sfw003.github.io/p/linux-process/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="Linux 进程"><meta property='og:description' content="从入门到精通的 Linux 进程"><meta property='og:url' content='https://sfw003.github.io/p/linux-process/'><meta property='og:site_name' content='石某人'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='linux进程概念'><meta property='article:published_time' content='2025-04-03T00:00:00+00:00'><meta property='article:modified_time' content='2025-04-03T00:00:00+00:00'><meta name=twitter:title content="Linux 进程"><meta name=twitter:description content="从入门到精通的 Linux 进程"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_a0516c4ce0480f39.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>石某人</a></h1><h2 class=site-description>成为一名强大的程序员</h2></div></header><ol class=menu-social><li><a href=https://blog.csdn.net/ProcedureStone target=_blank title=CSDN rel=me><svg class="icon icon-tabler icon-tabler-brand-csdn" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12c0 4.97 4.03 9 9 9s9-4.03 9-9-4.03-9-9-9-9 4.03-9 9z"/><path d="M12 8c-2.21.0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/><path d="M12 12m-2 0a2 2 0 104 0 2 2 0 10-4 0"/></svg></a></li><li><a href=https://gitee.com/sfw003 target=_blank title=Gitee rel=me><svg class="icon icon-tabler icon-tabler-brand-gitee" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2c5.523.0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z"/><path d="M12 6c-3.314.0-6 2.686-6 6s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6z"/><path d="M12 10c-1.105.0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2z"/></svg></a></li><li><a href=https://github.com/sfw003 target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>友情链接</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#进程和pcb>进程和PCB</a><ol><li><a href=#linux下的pcb>linux下的PCB</a></li><li><a href=#进程状态>进程状态</a><ol><li><a href=#磁盘睡眠--d>磁盘睡眠 &ndash; D</a></li><li><a href=#暂停和跟踪暂停--t和t>暂停和跟踪暂停 &ndash; T和t</a></li><li><a href=#僵尸进程--z>僵尸进程 &ndash; Z</a></li><li><a href=#孤儿进程>孤儿进程</a></li></ol></li><li><a href=#进程优先级>进程优先级</a></li></ol></li><li><a href=#进程地址空间>进程地址空间</a><ol><li><a href=#进程地址空间分布>进程地址空间分布</a></li><li><a href=#虚拟地址和页表>虚拟地址和页表</a></li></ol></li><li><a href=#进程控制>进程控制</a><ol><li><a href=#创建进程>创建进程</a></li><li><a href=#进程等待>进程等待</a><ol><li><a href=#进程退出信息>进程退出信息</a></li></ol></li><li><a href=#进程替换>进程替换</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/linux/>Linux</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/linux-process/>Linux 进程</a></h2><h3 class=article-subtitle>从入门到精通的 Linux 进程</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Apr 03, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 7 分钟</time></div></footer></div></header><section class=article-content><p>绘图文件，在<a class=link href=https://sfw003.github.io/p/linux-series/#linux进程管理>linux系列文章:进程管理</a></p><h2 id=进程和pcb>进程和PCB</h2><p>什么是进程？
+课本上的定义有很多，如：进程是程序的一次执行，是加载到内存的程序，是<strong>系统进行资源分配和调度的一个独立单位</strong>。</p><p>我们不必去纠结定义，只需知道2点：如何描述进程？如何管理进程？</p><p>描述=提取进程属性，管理=对进程的属性进行管理
+由此首先要引出一个概念：进程的PCB</p><p>PCB(process control block) 是什么？一句话：<strong>进程属性的集合</strong>，是一个结构体。此时进程就被拆分为2个部分：属性和数据，如下图：</p><p>linux下的进程信息存储在<code>/proc</code>目录下</p><h3 id=linux下的pcb>linux下的PCB</h3><p>在linux操作系统下的PCB：<strong>task_struct（结构体）</strong></p><blockquote><p>task_struct的内容分类：</p><ol><li><strong>标识符</strong>: 描述本进程的唯一标示符，用来区别其他进程。</li><li><strong>状态</strong>: 任务状态，退出代码，退出信号等。</li><li><strong>优先级</strong>: 相对于其他进程的优先级。</li><li>程序计数器: 程序中即将被执行的下一条指令的地址。</li><li>内存指针: 包括程序代码和进程相关数据的指针，还有和其他进程共享的内存块的指针</li><li>上下文数据: 进程执行时处理器的寄存器中的数据[休学例子，要加图CPU，寄存器]。</li><li>I／O状态信息: 包括显示的I/O请求,分配给进程的I／O设备和被进程使用的文件列表。</li><li>记账信息: 可能包括处理器时间总和，使用的时钟数总和，时间限制，记账号等。</li><li>……</li></ol></blockquote><h3 id=进程状态>进程状态</h3><p>在操作系统学科中，描述了一<strong>个进程活动期间至少具备3种状态</strong>，即进程的三态模型。</p><p><img src=/p/linux-process/image/image-20250410115534591.png width=483 height=315 srcset="/p/linux-process/image/image-20250410115534591_hu_bec84f15f212fa14.png 480w, /p/linux-process/image/image-20250410115534591_hu_309684bf5fa1ab87.png 1024w" loading=lazy alt=image-20250410115534591 class=gallery-image data-flex-grow=153 data-flex-basis=368px></p><p>但是这几种状态不够应对实际的情况。如果有大量处于阻塞状态的进程，将长时间占据物理内存空间，造成浪费。因此我们新增一种状态——<strong>挂起状态</strong></p><blockquote><p>挂起状态：进程没有占用物理内存空间的状态（关键词：物理内存）</p><p>理解：此时进程的数据会被移到磁盘空间中</p></blockquote><p>其中挂起状态又分为2种：阻塞挂起和就绪挂起</p><ul><li>阻塞挂起状态：进程在外存，等待事件</li><li>就绪挂起状态：进程在外存，事件就绪</li></ul><p>因此现在有 运行、就绪、阻塞、阻塞挂起、就绪挂起共5种状态，如果再具体一点，还可以加入进程<strong>创建状态</strong>和进程<strong>结束状态</strong>，共7种。</p><p><img src=/p/linux-process/image/image-20250410141859878.png width=721 height=318 srcset="/p/linux-process/image/image-20250410141859878_hu_9faf517a3ac888f3.png 480w, /p/linux-process/image/image-20250410141859878_hu_de4865f7672b1bc1.png 1024w" loading=lazy alt=image-20250410141859878 class=gallery-image data-flex-grow=226 data-flex-basis=544px></p><p>在linux系统中，关于进程状态的定义如下，</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=k>static</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span> <span class=k>const</span> <span class=n>task_state_array</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=cm>/* states in TASK_REPORT: */</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;R (running)&#34;</span><span class=p>,</span>		<span class=cm>/* 0x00 */</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;S (sleeping)&#34;</span><span class=p>,</span>		<span class=cm>/* 0x01 */</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;D (disk sleep)&#34;</span><span class=p>,</span>	<span class=cm>/* 0x02 */</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;T (stopped)&#34;</span><span class=p>,</span>		<span class=cm>/* 0x04 */</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;t (tracing stop)&#34;</span><span class=p>,</span>	<span class=cm>/* 0x08 */</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;X (dead)&#34;</span><span class=p>,</span>		<span class=cm>/* 0x10 */</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;Z (zombie)&#34;</span><span class=p>,</span>		<span class=cm>/* 0x20 */</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;P (parked)&#34;</span><span class=p>,</span>		<span class=cm>/* 0x40 */</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=cm>/* states beyond TASK_REPORT: */</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;I (idle)&#34;</span><span class=p>,</span>		<span class=cm>/* 0x80 */</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=磁盘睡眠--d>磁盘睡眠 &ndash; D</h4><p>D状态，磁盘睡眠，进程的磁盘睡眠状态（Disk Sleep State）通常是指进程处于等待磁盘I/O操作完成的状态。这种状态通常出现在进程请求进行磁盘读取或写入操作时，但磁盘尚未完成相应的I/O操作，因此进程被阻塞，等待磁盘响应。在这种状态下，进程不会消耗CPU时间，而是被挂起，直到磁盘I/O操作完成。</p><p>也就是挂起状态。</p><h4 id=暂停和跟踪暂停--t和t>暂停和跟踪暂停 &ndash; T和t</h4><p>Linux操作系统的有个信号<code>kill -19</code>， 可以使进程暂停。T状态即进程处于暂停状态。注意不要于S状态混淆，S状态一定是进程在等待某种资源，但T状态不一定在等待某种资源。</p><p>那T和t有什么区别呢？</p><ul><li><p>Stopped（停止）状态：
+进程处于停止状态通常是由于接收到了一个信号，例如SIGSTOP（Ctrl-Z产生的SIGTSTP信号）或者SIGTSTP（通常由shell的暂停命令引发）。这种状态下的进程被挂起，暂时停止执行，但可以通过发送SIGCONT信号来恢复执行。</p></li><li><p>Tracing Stop（跟踪停止）状态：
+进程处于跟踪停止状态通常是由于调试器（如GDB）或者ptrace系统调用的作用。在这种状态下，进程被调试器所追踪，通常是因为调试器在进行单步执行、观察或者修改进程的内存等操作。这种状态下的进程暂时停止执行，直到调试器允许其继续执行。</p></li></ul><h4 id=僵尸进程--z>僵尸进程 &ndash; Z</h4><p>当一个进程（子进程）完成执行后，它的退出状态需要被父进程获取。如果父进程没有主动获取子进程的退出状态，那么子进程就会变成僵尸进程，相当于一个人处于生死之间。</p><h5 id=父子进程->父子进程 *</h5><p>这里提到了父子进程，那什么是父进程、子进程？如何创建子进程？</p><p>下方代码实现：父进程一直运行，子进程执行3次后结束</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdlib.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;我是进程：pid = %d，ppid = %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=err>，</span><span class=nf>getpid</span><span class=p>()</span><span class=err>，</span><span class=nf>getppid</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    <span class=kt>pid_t</span> <span class=n>id</span> <span class=o>=</span> <span class=nf>fork</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=n>id</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>cnt</span> <span class=o>=</span> <span class=mi>3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>while</span><span class=p>(</span><span class=n>cnt</span><span class=o>--</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        	<span class=nf>printf</span><span class=p>(</span><span class=s>&#34;我是子进程，pid =%d，ppid =%d</span><span class=se>\n</span><span class=s>&#34;</span><span class=err>，</span><span class=nf>getpid</span><span class=p>()</span><span class=err>，</span><span class=nf>getppid</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>        	<span class=nf>sleep</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>   
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nf>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span> <span class=k>if</span><span class=p>(</span><span class=n>id</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>while</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    		<span class=nf>printf</span><span class=p>(</span><span class=s>&#34;我是父进程，pid = %d，ppid = %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=err>，</span><span class=nf>getpid</span><span class=p>()</span><span class=err>，</span><span class=nf>getppid</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>    		<span class=nf>sleep</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>结果如下：子进程的状态由S+ &ndash;> Z+， Z即处于僵尸状态</p><p><img src=/p/linux-process/image/a67747920f70f6aabf6712cac48bde5b.png width=2201 height=913 srcset="/p/linux-process/image/a67747920f70f6aabf6712cac48bde5b_hu_b9ad2643e4cc1121.png 480w, /p/linux-process/image/a67747920f70f6aabf6712cac48bde5b_hu_c493505028f33825.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=241 data-flex-basis=578px></p><p>僵尸进程虽然不会直接对系统造成严重影响，但长时间存在的僵尸进程会对系统的正常运行产生一些间接的危害，包括：可能导致资源耗尽，影响进程管理，降低系统稳定性，因此需要父进程处理僵尸进程。
+父进程通常需要调用类似于wait()或waitpid()的系统调用来等待子进程的退出，并获取其退出状态。</p><p><strong>当然如果父进程也结束，系统会自动把子进程释放。</strong></p><h4 id=孤儿进程>孤儿进程</h4><p>僵尸进程是子进程结束，但父进程未结束。如何父进程先结束，子进程后结束呢？那么子进程便会变为孤儿进程，并被<strong>托孤</strong>给1号进程，即操作系统。</p><p><img src=/p/linux-process/image/13689dfc900f45c81ca9d116a4d55c2b.png width=2426 height=779 srcset="/p/linux-process/image/13689dfc900f45c81ca9d116a4d55c2b_hu_dd4aaa17e13875a5.png 480w, /p/linux-process/image/13689dfc900f45c81ca9d116a4d55c2b_hu_62ec059c2a70d62e.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=311 data-flex-basis=747px></p><h3 id=进程优先级>进程优先级</h3><p><img src=/p/linux-process/image/de81281fa20b148bfabb0f27df8892cb.png width=1050 height=311 srcset="/p/linux-process/image/de81281fa20b148bfabb0f27df8892cb_hu_67425e7cac0b994f.png 480w, /p/linux-process/image/de81281fa20b148bfabb0f27df8892cb_hu_8686293bd529bf14.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=337 data-flex-basis=810px>
+PRI（Priority）：PRI 表示进程的静态优先级或调度优先级。俗点说就是程序被CPU执行的先后顺序，<strong>此值越小,进程的优先级别越高。</strong>
+NI（Nice Value）：NI 表示进程的 Nice 值，是一个表示进程调度优先级的数值。它的作用是改变PRI的值。</p><p>通过PRI和NI可以调整进程的优先级，计算公式如下：</p><p><code>PRI(new)=PRI(old)+nice</code> '</p><p>这样，当nice值为负值的时候，那么该程序将会优先级值将变小，即其优先级会变高，则其越快被执行所以，调整进程优先级，在Linux下，就是调整进程nice值</p><p>注意：nice 的范围在 【-20， 19】
+PRI(old) 最小是80，如果原来的PRI &lt; 80， 则会直接从80开始算：
+因此：PRI 范围【60， 99】，但在计算新的PRI时，最小从80开始
+举例：原来 ： PRI = 60 NI = 0;
+更改：令PRI = 100
+结果：PRI = 99 NI = 19</p><p>那如何更改nice值呢？</p><p>在Linux系统中，<code>nice</code>命令用于启动一个新的进程，并设置其优先级。而<code>renice</code>命令用于修改已经运行的进程的优先级。</p><p><code>nice</code>命令的使用：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>nice <span class=o>[</span>OPTION<span class=o>]</span> <span class=o>[</span>COMMAND <span class=o>[</span>ARG<span class=o>]</span>...<span class=o>]</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>nice</code>命令通过改变进程的优先级来影响其调度。数值越大，优先级越低。默认情况下，优先级是0。</p><p>例如，运行一个命令并设置其优先级：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>nice -n &lt;优先级&gt; &lt;命令&gt;
+</span></span></code></pre></td></tr></table></div></div><p>例如，将<code>ls</code>命令的优先级降低为10：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>nice -n <span class=m>10</span> ls
+</span></span></code></pre></td></tr></table></div></div><p><code>renice</code>命令的使用：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>renice <span class=o>[</span>优先级<span class=o>]</span> -p &lt;进程ID&gt; <span class=o>[</span>&lt;进程ID&gt;...<span class=o>]</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>renice</code>命令用于修改已经运行的进程的优先级。可以指定一个或多个进程ID来修改它们的优先级。</p><p>例如，将进程ID为1234的进程的优先级设置为10：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>renice <span class=m>10</span> -p <span class=m>1234</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=进程地址空间>进程地址空间</h2><p>进程地址空间是操作系统为每个进程分配的<strong>虚拟内存</strong>区域，它让每个进程有独立的地址范围，隔离了物理内存，提高了安全性和管理效率。</p><h3 id=进程地址空间分布>进程地址空间分布</h3><p>linux下进程地址空间如下：内核空间和用户空间按1 : 3</p><blockquote><p>Linux系统与Windows系统在进程地址空间设计上存在显著差异，而不同编程语言的进程地址空间本质上是统一的（受操作系统管理）</p><p><strong>Windows</strong>：默认采用 <strong>2:2模式</strong>（用户空间和内核空间各占2GB）但可通过设置 <code>Large-Address-Aware</code> 标志调整为 <strong>3:1模式</strong></p><p>但是它们的用户空间都包含<strong>代码段、数据段、堆、栈</strong>等</p></blockquote><img src=image/ff03787b23fd4675af25b9cfd03ac888-1744267679242-12.png alt=在这里插入图片描述 style=zoom:67%><p>验证一下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=k>using</span> <span class=k>namespace</span> <span class=n>std</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=n>g_A</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=n>g_B</span> <span class=o>=</span> <span class=mi>100</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>const</span> <span class=kt>char</span><span class=o>*</span> <span class=n>a</span> <span class=o>=</span> <span class=s>&#34;ab&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>static</span> <span class=kt>int</span> <span class=n>s_A</span> <span class=o>=</span> <span class=mi>5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>A</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>B</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>C</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span><span class=o>*</span> <span class=n>m_A</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span><span class=o>*</span> <span class=n>m_B</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span><span class=o>*</span> <span class=n>m_C</span> <span class=o>=</span> <span class=k>new</span> <span class=kt>int</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;字符常量：a : %p</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>a</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;静态变量：s_A : &#34;</span> <span class=o>&lt;&lt;</span> <span class=o>&amp;</span><span class=n>s_A</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;全局变量：未初始化g_A : &#34;</span> <span class=o>&lt;&lt;</span> <span class=o>&amp;</span><span class=n>g_A</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;全局变量：已初始化g_B : &#34;</span> <span class=o>&lt;&lt;</span> <span class=o>&amp;</span><span class=n>g_B</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;栈区：A : &#34;</span> <span class=o>&lt;&lt;</span> <span class=o>&amp;</span><span class=n>A</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;栈区：B : &#34;</span> <span class=o>&lt;&lt;</span> <span class=o>&amp;</span><span class=n>B</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;栈区：C : &#34;</span> <span class=o>&lt;&lt;</span> <span class=o>&amp;</span><span class=n>C</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;堆区：m_A : &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>m_A</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;堆区：m_B : &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>m_B</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;堆区：m_C : &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>m_C</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>结果如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ubuntu g++:
+</span></span><span class=line><span class=cl>字符常量：a : 0x5649d4534009
+</span></span><span class=line><span class=cl>静态变量：s_A : 0x5649d4536014
+</span></span><span class=line><span class=cl>全局变量：未初始化g_A : 0x5649d4536154 未初始化地址 &gt; 已初始化地址 符合
+</span></span><span class=line><span class=cl>全局变量：已初始化g_B : 0x5649d4536010
+</span></span><span class=line><span class=cl>栈区：A : 0x7ffc892fb3cc A到B栈区的地址是增长的, 不符合
+</span></span><span class=line><span class=cl>栈区：B : 0x7ffc892fb3d0
+</span></span><span class=line><span class=cl>栈区：C : 0x7ffc892fb3d4
+</span></span><span class=line><span class=cl>堆区：m_A : 0x5649d5eadeb0 堆区的地址是增长的，符合
+</span></span><span class=line><span class=cl>堆区：m_B : 0x5649d5eaded0
+</span></span><span class=line><span class=cl>堆区：m_C : 0x5649d5eadef0
+</span></span></code></pre></td></tr></table></div></div><p>这里栈区的地址是增长的，不是应该是减少吗？我再测试一下windows下vs2019</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>windows vs2019
+</span></span><span class=line><span class=cl>字符常量：a : 00639B30
+</span></span><span class=line><span class=cl>静态变量：s_A : 0063C004
+</span></span><span class=line><span class=cl>全局变量：未初始化g_A : 0063C3E0
+</span></span><span class=line><span class=cl>全局变量：已初始化g_B : 0063C000
+</span></span><span class=line><span class=cl>栈区：A : 004FFBA8	A到B栈区的地址是下降的, 符合
+</span></span><span class=line><span class=cl>栈区：B : 004FFB9C
+</span></span><span class=line><span class=cl>栈区：C : 004FFB90
+</span></span><span class=line><span class=cl>堆区：m_A : 0069FD68 堆区的地址是增长的，符合
+</span></span><span class=line><span class=cl>堆区：m_B : 0069FD98
+</span></span><span class=line><span class=cl>堆区：m_C : 006A0118
+</span></span></code></pre></td></tr></table></div></div><p>这是什么情况？linux栈区是向高地址分配？windows的栈区是向低地址分配？这个问题我之前查阅的时候，得到答案是<strong>局部变量按编译器自己方式进行分配</strong>。</p><p>？？？</p><p>我对此很懵逼，后来我才理解。这里需要引入一个概念：<strong>函数栈帧</strong></p><blockquote><p>函数栈帧（stack frame）就是函数调用过程中在程序的调用栈（call stack）所开辟的空间，这些空间是用来存放：</p><ul><li>函数参数和函数返回值</li><li>临时变量（包括函数的非静态的局部变量以及编译器自动生产的其他临时变量）</li><li>保存上下文信息（包括在函数调用前后需要保持不变的寄存器）。</li></ul></blockquote><p><img src=/p/linux-process/image/image-20250410151621357.png width=629 height=310 srcset="/p/linux-process/image/image-20250410151621357_hu_e3f23c9aa3c8da97.png 480w, /p/linux-process/image/image-20250410151621357_hu_86eea16cdff95133.png 1024w" loading=lazy alt=image-20250410151621357 class=gallery-image data-flex-grow=202 data-flex-basis=486px></p><h3 id=虚拟地址和页表>虚拟地址和页表</h3><p>前面提到，进程地址空间是操作系统为每个进程分配的<strong>虚拟内存</strong>区域，这么说，在进程中使用的地址都是虚拟地址，如何证明？来看下面一段代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=kt>int</span> <span class=n>g_val</span> <span class=o>=</span> <span class=mi>100</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=n>pid_t</span> <span class=n>id</span> <span class=o>=</span> <span class=n>fork</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span><span class=p>(</span><span class=n>id</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>g_val</span> <span class=o>=</span> <span class=mi>200</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=n>printf</span><span class=p>(</span><span class=s>&#34;子进程：g_val = %d, &amp;g_val = %p</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>g_val</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>g_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>else</span> <span class=k>if</span><span class=p>(</span><span class=n>id</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>printf</span><span class=p>(</span><span class=s>&#34;父进程：g_val = %d, &amp;g_val = %p</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>g_val</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>g_val</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=err>结果：</span>
+</span></span><span class=line><span class=cl><span class=err>父进程：</span><span class=n>g_val</span> <span class=o>=</span> <span class=mi>100</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>g_val</span> <span class=o>=</span> <span class=mh>0x55631bc26010</span>
+</span></span><span class=line><span class=cl><span class=err>子进程：</span><span class=n>g_val</span> <span class=o>=</span> <span class=mi>200</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>g_val</span> <span class=o>=</span> <span class=mh>0x55631bc26010</span>
+</span></span></code></pre></td></tr></table></div></div><p>子进程更改数据后，会发生写时拷贝，因此子进程和父进程的g_val值不一样，符合预期，但是为什么发生了写时拷贝，父子进程的g_val地址还是相同？
+<strong>显然这里的地址一定不是真实的地址。</strong></p><p>那虚拟地址如何于物理地址联系呢？通过<strong>页表</strong>与物理地址映射。
+<img src=/p/linux-process/image/eda7e0b75e26465fab9eff9a5dd59436.png width=2143 height=853 srcset="/p/linux-process/image/eda7e0b75e26465fab9eff9a5dd59436_hu_9e17fac47ca098f4.png 480w, /p/linux-process/image/eda7e0b75e26465fab9eff9a5dd59436_hu_90a3d99dc2c50dd5.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=251 data-flex-basis=602px>
+回到fork里的问题：为什么父子进程不同的值有着相同的地址？因为这里的地址是虚拟地址。子进程只需更改子进程页表。</p><p><img src=/p/linux-process/image/555567ce5c0a4980a01cf811f77b86ef.png width=1109 height=402 srcset="/p/linux-process/image/555567ce5c0a4980a01cf811f77b86ef_hu_3e81e21566451f09.png 480w, /p/linux-process/image/555567ce5c0a4980a01cf811f77b86ef_hu_2b19323ebfafc9e8.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=275 data-flex-basis=662px></p><h2 id=进程控制>进程控制</h2><p>前文提到linux下进程有7种状态，如果从进程控制的角度，我们关心</p><ol><li>进程如何创建</li><li>进程运行结束，结果是否正确？</li><li>进程异常，如何终止？</li></ol><h3 id=创建进程>创建进程</h3><p>系统创建进程的流程如下：</p><ol><li>申请一个空白的PCB，初始化PCB；</li><li>为进程分配运行时所必需的资源；</li><li>将PCB 插入到就绪队列，等待进程调度；</li></ol><p>用户如何创建进程？</p><ul><li>运行一个可执行程序</li><li>fork创建子进程</li></ul><h3 id=进程等待>进程等待</h3><p>当一个进程（子进程）完成执行后，它的退出状态需要被父进程获取。如果父进程没有主动获取子进程的退出状态，那么子进程就会变成僵尸进程。<strong>僵尸进程无法被信号 kill -9 杀死，如果放着不管，就会造成内存泄漏</strong>。
+如何解决呢？此时需要父进程通过进程等待的方式，回收子进程资源，获取子进程退出信息。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include&lt;sys/types.h&gt;
+</span></span></span><span class=line><span class=cl><span class=cp>#include&lt;sys/wait.h&gt;
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=n>pid_t</span> <span class=nf>wait</span><span class=p>(</span><span class=kt>int</span><span class=o>*</span><span class=n>status</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=err>返回值：</span>
+</span></span><span class=line><span class=cl> <span class=err>成功返回被等待进程</span><span class=n>pid</span><span class=err>，失败返回</span><span class=o>-</span><span class=mi>1</span><span class=err>。</span>
+</span></span><span class=line><span class=cl><span class=err>参数：</span>
+</span></span><span class=line><span class=cl> <span class=err>输出型参数，获取子进程退出状态</span><span class=p>,</span><span class=err>不关心则可以设置成为</span><span class=nb>NULL</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>pid_</span> <span class=n>t</span> <span class=n>waitpid</span><span class=p>(</span><span class=n>pid_t</span> <span class=n>pid</span><span class=p>,</span> <span class=kt>int</span> <span class=o>*</span><span class=n>status</span><span class=p>,</span> <span class=kt>int</span> <span class=n>options</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=err>返回值：</span>
+</span></span><span class=line><span class=cl> <span class=err>当正常返回的时候</span><span class=n>waitpid返回收集到的子进程的进程ID</span><span class=err>；</span>
+</span></span><span class=line><span class=cl> <span class=err>如果设置了选项</span><span class=n>WNOHANG</span><span class=p>,</span><span class=err>而调用中</span><span class=n>waitpid发现没有已退出的子进程可收集</span><span class=p>,</span><span class=err>则返回</span><span class=mi>0</span><span class=err>；</span>
+</span></span><span class=line><span class=cl> <span class=err>如果调用中出错</span><span class=p>,</span><span class=err>则返回</span><span class=o>-</span><span class=mi>1</span><span class=p>,</span><span class=err>这时</span><span class=n>errno会被设置成相应的值以指示错误所在</span><span class=err>；</span>
+</span></span><span class=line><span class=cl><span class=err>参数：</span>
+</span></span><span class=line><span class=cl> <span class=n>pid</span><span class=err>：</span>
+</span></span><span class=line><span class=cl> <span class=n>Pid</span><span class=o>=-</span><span class=mi>1</span><span class=p>,</span><span class=err>等待任一个子进程。与</span><span class=n>wait等效</span><span class=err>。</span>
+</span></span><span class=line><span class=cl> <span class=n>Pid</span><span class=o>&gt;</span><span class=mf>0.</span><span class=err>等待其进程</span><span class=n>ID与pid相等的子进程</span><span class=err>。</span>
+</span></span><span class=line><span class=cl> <span class=nl>status</span><span class=p>:</span>
+</span></span><span class=line><span class=cl> <span class=n>WIFEXITED</span><span class=p>(</span><span class=n>status</span><span class=p>)</span><span class=o>:</span> <span class=err>若为正常终止子进程返回的状态，则为真。（查看进程是否是正常退出）</span>
+</span></span><span class=line><span class=cl> <span class=n>WEXITSTATUS</span><span class=p>(</span><span class=n>status</span><span class=p>)</span><span class=o>:</span> <span class=err>若</span><span class=n>WIFEXITED非零</span><span class=err>，提取子进程退出码。（查看进程的退出码）</span>
+</span></span><span class=line><span class=cl> <span class=nl>options</span><span class=p>:</span>
+</span></span><span class=line><span class=cl> <span class=nl>WNOHANG</span><span class=p>:</span> <span class=err>若</span><span class=n>pid指定的子进程没有结束</span><span class=err>，则</span><span class=n>waitpid</span><span class=p>()</span><span class=err>函数返回</span><span class=mi>0</span><span class=err>，不予以等待。若正常结束，则返回该子进</span>
+</span></span><span class=line><span class=cl><span class=err>程的</span><span class=n>ID</span><span class=err>。</span>
+</span></span></code></pre></td></tr></table></div></div><p>使用案例：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/wait.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=k>using</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=n>std</span><span class=o>::</span><span class=n>cout</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span><span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=mi>5</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=n>pid_t</span> <span class=n>id</span> <span class=o>=</span> <span class=n>fork</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span><span class=p>(</span><span class=n>id</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;create a child process, pid = &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>getpid</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>			<span class=n>exit</span><span class=p>(</span><span class=n>i</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=n>sleep</span><span class=p>(</span><span class=mi>3</span><span class=p>);</span> <span class=c1>//经过3秒后，wait子进程
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>for</span><span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=mi>5</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=kt>int</span> <span class=n>status</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=n>pid_t</span> <span class=n>id</span> <span class=o>=</span> <span class=n>wait</span><span class=p>(</span><span class=o>&amp;</span><span class=n>status</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span><span class=p>(</span><span class=n>id</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;wait a process pid = &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>id</span> <span class=o>&lt;&lt;</span> <span class=s>&#34; status = &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>status</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=err>结果：</span>
+</span></span><span class=line><span class=cl><span class=n>create</span> <span class=n>a</span> <span class=n>child</span> <span class=n>process</span><span class=p>,</span> <span class=n>pid</span> <span class=o>=</span> <span class=mi>230665</span>
+</span></span><span class=line><span class=cl><span class=n>create</span> <span class=n>a</span> <span class=n>child</span> <span class=n>process</span><span class=p>,</span> <span class=n>pid</span> <span class=o>=</span> <span class=mi>230667</span>
+</span></span><span class=line><span class=cl><span class=n>create</span> <span class=n>a</span> <span class=n>child</span> <span class=n>process</span><span class=p>,</span> <span class=n>pid</span> <span class=o>=</span> <span class=mi>230668</span>
+</span></span><span class=line><span class=cl><span class=n>create</span> <span class=n>a</span> <span class=n>child</span> <span class=n>process</span><span class=p>,</span> <span class=n>pid</span> <span class=o>=</span> <span class=mi>230669</span>
+</span></span><span class=line><span class=cl><span class=n>create</span> <span class=n>a</span> <span class=n>child</span> <span class=n>process</span><span class=p>,</span> <span class=n>pid</span> <span class=o>=</span> <span class=mi>230666</span>
+</span></span><span class=line><span class=cl><span class=n>wait</span> <span class=n>a</span> <span class=n>process</span> <span class=n>pid</span> <span class=o>=</span> <span class=mi>230665</span> <span class=n>status</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>wait</span> <span class=n>a</span> <span class=n>process</span> <span class=n>pid</span> <span class=o>=</span> <span class=mi>230666</span> <span class=n>status</span> <span class=o>=</span> <span class=mi>256</span>
+</span></span><span class=line><span class=cl><span class=n>wait</span> <span class=n>a</span> <span class=n>process</span> <span class=n>pid</span> <span class=o>=</span> <span class=mi>230667</span> <span class=n>status</span> <span class=o>=</span> <span class=mi>512</span>
+</span></span><span class=line><span class=cl><span class=n>wait</span> <span class=n>a</span> <span class=n>process</span> <span class=n>pid</span> <span class=o>=</span> <span class=mi>230668</span> <span class=n>status</span> <span class=o>=</span> <span class=mi>768</span>
+</span></span><span class=line><span class=cl><span class=n>wait</span> <span class=n>a</span> <span class=n>process</span> <span class=n>pid</span> <span class=o>=</span> <span class=mi>230669</span> <span class=n>status</span> <span class=o>=</span> <span class=mi>1024</span>
+</span></span></code></pre></td></tr></table></div></div><p>使用<code>while :; do ps ajx | head -1 && ps ajx | grep t1; sleep 1; done</code>来监控
+发现5个僵尸进程，被wait回收了</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~</span><span class=err>#</span> <span class=k>while</span> <span class=o>:</span><span class=p>;</span> <span class=k>do</span> <span class=n>ps</span> <span class=n>ajx</span> <span class=o>|</span> <span class=n>head</span> <span class=o>-</span><span class=mi>1</span> <span class=o>&amp;&amp;</span> <span class=n>ps</span> <span class=n>ajx</span> <span class=o>|</span> <span class=n>grep</span> <span class=n>t1</span><span class=p>;</span> <span class=n>sleep</span> <span class=mi>1</span><span class=p>;</span> <span class=n>done</span>
+</span></span><span class=line><span class=cl>   <span class=n>PPID</span>     <span class=n>PID</span>    <span class=n>PGID</span>     <span class=n>SID</span> <span class=n>TTY</span>        <span class=n>TPGID</span> <span class=n>STAT</span>   <span class=n>UID</span>   <span class=n>TIME</span> <span class=n>COMMAND</span>
+</span></span><span class=line><span class=cl> <span class=mi>229980</span>  <span class=mi>230652</span>  <span class=mi>230651</span>  <span class=mi>229980</span> <span class=n>pts</span><span class=o>/</span><span class=mi>3</span>     <span class=mi>230651</span> <span class=n>S</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=n>grep</span> <span class=o>--</span><span class=n>color</span><span class=o>=</span><span class=k>auto</span> <span class=n>t</span>
+</span></span><span class=line><span class=cl>   <span class=n>PPID</span>     <span class=n>PID</span>    <span class=n>PGID</span>     <span class=n>SID</span> <span class=n>TTY</span>        <span class=n>TPGID</span> <span class=n>STAT</span>   <span class=n>UID</span>   <span class=n>TIME</span> <span class=n>COMMAND</span>
+</span></span><span class=line><span class=cl> <span class=mi>229980</span>  <span class=mi>230657</span>  <span class=mi>230656</span>  <span class=mi>229980</span> <span class=n>pts</span><span class=o>/</span><span class=mi>3</span>     <span class=mi>230656</span> <span class=n>S</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=n>grep</span> <span class=o>--</span><span class=n>color</span><span class=o>=</span><span class=k>auto</span> <span class=n>t</span>
+</span></span><span class=line><span class=cl>   <span class=n>PPID</span>     <span class=n>PID</span>    <span class=n>PGID</span>     <span class=n>SID</span> <span class=n>TTY</span>        <span class=n>TPGID</span> <span class=n>STAT</span>   <span class=n>UID</span>   <span class=n>TIME</span> <span class=n>COMMAND</span>
+</span></span><span class=line><span class=cl> <span class=mi>229980</span>  <span class=mi>230662</span>  <span class=mi>230661</span>  <span class=mi>229980</span> <span class=n>pts</span><span class=o>/</span><span class=mi>3</span>     <span class=mi>230661</span> <span class=n>S</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=n>grep</span> <span class=o>--</span><span class=n>color</span><span class=o>=</span><span class=k>auto</span> <span class=n>t</span>
+</span></span><span class=line><span class=cl>   <span class=n>PPID</span>     <span class=n>PID</span>    <span class=n>PGID</span>     <span class=n>SID</span> <span class=n>TTY</span>        <span class=n>TPGID</span> <span class=n>STAT</span>   <span class=n>UID</span>   <span class=n>TIME</span> <span class=n>COMMAND</span>
+</span></span><span class=line><span class=cl> <span class=mi>229863</span>  <span class=mi>230664</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>S</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>.</span><span class=o>/</span><span class=n>t1</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230665</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230666</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230667</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230668</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230669</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>229980</span>  <span class=mi>230673</span>  <span class=mi>230672</span>  <span class=mi>229980</span> <span class=n>pts</span><span class=o>/</span><span class=mi>3</span>     <span class=mi>230672</span> <span class=n>S</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=n>grep</span> <span class=o>--</span><span class=n>color</span><span class=o>=</span><span class=k>auto</span> <span class=n>t</span>
+</span></span><span class=line><span class=cl>   <span class=n>PPID</span>     <span class=n>PID</span>    <span class=n>PGID</span>     <span class=n>SID</span> <span class=n>TTY</span>        <span class=n>TPGID</span> <span class=n>STAT</span>   <span class=n>UID</span>   <span class=n>TIME</span> <span class=n>COMMAND</span>
+</span></span><span class=line><span class=cl> <span class=mi>229863</span>  <span class=mi>230664</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>S</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>.</span><span class=o>/</span><span class=n>t1</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230665</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230666</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230667</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230668</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230669</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>229980</span>  <span class=mi>230678</span>  <span class=mi>230677</span>  <span class=mi>229980</span> <span class=n>pts</span><span class=o>/</span><span class=mi>3</span>     <span class=mi>230677</span> <span class=n>S</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=n>grep</span> <span class=o>--</span><span class=n>color</span><span class=o>=</span><span class=k>auto</span> <span class=n>t</span>
+</span></span><span class=line><span class=cl>   <span class=n>PPID</span>     <span class=n>PID</span>    <span class=n>PGID</span>     <span class=n>SID</span> <span class=n>TTY</span>        <span class=n>TPGID</span> <span class=n>STAT</span>   <span class=n>UID</span>   <span class=n>TIME</span> <span class=n>COMMAND</span>
+</span></span><span class=line><span class=cl> <span class=mi>229863</span>  <span class=mi>230664</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>S</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>.</span><span class=o>/</span><span class=n>t1</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230665</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230666</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230667</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230668</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>230664</span>  <span class=mi>230669</span>  <span class=mi>230664</span>  <span class=mi>229863</span> <span class=n>pts</span><span class=o>/</span><span class=mi>2</span>     <span class=mi>230664</span> <span class=n>Z</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=p>[</span><span class=n>t1</span><span class=p>]</span> <span class=o>&lt;</span><span class=n>defunct</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl> <span class=mi>229980</span>  <span class=mi>230683</span>  <span class=mi>230682</span>  <span class=mi>229980</span> <span class=n>pts</span><span class=o>/</span><span class=mi>3</span>     <span class=mi>230682</span> <span class=n>S</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=n>grep</span> <span class=o>--</span><span class=n>color</span><span class=o>=</span><span class=k>auto</span> <span class=n>t</span>
+</span></span><span class=line><span class=cl>   <span class=n>PPID</span>     <span class=n>PID</span>    <span class=n>PGID</span>     <span class=n>SID</span> <span class=n>TTY</span>        <span class=n>TPGID</span> <span class=n>STAT</span>   <span class=n>UID</span>   <span class=n>TIME</span> <span class=n>COMMAND</span>
+</span></span><span class=line><span class=cl> <span class=mi>229980</span>  <span class=mi>230688</span>  <span class=mi>230687</span>  <span class=mi>229980</span> <span class=n>pts</span><span class=o>/</span><span class=mi>3</span>     <span class=mi>230687</span> <span class=n>S</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=n>grep</span> <span class=o>--</span><span class=n>color</span><span class=o>=</span><span class=k>auto</span> <span class=n>t</span>
+</span></span><span class=line><span class=cl>   <span class=n>PPID</span>     <span class=n>PID</span>    <span class=n>PGID</span>     <span class=n>SID</span> <span class=n>TTY</span>        <span class=n>TPGID</span> <span class=n>STAT</span>   <span class=n>UID</span>   <span class=n>TIME</span> <span class=n>COMMAND</span>
+</span></span><span class=line><span class=cl> <span class=mi>229980</span>  <span class=mi>230693</span>  <span class=mi>230692</span>  <span class=mi>229980</span> <span class=n>pts</span><span class=o>/</span><span class=mi>3</span>     <span class=mi>230692</span> <span class=n>S</span><span class=o>+</span>       <span class=mi>0</span>   <span class=mi>0</span><span class=o>:</span><span class=mo>00</span> <span class=n>grep</span> <span class=o>--</span><span class=n>color</span><span class=o>=</span><span class=k>auto</span> <span class=n>t</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=进程退出信息>进程退出信息</h4><p>wait和waitpid，都有一个status参数，该参数是一个输出型参数，由操作系统填充。</p><ul><li>如果传递NULL，表示不关心子进程的退出状态信息。</li><li>否则，操作系统会根据该参数，将子进程的退出信息反馈给父进程。</li></ul><p>status不能简单的当作整形来看待，可以当作位图来看待，具体细节如下图（只研究status低16比特位）：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=kt>int</span> <span class=n>status</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>pid_t</span> <span class=n>id</span> <span class=o>=</span> <span class=n>wait</span><span class=p>(</span><span class=o>&amp;</span><span class=n>status</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/linux-process/image/f7fdad997b8c4ea2b447c1da47509574.png width=572 height=173 srcset="/p/linux-process/image/f7fdad997b8c4ea2b447c1da47509574_hu_45e7345645b5e0bd.png 480w, /p/linux-process/image/f7fdad997b8c4ea2b447c1da47509574_hu_6409d2ee8488c9c6.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=330 data-flex-basis=793px></p><p>正常退出看退出码，异常退出看信号。status作为子进程的退出信息，通过位图的方式将退出码和信号的信息存储在比特位中。</p><p>你可以通过status的值来分析它的退出信息，如果你嫌麻烦，可以使用2个宏</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl> <span class=n>WIFEXITED</span><span class=p>(</span><span class=n>status</span><span class=p>)</span><span class=o>:</span> <span class=err>若为正常终止子进程返回的状态，则为真。（查看进程是否是正常退出）</span>
+</span></span><span class=line><span class=cl> <span class=n>WEXITSTATUS</span><span class=p>(</span><span class=n>status</span><span class=p>)</span><span class=o>:</span> <span class=err>若</span><span class=n>WIFEXITED非零</span><span class=err>，提取子进程退出码。（查看进程的退出码）</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=进程替换>进程替换</h3><p>当进程调用一种exec函数时,该进程的用户空间代码和数据完全被新程序替换,从新程序的启动进程程开始执行。调用exec并不创建新进程,所以调用exec前后该进程的id并未改变。
+<img src=/p/linux-process/image/beceee3e513e439a92bbe947a21a4ef5.png width=1075 height=414 srcset="/p/linux-process/image/beceee3e513e439a92bbe947a21a4ef5_hu_30eae4c798b0a663.png 480w, /p/linux-process/image/beceee3e513e439a92bbe947a21a4ef5_hu_2d881f97b7ea6c06.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=259 data-flex-basis=623px></p><p>函数关系：
+事实上,只有execve是真正的系统调用,其它五个函数最终都调用 execve,所以execve在man手册 第2节,其它函数在man手册第3节。这些函数之间的关系如下图所示
+<img src=/p/linux-process/image/43aaece3d5db4ea288b061cb78c2edad.png width=972 height=468 srcset="/p/linux-process/image/43aaece3d5db4ea288b061cb78c2edad_hu_25bfe1cf88231b84.png 480w, /p/linux-process/image/43aaece3d5db4ea288b061cb78c2edad_hu_1b06b07f30c2b3b1.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=207 data-flex-basis=498px></p></section><footer class=article-footer><section class=article-tags><a href=/tags/linux%E8%BF%9B%E7%A8%8B%E6%A6%82%E5%BF%B5/>Linux进程概念</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/linux-file-command/><div class=article-details><h2 class=article-title>Linux 文件操作命令</h2></div></a></article><article><a href=/p/linux-file-system/><div class=article-details><h2 class=article-title>Linux 文件系统</h2></div></a></article><article><a href=/p/linux-series/><div class=article-details><h2 class=article-title>Linux 系统系列文章</h2></div></a></article><article><a href=/p/linux-thread/><div class=article-details><h2 class=article-title>Linux 线程</h2></div></a></article><article><a href=/p/linux-network-command/><div class=article-details><h2 class=article-title>Linux 网络命令</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=sfw003/sfwblogtalks issue-term=title crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2025 石某人</section><section class=powerby>本站所有文章均为原创，转载请注明出处。<br>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

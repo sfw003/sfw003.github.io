@@ -1,0 +1,489 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Linux 文件系统"><title>Linux 文件系统</title>
+<link rel=canonical href=https://sfw003.github.io/p/linux-file-system/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="Linux 文件系统"><meta property='og:description' content="Linux 文件系统"><meta property='og:url' content='https://sfw003.github.io/p/linux-file-system/'><meta property='og:site_name' content='石某人'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='linux文件系统'><meta property='article:published_time' content='2025-04-03T00:00:00+00:00'><meta property='article:modified_time' content='2025-04-03T00:00:00+00:00'><meta name=twitter:title content="Linux 文件系统"><meta name=twitter:description content="Linux 文件系统"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_a0516c4ce0480f39.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>石某人</a></h1><h2 class=site-description>成为一名强大的程序员</h2></div></header><ol class=menu-social><li><a href=https://blog.csdn.net/ProcedureStone target=_blank title=CSDN rel=me><svg class="icon icon-tabler icon-tabler-brand-csdn" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12c0 4.97 4.03 9 9 9s9-4.03 9-9-4.03-9-9-9-9 4.03-9 9z"/><path d="M12 8c-2.21.0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/><path d="M12 12m-2 0a2 2 0 104 0 2 2 0 10-4 0"/></svg></a></li><li><a href=https://gitee.com/sfw003 target=_blank title=Gitee rel=me><svg class="icon icon-tabler icon-tabler-brand-gitee" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2c5.523.0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z"/><path d="M12 6c-3.314.0-6 2.686-6 6s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6z"/><path d="M12 10c-1.105.0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2z"/></svg></a></li><li><a href=https://github.com/sfw003 target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>友情链接</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#文件>文件</a><ol><li><a href=#文件结构体>文件结构体</a></li><li><a href=#文件的权限>文件的权限</a></li><li><a href=#文件的状态>文件的状态</a></li></ol></li><li><a href=#打开的文件>打开的文件</a><ol><li><a href=#linux下文件的系统调用>Linux下文件的系统调用</a><ol><li><a href=#open--close>open && close</a></li><li><a href=#read--write>read && write</a></li></ol></li><li><a href=#文件描述符fd和struct-file>文件描述符fd和struct file</a></li><li><a href=#重定向>重定向</a><ol><li><a href=#重定向方法>重定向方法</a></li></ol></li><li><a href=#用户缓冲区>用户缓冲区</a></li></ol></li><li><a href=#未打开的文件>未打开的文件</a><ol><li><a href=#linux的文件系统>linux的文件系统</a></li><li><a href=#软硬链接>软硬链接</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/linux/>Linux</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/linux-file-system/>Linux 文件系统</a></h2><h3 class=article-subtitle>Linux 文件系统</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Apr 03, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><section class=article-content><h2 id=文件>文件</h2><p>在谈文件系统前，首先谈谈什么是文件？</p><h3 id=文件结构体>文件结构体</h3><p>文件 = 属性 + 内容
+同进程PCB，linux也有管理文件属性的结构体</p><ul><li><p><strong>struct file</strong>：描述文件的打开状态，每次打开文件都会创建一个 file 结构，主要记录与进程操作文件相关的信息（如文件指针位置、打开模式等）。</p></li><li><p><strong>struct inode</strong>：描述文件在磁盘或文件系统中的元数据，无论文件是否被打开，inode 都存在。</p></li><li><p><strong>struct stat</strong>：用于在<strong>用户空间</strong>访问文件的属性信息，系统调用通过从 inode 获取属性并填充到 struct stat 中</p></li></ul><p>本文重点在前2个</p><h3 id=文件的权限>文件的权限</h3><p>文件权限
+每个文件和目录在 Linux 中都有三类权限，分别是：</p><ul><li>所有者（Owner）</li><li>所属组（Group）</li><li>其他用户（Others）</li></ul><p>每类权限又分为三种操作权限：</p><ul><li>读（r，read）：允许查看文件内容或列出目录内容。</li><li>写（w，write）：允许修改文件内容或在目录中创建、删除文件。</li><li>执行（x，execute）：允许执行文件（如果是可执行程序）或访问目录中的文件。</li></ul><p>这些权限被表示为一个 9 位的二进制组合，如下：</p><p><code>rwxrwxrwx</code></p><ul><li>前三个字符表示文件的所有者权限。</li><li>中间三个字符表示文件的所属组权限。</li><li>最后三个字符表示其他用户的权限。</li></ul><p>有权限则对应的二进制位为1
+例如，文件权限 755 表示：<code>rwxr-xr-x</code></p><p><strong>文件掩码</strong>（umask）用于决定在创建文件或目录时默认权限会被如何设置。它是一个权限的反向屏蔽值，掩码中的位会关闭（去除）文件或目录的默认权限。</p><ul><li>对于文件，默认权限为 666（即只有读和写权限，没有执行权限）。</li><li>对于目录，默认权限为 777（即读、写、执行权限全部开放）。
+码会从这些默认权限中减去相应的权限。例如：</li></ul><p>一个常见的掩码值为 022。这意味着从默认权限中去掉组和其他用户的写权限：</p><ul><li>文件权限：666 - 022 = 644（所有者有读写权限，组和其他用户只有读权限）</li><li>目录权限：777 - 022 = 755（所有者有全部权限，组和其他用户有读和执行权限）</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=err>查看当前掩码：</span>
+</span></span><span class=line><span class=cl><span class=n>umask</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=err>临时设置</span> <span class=n>umask</span><span class=err>（只对当前会话有效）：</span>
+</span></span><span class=line><span class=cl><span class=n>umask</span> <span class=mo>002</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=err>永久更改</span> <span class=n>umask</span>
+</span></span><span class=line><span class=cl><span class=err>将</span> <span class=n>umask</span> <span class=err>命令添加到你的</span> <span class=n>shell</span> <span class=err>启动文件中（例如</span> <span class=o>~/</span><span class=p>.</span><span class=n>bashrc</span> <span class=err>或</span> <span class=o>~/</span><span class=p>.</span><span class=n>profile</span><span class=err>）</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=文件的状态>文件的状态</h3><p>文件有2种状态：打开和未打开
+对于一个打开的文件，我们重点关注谁打开？谁进行维护？进程！因此要研究进程和文件的关系
+对于一个未打开的文件，我们重点关注放在哪里？如何分门别类的放置好？因此我们需要研究linux的文件系统。</p><h2 id=打开的文件>打开的文件</h2><p>对于打开的文件，我们要研究进程和文件的关系。下面按照如下顺序来讲解：</p><ol><li>进程如何操作文件？研究linux下的文件系统调用</li><li>底层是如何将进程和打开的文件联系在一起？研究struct task_struct和struct file</li></ol><h3 id=linux下文件的系统调用>Linux下文件的系统调用</h3><blockquote><p>linux系统提供的常见文件接口：
+<strong>open</strong>
+<strong>write</strong>
+<strong>read</strong>
+<strong>close</strong></p></blockquote><h4 id=open--close>open && close</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl>       <span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>       <span class=cp>#include</span> <span class=cpf>&lt;sys/stat.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>       <span class=cp>#include</span> <span class=cpf>&lt;fcntl.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=nf>open</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>pathname</span><span class=p>,</span> <span class=kt>int</span> <span class=n>flags</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=nf>open</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>pathname</span><span class=p>,</span> <span class=kt>int</span> <span class=n>flags</span><span class=p>,</span> <span class=n>mode_t</span> <span class=n>mode</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>       
+</span></span><span class=line><span class=cl>       <span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=nf>close</span><span class=p>(</span><span class=kt>int</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=err>参数介绍</span>
+</span></span><span class=line><span class=cl>	<span class=n>pathname</span> <span class=o>--</span> <span class=err>文件路径</span>
+</span></span><span class=line><span class=cl>	<span class=n>flags</span>    <span class=o>--</span>  <span class=err>文件打开方式</span>
+</span></span><span class=line><span class=cl>	<span class=n>mode</span>     <span class=o>--</span>  <span class=err>文件掩码</span>
+</span></span></code></pre></td></tr></table></div></div><p>flags参数是标志位，告诉open函数是要以读还是以写的方式打开文件。传参内容如下：
+O_WRONLY：以写的方式打开文件
+O_RDONLY：以读的方式打开文件
+O_RDWR：以读写的方式打开文件
+O_CREAT：当文件不存在时，创建文件
+O_APPEND：在文件末尾追加</p><blockquote><p>疑问：如何传递多个标志位？
+原理如下图，通过位图的方式,每个标志（如 O_RDWR、O_CREAT、O_TRUNC 等）都是一个特定的整数值，其中每个标志都使用一个或多个二进制位来表示。因为这些标志的二进制表示互不重叠（即它们的值在二进制上不冲突），可以通过按位或运算符（|）将它们组合在一起。
+如：<code>int fd = open("example.txt", O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);</code>
+<img src=/p/linux-file-system/image/ed8c61c3979d621f3cc5fa6629a9c8e6.png width=999 height=641 srcset="/p/linux-file-system/image/ed8c61c3979d621f3cc5fa6629a9c8e6_hu_e033e4ffa148c0d6.png 480w, /p/linux-file-system/image/ed8c61c3979d621f3cc5fa6629a9c8e6_hu_d64d5414bd05aff3.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=155 data-flex-basis=374px></p></blockquote><p>mode参数： 新建文件的权限
+使用: int fd = open(&ldquo;sfw.txt&rdquo;, O_WRONLY|O_CREAT, 0666);
+最后文件的权限是664，这是由于<strong>权限掩码</strong>的影响</p><p>返回值：<strong>文件描述符</strong>
+后文会详细介绍，这里就简单认为是为open的文件分配一个id，将这个id作为read和write的参数可以对open的文件进行读写。</p><h4 id=read--write>read && write</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl> <span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=n>ssize_t</span> <span class=nf>read</span><span class=p>(</span><span class=kt>int</span> <span class=n>fd</span><span class=p>,</span> <span class=kt>void</span> <span class=o>*</span><span class=n>buf</span><span class=p>,</span> <span class=n>size_t</span> <span class=n>count</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>ssize_t</span> <span class=nf>write</span><span class=p>(</span><span class=kt>int</span> <span class=n>fd</span><span class=p>,</span> <span class=k>const</span> <span class=kt>void</span> <span class=o>*</span><span class=n>buf</span><span class=p>,</span> <span class=n>size_t</span> <span class=n>count</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>使用：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/stat.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;fcntl.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;string.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>fd</span> <span class=o>=</span> <span class=n>open</span><span class=p>(</span><span class=s>&#34;log.txt&#34;</span><span class=p>,</span> <span class=n>O_WRONLY</span> <span class=o>|</span> <span class=n>O_CREAT</span><span class=p>,</span> <span class=mo>0666</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kt>char</span> <span class=n>buf</span><span class=p>[]</span> <span class=o>=</span> <span class=s>&#34;6666</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>write</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=n>strlen</span><span class=p>(</span><span class=n>buf</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=err>结果：</span>
+</span></span><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>test</span><span class=err>#</span> <span class=n>ls</span>
+</span></span><span class=line><span class=cl><span class=n>log</span><span class=p>.</span><span class=n>txt</span>  <span class=n>t1</span>  <span class=n>t1</span><span class=p>.</span><span class=n>c</span>
+</span></span><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>test</span><span class=err>#</span> <span class=n>cat</span> <span class=n>log</span><span class=p>.</span><span class=n>txt</span>
+</span></span><span class=line><span class=cl><span class=mi>6666</span>
+</span></span><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>test</span><span class=err>#</span> 
+</span></span></code></pre></td></tr></table></div></div><h3 id=文件描述符fd和struct-file>文件描述符fd和struct file</h3><p>在Linux系统中用来描述一个打开的文件的结构体是struct file</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=k>struct</span> <span class=nc>file</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>struct</span> <span class=nc>list_head</span>   <span class=n>f_list</span><span class=p>;</span>      <span class=c1>// 文件对象的链表，用于内核维护打开文件的列表
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>struct</span> <span class=nc>vfsmount</span>    <span class=o>*</span><span class=n>f_path</span><span class=p>;</span>     <span class=c1>// 文件路径及挂载点信息
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>struct</span> <span class=nc>dentry</span>      <span class=o>*</span><span class=n>f_dentry</span><span class=p>;</span>   <span class=c1>// 文件的目录项
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>const</span> <span class=k>struct</span> <span class=nc>file_operations</span> <span class=o>*</span><span class=n>f_op</span><span class=p>;</span> <span class=c1>// 文件操作函数指针
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>atomic_long_t</span>      <span class=n>f_count</span><span class=p>;</span>     <span class=c1>// 引用计数
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>unsigned</span> <span class=kt>int</span>       <span class=n>f_flags</span><span class=p>;</span>     <span class=c1>// 文件状态标志（读写、非阻塞等）
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>loff_t</span>             <span class=n>f_pos</span><span class=p>;</span>       <span class=c1>// 文件当前的读写位置（文件指针）
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=kt>void</span>               <span class=o>*</span><span class=n>private_data</span><span class=p>;</span> <span class=c1>// 文件私有数据（特定文件系统或设备的私有数据）
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>...</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>进程打开文件的本质即是 task_struct和 file 建立联系。如何联系？如下图
+task_struct 有一个成员 struct file_struct* files, 它指向结构体 struct files_struct。在struct files_struct 有个指针数组struct file* fd_array[]，该数组存储struct file* 指针。由次 task_struct 与 file 建立了联系。所谓的文件描述符就是struct file* fd_array[]数组的下标。
+<img src=/p/linux-file-system/image/e9a50b77b067473587474524351dad8c.png width=1920 height=1023 srcset="/p/linux-file-system/image/e9a50b77b067473587474524351dad8c_hu_9e217d6392a2fbfa.png 480w, /p/linux-file-system/image/e9a50b77b067473587474524351dad8c_hu_7284975f49612cd6.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=187 data-flex-basis=450px>
+内核源代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=k>struct</span> <span class=nc>files_struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>atomic_t</span> <span class=n>count</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>spinlock_t</span> <span class=n>file_lock</span><span class=p>;</span>     <span class=cm>/* Protects all the below members.  Nests inside tsk-&gt;alloc_lock */</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>max_fds</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>max_fdset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>next_fd</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>struct</span> <span class=nc>file</span> <span class=o>**</span> <span class=n>fd</span><span class=p>;</span>      <span class=cm>/* current fd array */</span>
+</span></span><span class=line><span class=cl>        <span class=n>fd_set</span> <span class=o>*</span><span class=n>close_on_exec</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>fd_set</span> <span class=o>*</span><span class=n>open_fds</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>fd_set</span> <span class=n>close_on_exec_init</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>fd_set</span> <span class=n>open_fds_init</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>struct</span> <span class=nc>file</span> <span class=o>*</span> <span class=n>fd_array</span><span class=p>[</span><span class=n>NR_OPEN_DEFAULT</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><p>那现在打印文件描述符看看：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/stat.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;fcntl.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;string.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>fd1</span> <span class=o>=</span> <span class=n>open</span><span class=p>(</span><span class=s>&#34;log.txt&#34;</span><span class=p>,</span> <span class=n>O_WRONLY</span> <span class=o>|</span> <span class=n>O_CREAT</span><span class=p>,</span> <span class=mo>0666</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;fd1 = %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>fd1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>fd2</span> <span class=o>=</span> <span class=n>open</span><span class=p>(</span><span class=s>&#34;log.txt&#34;</span><span class=p>,</span> <span class=n>O_WRONLY</span> <span class=o>|</span> <span class=n>O_CREAT</span><span class=p>,</span> <span class=mo>0666</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;fd2 = %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>fd2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>fd3</span> <span class=o>=</span> <span class=n>open</span><span class=p>(</span><span class=s>&#34;log.txt&#34;</span><span class=p>,</span> <span class=n>O_WRONLY</span> <span class=o>|</span> <span class=n>O_CREAT</span><span class=p>,</span> <span class=mo>0666</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>printf</span><span class=p>(</span><span class=s>&#34;fd3 = %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>fd3</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>close</span><span class=p>(</span><span class=n>fd1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>close</span><span class=p>(</span><span class=n>fd2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>close</span><span class=p>(</span><span class=n>fd3</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=err>结果：</span>
+</span></span><span class=line><span class=cl><span class=n>fd1</span> <span class=o>=</span> <span class=mi>3</span>
+</span></span><span class=line><span class=cl><span class=n>fd2</span> <span class=o>=</span> <span class=mi>4</span>
+</span></span><span class=line><span class=cl><span class=n>fd3</span> <span class=o>=</span> <span class=mi>5</span>
+</span></span></code></pre></td></tr></table></div></div><p>为什么是从3开始？</p><p>我们在学习C语言的文件操作时，应该会了解：C语言默认打开3个文件流：stdin, stdout, stderr
+stdin &ndash; 标准输入 &ndash; 对应键盘
+stdout &ndash; 标准输出 &ndash; 对应显示器
+stderr &ndash; 标准错误输出 &ndash; 对应显示器
+其他语言类似。</p><p>实际，这并不是语言的特性，而是操作系统的特性。<strong>操作系统默认会打开3个文件描述符</strong>
+0 &ndash; 标准输入 &ndash; 对应键盘
+1 &ndash; 标准输出 &ndash; 对应显示器
+2 &ndash; 标准错误输出 &ndash; 对应显示器</p><p>验证：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/stat.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;fcntl.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;string.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>char</span> <span class=n>buf</span><span class=p>[]</span> <span class=o>=</span> <span class=s>&#34;sfsfsf</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>write</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=n>strlen</span><span class=p>(</span><span class=n>buf</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=n>write</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=n>strlen</span><span class=p>(</span><span class=n>buf</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=err>结果：</span>
+</span></span><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>test</span><span class=err>#</span> <span class=p>.</span><span class=o>/</span><span class=n>t1</span> 
+</span></span><span class=line><span class=cl><span class=n>sfsfsf</span>
+</span></span><span class=line><span class=cl><span class=n>sfsfsf</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>文件描述符的分配规则：在files_struct数组当中，找到当前没有被使用的最小的一个下标，作为新的文件描述符。</strong>
+所以，除去系统默认打开文件，打开的文件的文件描述符默认从3开始。</p><p>小知识：</p><ol><li>文件描述符1，2都指向显示器，那关闭1，2会受影响吗？不会，<strong>类比智能指针shared_ptr的引用计数</strong></li><li>可以推测，不同语言的文件结构体或者文件类中，一定包含一个成员，文件描述符</li></ol><h3 id=重定向>重定向</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/stat.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;fcntl.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdlib.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>close</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>fd</span> <span class=o>=</span> <span class=n>open</span><span class=p>(</span><span class=s>&#34;myfile&#34;</span><span class=p>,</span> <span class=n>O_WRONLY</span><span class=o>|</span><span class=n>O_CREAT</span><span class=p>,</span> <span class=mo>00644</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;fd: %d</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>fflush</span><span class=p>(</span><span class=n>stdout</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>close</span><span class=p>(</span><span class=n>fd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>此时，我们发现，本来应该输出到显示器上的内容，输出到了文件 myfile 当中，其中，fd＝1。这种现象叫做输出重定向。原理如下。
+<img src=/p/linux-file-system/image/f139464d829d4c88b0883224e2f15feb.png width=1274 height=551 srcset="/p/linux-file-system/image/f139464d829d4c88b0883224e2f15feb_hu_9a8d4a534a73ade3.png 480w, /p/linux-file-system/image/f139464d829d4c88b0883224e2f15feb_hu_3f9658cb9b8e1f49.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=231 data-flex-basis=554px></p><h4 id=重定向方法>重定向方法</h4><div class=table-wrapper><table><thead><tr><th><strong>重定向符号</strong></th><th><strong>说明</strong></th><th><strong>示例</strong></th></tr></thead><tbody><tr><td><code>&lt;</code></td><td>将文件内容作为命令的标准输入</td><td><code>command &lt; input_file</code></td></tr><tr><td><code>></code></td><td>将命令的标准输出重定向到文件（覆盖原文件）</td><td><code>command > output_file</code></td></tr><tr><td><code>>></code></td><td>将命令的标准输出追加到文件末尾</td><td><code>command >> output_file</code></td></tr><tr><td><code>2></code></td><td>将命令的标准错误输出重定向到文件</td><td><code>command 2> error_file</code></td></tr><tr><td><code>2>></code></td><td>将标准错误追加到文件末尾</td><td><code>command 2>> error_file</code></td></tr><tr><td><code>&></code></td><td>将标准输出和标准错误同时重定向到文件</td><td><code>command &> output_file</code></td></tr><tr><td><code>&>></code></td><td>将标准输出和标准错误追加重定向到文件末尾</td><td><code>command &>> output_file</code></td></tr><tr><td><code>2>&amp;1</code></td><td>将标准错误重定向到标准输出</td><td><code>command > output_file 2>&amp;1</code></td></tr><tr><td>`</td><td>tee`</td><td>将标准输出显示在终端并写入文件</td></tr></tbody></table></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>study</span><span class=err>#</span> <span class=n>ls</span>
+</span></span><span class=line><span class=cl><span class=n>myfile</span>  <span class=n>t1</span><span class=p>.</span><span class=n>c</span>
+</span></span><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>study</span><span class=err>#</span> <span class=n>echo</span> <span class=s>&#34;5555&#34;</span> <span class=o>&gt;</span> <span class=n>myfile</span>  <span class=err>将打印到显示器的信息重定向到</span><span class=n>myfile</span>
+</span></span><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>study</span><span class=err>#</span> <span class=n>cat</span> <span class=n>myfile</span>
+</span></span><span class=line><span class=cl><span class=mi>5555</span>
+</span></span><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>study</span><span class=err>#</span> <span class=n>echo</span> <span class=s>&#34;6666&#34;</span> <span class=o>&gt;</span> <span class=n>myfile</span>  <span class=err>重定向会清空文件原有的内容</span>
+</span></span><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>study</span><span class=err>#</span> <span class=n>cat</span> <span class=n>myfile</span>
+</span></span><span class=line><span class=cl><span class=mi>6666</span>
+</span></span><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>study</span><span class=err>#</span> <span class=n>echo</span> <span class=s>&#34;7777&#34;</span> <span class=o>&gt;&gt;</span> <span class=n>myfile</span> <span class=err>追加重定向不会清空原有内容</span>
+</span></span><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>study</span><span class=err>#</span> <span class=n>cat</span> <span class=n>myfile</span>
+</span></span><span class=line><span class=cl><span class=mi>6666</span>
+</span></span><span class=line><span class=cl><span class=mi>7777</span>
+</span></span></code></pre></td></tr></table></div></div><p>这些操作本质都是通过系统调用dup来实现的</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=n>NAME</span>
+</span></span><span class=line><span class=cl>       <span class=n>dup</span><span class=p>,</span> <span class=n>dup2</span><span class=p>,</span> <span class=n>dup3</span> <span class=o>-</span> <span class=n>duplicate</span> <span class=n>a</span> <span class=n>file</span> <span class=n>descriptor</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>SYNOPSIS</span>
+</span></span><span class=line><span class=cl>       <span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=n>dup</span><span class=p>(</span><span class=kt>int</span> <span class=n>oldfd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=nf>dup2</span><span class=p>(</span><span class=kt>int</span> <span class=n>oldfd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>newfd</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>       <span class=cp>#define _GNU_SOURCE             </span><span class=cm>/* See feature_test_macros(7) */</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>       <span class=cp>#include</span> <span class=cpf>&lt;fcntl.h&gt;</span><span class=cp>              </span><span class=cm>/* Obtain O_* constant definitions */</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>       <span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl>       <span class=kt>int</span> <span class=nf>dup3</span><span class=p>(</span><span class=kt>int</span> <span class=n>oldfd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>newfd</span><span class=p>,</span> <span class=kt>int</span> <span class=n>flags</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>dup系统调用接口中，最常用的是dup2。
+注意它的含义：让newfd对应文件替换为oldfd指向的文件。
+简单理解：<strong>最后oldfd和newfd都指向oldfd对应的文件</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;fcntl.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>fd</span> <span class=o>=</span> <span class=n>open</span><span class=p>(</span><span class=s>&#34;./log&#34;</span><span class=p>,</span> <span class=n>O_CREAT</span> <span class=o>|</span> <span class=n>O_RDWR</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>fd</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>perror</span><span class=p>(</span><span class=s>&#34;open&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>close</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>dup2</span><span class=p>(</span><span class=n>fd</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=kt>char</span> <span class=n>buf</span><span class=p>[</span><span class=mi>1024</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span><span class=mi>0</span><span class=p>};</span>
+</span></span><span class=line><span class=cl>    <span class=n>ssize_t</span> <span class=n>read_size</span> <span class=o>=</span> <span class=n>read</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>buf</span><span class=p>)</span> <span class=o>-</span> <span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>read_size</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>perror</span><span class=p>(</span><span class=s>&#34;read&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;%s&#34;</span><span class=p>,</span> <span class=n>buf</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>fflush</span><span class=p>(</span><span class=n>stdout</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=用户缓冲区>用户缓冲区</h3><p>看下面一段代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;sys/types.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;unistd.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;string.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>msg0</span><span class=o>=</span><span class=s>&#34;hello printf</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>msg1</span><span class=o>=</span><span class=s>&#34;hello fwrite</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>const</span> <span class=kt>char</span> <span class=o>*</span><span class=n>msg2</span><span class=o>=</span><span class=s>&#34;hello write</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;%s&#34;</span><span class=p>,</span> <span class=n>msg0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>fwrite</span><span class=p>(</span><span class=n>msg1</span><span class=p>,</span> <span class=n>strlen</span><span class=p>(</span><span class=n>msg0</span><span class=p>),</span> <span class=mi>1</span><span class=p>,</span> <span class=n>stdout</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>write</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=n>msg2</span><span class=p>,</span> <span class=n>strlen</span><span class=p>(</span><span class=n>msg2</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=n>fork</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>结果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>study</span><span class=err>#</span> <span class=p>.</span><span class=o>/</span><span class=n>t1</span>
+</span></span><span class=line><span class=cl><span class=n>hello</span> <span class=n>printf</span>
+</span></span><span class=line><span class=cl><span class=n>hello</span> <span class=n>fwrite</span>
+</span></span><span class=line><span class=cl><span class=n>hello</span> <span class=n>write</span>
+</span></span><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>study</span><span class=err>#</span> <span class=p>.</span><span class=o>/</span><span class=n>t1</span> <span class=o>&gt;</span> <span class=n>myfile</span>
+</span></span><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>study</span><span class=err>#</span> <span class=n>cat</span> <span class=n>myfile</span>
+</span></span><span class=line><span class=cl><span class=n>hello</span> <span class=n>write</span>
+</span></span><span class=line><span class=cl><span class=n>hello</span> <span class=n>printf</span>
+</span></span><span class=line><span class=cl><span class=n>hello</span> <span class=n>fwrite</span>
+</span></span><span class=line><span class=cl><span class=n>hello</span> <span class=n>printf</span>
+</span></span><span class=line><span class=cl><span class=n>hello</span> <span class=n>fwrite</span>
+</span></span></code></pre></td></tr></table></div></div><p>为什么打印屏幕上和重定向到文件的结果不一样？</p><p>我们发现 printf 和 fwrite （库函数）都输出了2次，而 write 只输出了一次（系统调用）。为什么呢？肯定和
+fork有关！<strong>一般C库函数写入文件时是全缓冲的，而写入显示器是行缓冲</strong>。printf fwrite 库函数会自带缓冲区，当发生重定向到普通文件时，数据的缓冲方式由行缓冲变成了全缓冲。
+而我们放在缓冲区中的数据，就不会被立即刷新，当进程退出之后，会统一刷新，写入文件当中。
+但是fork的时候，父子数据会发生写时拷贝，所以当你父进程准备刷新的时候，子进程也就有了同样的
+一份数据，随即产生两份数据。write 没有变化，说明没有所谓的缓冲区。
+<img src=/p/linux-file-system/image/19c312ceaf19437f85bd475101a91464.png width=1040 height=439 srcset="/p/linux-file-system/image/19c312ceaf19437f85bd475101a91464_hu_50489855c0f66fec.png 480w, /p/linux-file-system/image/19c312ceaf19437f85bd475101a91464_hu_591cbd7ae84d3371.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=236 data-flex-basis=568px></p><h2 id=未打开的文件>未打开的文件</h2><h3 id=linux的文件系统>linux的文件系统</h3><p>假设现在linux的文件系统要管理一个1000GB的磁盘。
+它的第一步便是要对1000GB进行划分，因为太大了，这一过程便是<strong>分区</strong>。如何分？随便分。对于操作系统，定义一个结构体，里面定义start，end,便可以很容易的记录各个区的起始于结尾，因此分区对于操作系统来说非常简单。此时系统便将管理1000GB的任务 &ndash;> 管理200GB的任务。只要系统将200GB的空间管理好，后面的150GB，120GB同理即可。
+<img src=/p/linux-file-system/image/588070d9796db19a6827c2550f11a3f3.png width=765 height=103 srcset="/p/linux-file-system/image/588070d9796db19a6827c2550f11a3f3_hu_c5337237c34a1b60.png 480w, /p/linux-file-system/image/588070d9796db19a6827c2550f11a3f3_hu_f4ddb6bb3151b858.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=742 data-flex-basis=1782px>
+200GB对于操作系统还是太大，于是系统可以继续分。直到最后分成一个基本块（block）。
+<img src=/p/linux-file-system/image/53697afc57cce28aa2182894eb2c0b62.png width=557 height=173 srcset="/p/linux-file-system/image/53697afc57cce28aa2182894eb2c0b62_hu_473f02df198ceffb.png 480w, /p/linux-file-system/image/53697afc57cce28aa2182894eb2c0b62_hu_7bf991beb87543e6.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=321 data-flex-basis=772px>
+Linux ext2文件系统，上图为磁盘文件系统图（内核内存映像肯定有所不同），磁盘是典型的块设备，硬盘分区被划分为一个个的block。一个block的大小是由格式化的时候确定的，并且不可以更改。例如mke2fs的-b选项可以设定block大小为1024、2048或4096字节。而上图中启动块（Boot Block)的大小是确定的，</p><ul><li>Block Group：ext2文件系统会根据分区的大小划分为数个Block Group。而每个Block Group都有着相
+同的结构组成。政府管理各区的例子</li><li>Super Block：存放文件系统本身的结构信息。记录的信息主要有：bolck 和 inode的总量，未使用的block和inode的数量，一个block和inode的大小，最近一次挂载的时间，最近一次写入数据的时间，最近一次检验磁盘的时间等其他文件系统的相关信息。Super Block的信息被破坏，可以说整个文件系统结构就被破坏了</li><li>Group Descriptor Table：块组描述符，描述块组属性信息。</li><li>Block Bitmap：Block Bitmap中记录着Data Block中哪个数据块已经被占用，哪个数据块没有被占用</li><li>inode Bitmap：每个bit表示一个inode是否空闲可用。</li><li>inode Table：<strong>存放struct inode，存储文件属性</strong>。每个inode带有编号</li><li>Data blocks：存放Data block，每一个Data block带有编号</li></ul><p>介绍一下它们之间的关系：
+<img src=/p/linux-file-system/image/69bf8d767dae4570a28e72a0c5617df5.png width=2187 height=858 srcset="/p/linux-file-system/image/69bf8d767dae4570a28e72a0c5617df5_hu_449c80849e9713f3.png 480w, /p/linux-file-system/image/69bf8d767dae4570a28e72a0c5617df5_hu_72db999c25ad591f.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=254 data-flex-basis=611px>
+当我们创建一个新文件时：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=p>[</span><span class=n>root</span><span class=err>@</span><span class=n>localhost</span> <span class=n>linux</span><span class=p>]</span><span class=err>#</span> <span class=n>touch</span> <span class=n>abc</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=n>root</span><span class=err>@</span><span class=n>localhost</span> <span class=n>linux</span><span class=p>]</span><span class=err>#</span> <span class=n>ls</span> <span class=o>-</span><span class=n>i</span> <span class=n>abc</span> <span class=c1>//-i 查看该文件的inode编号
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=mi>263466</span> <span class=n>abc</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/linux-file-system/image/39c9a93e7b22444892e9355e926ac86e.png width=807 height=331 srcset="/p/linux-file-system/image/39c9a93e7b22444892e9355e926ac86e_hu_4e509c093d705e41.png 480w, /p/linux-file-system/image/39c9a93e7b22444892e9355e926ac86e_hu_375e8cf376e09fde.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=243 data-flex-basis=585px></p><hr><p>疑问：</p><p>3种情况：</p><ol><li>新建一个文件，系统所做如上</li><li>删除一个文件，系统只需要把 block bitmap和inode bitmap中对应位图置0</li><li>查找和修改
+用户并不知道inode编号，只知道文件名，那系统如何通过文件名找到inode呢？
+目录也是一个文件，它存储的内容是文件名和inode的对应关系。
+那目录本身呢？谁存储目的的文件名和inode的对应关系？上一级目录。最后所有目录都会指向一个目录：根目录。因此查找一文件，对系统来说是从根目录递归向下查找。这是不是太慢了？当然，因此要不断访问磁盘。为此，Linux 系统会缓存多种数据以提高性能，包括文件系统的元数据、文件内容以及目录结构。当你访问文件时，系统会将这些数据存储在内存中，以便快速访问，减少磁盘读写操作。</li></ol><hr><h3 id=软硬链接>软硬链接</h3><p>linux下通过<code>ln</code>命令可以为文件创建软硬链接</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>文件 test.txt
+</span></span><span class=line><span class=cl>创建硬链接 ln 目标文件（不能是目录） 硬链接名
+</span></span><span class=line><span class=cl>ln test.txt hard_link
+</span></span><span class=line><span class=cl>创建软链接 ln -s 目标文件 软链接名
+</span></span><span class=line><span class=cl>ln -s test.txt soft_link
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/linux-file-system/image/d5376ec1581cef29add0ea8ff264dffe.png width=923 height=148 srcset="/p/linux-file-system/image/d5376ec1581cef29add0ea8ff264dffe_hu_94b1d684275edb14.png 480w, /p/linux-file-system/image/d5376ec1581cef29add0ea8ff264dffe_hu_6b3d3e96b34e1ce8.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=623 data-flex-basis=1496px>
+问题1：软硬链接是干什么的？
+答：<strong>用于建立文件之间的联系</strong>
+<img src=/p/linux-file-system/image/9597bda6507aeaf11359306ef827a7c8.png width=917 height=318 srcset="/p/linux-file-system/image/9597bda6507aeaf11359306ef827a7c8_hu_1cb23b3da1c0c3c5.png 480w, /p/linux-file-system/image/9597bda6507aeaf11359306ef827a7c8_hu_509b11e3e189831d.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=288 data-flex-basis=692px></p><p>问题2：软硬链接有什么区别？
+<strong>软链接是一个独立的文件，因为它有独立的inode,
+硬链接不是一个独立的文件，因为它没有独立的inode.</strong></p><p>通过上面的例子可以看出：test.txt的inode(1050440)与hard_link的inode(1050440)相同，而我们知道，每个文件的inode是唯一的，因此可以推断hard_link不是一个独立的文件，反之，soft_link是一个独立的文件，因为它有独立的inode.</p><p>我们应该如何去理解软硬链接呢？</p><p>对于软链接：它完全等同于windows下创建软件的<strong>快捷方式</strong>。<strong>它存储指向文件的存储路径（地址）</strong></p><p>对于硬链接：硬链接本质是<strong>在特定的目录数据块中新增 文件名 和 指向文件的inode编号 的映射关系</strong>，就像c++里的<strong>引用</strong>一样。
+<img src=/p/linux-file-system/image/b52f69d6c5b8b246cd7626586da90adb.png width=432 height=132 srcset="/p/linux-file-system/image/b52f69d6c5b8b246cd7626586da90adb_hu_a5d9fb693df9c545.png 480w, /p/linux-file-system/image/b52f69d6c5b8b246cd7626586da90adb_hu_37335449d47df0a5.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=327 data-flex-basis=785px>
+通过ls -l命令可以看到文件的硬链接数，如下图红框处。如果你了解<strong>引用计数</strong>的概念，这个理解起来就很轻松。
+<img src=/p/linux-file-system/image/f562fe68e3adf8520902cf9544dfb8ee.png width=922 height=155 srcset="/p/linux-file-system/image/f562fe68e3adf8520902cf9544dfb8ee_hu_8637e6184cac7d8e.png 480w, /p/linux-file-system/image/f562fe68e3adf8520902cf9544dfb8ee_hu_e177ec8ed783e837.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=594 data-flex-basis=1427px>
+假如我们删去test.txt，与文件inode:105040的文件名减少一个，因此引用计数减1，由2变为1，因此下方hard_link前面的数字变为1。而soft_link存储的是test.txt的路径（地址），test.txt文件没了，显然soft_link就失效了，
+<img src=/p/linux-file-system/image/879259ff0d1151d1465b90d9cc50fb5b.png width=938 height=159 srcset="/p/linux-file-system/image/879259ff0d1151d1465b90d9cc50fb5b_hu_736ad38774f53f80.png 480w, /p/linux-file-system/image/879259ff0d1151d1465b90d9cc50fb5b_hu_985dcca96e6e0f03.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=589 data-flex-basis=1415px></p><p>问题3：软硬链接有哪些应用场景？
+答：软链接就不用说了。硬链接的经典的应用场景便是<strong>目录</strong>。linux创建一个目录，你会发现它的引用计数是2，说明有一个硬链接指向它，那这个硬链接在哪里呢？
+<img src=/p/linux-file-system/image/08382e414c2414d764f1639f576d286c.png width=728 height=121 srcset="/p/linux-file-system/image/08382e414c2414d764f1639f576d286c_hu_7866b1c5408dede4.png 480w, /p/linux-file-system/image/08382e414c2414d764f1639f576d286c_hu_275d0fc36595b354.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=601 data-flex-basis=1443px>
+每个目录创建时，会自动创建两个隐藏文件<code>.</code>和<code>..</code>，它们都是硬链接。
+<img src=/p/linux-file-system/image/534b79a02b74b1427dcbe3914a956ad4.png width=704 height=125 srcset="/p/linux-file-system/image/534b79a02b74b1427dcbe3914a956ad4_hu_f6f92c726eb222a2.png 480w, /p/linux-file-system/image/534b79a02b74b1427dcbe3914a956ad4_hu_4b9a32a99d2419b0.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=563 data-flex-basis=1351px></p><p>问题4：为什么用户不能给目录设置硬链接？
+循环引用问题：如果允许用户给目录创建硬链接，那么用户可以创建一个目录结构的循环，比如目录A指向目录B，目录B又指向目录A，最终导致无限循环。这种情况会破坏文件系统的层次结构，并使得一些文件系统操作（如遍历文件树）变得复杂和无法实现。</p></section><footer class=article-footer><section class=article-tags><a href=/tags/linux%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/>Linux文件系统</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/linux-file-command/><div class=article-details><h2 class=article-title>Linux 文件操作命令</h2></div></a></article><article><a href=/p/linux-series/><div class=article-details><h2 class=article-title>Linux 系统系列文章</h2></div></a></article><article><a href=/p/linux-thread/><div class=article-details><h2 class=article-title>Linux 线程</h2></div></a></article><article><a href=/p/linux-network-command/><div class=article-details><h2 class=article-title>Linux 网络命令</h2></div></a></article><article><a href=/p/linux-process/><div class=article-details><h2 class=article-title>Linux 进程</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=sfw003/sfwblogtalks issue-term=title crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2025 石某人</section><section class=powerby>本站所有文章均为原创，转载请注明出处。<br>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

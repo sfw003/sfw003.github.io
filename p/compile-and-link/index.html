@@ -1,0 +1,169 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="编译和链接"><title>编译和链接</title>
+<link rel=canonical href=https://sfw003.github.io/p/compile-and-link/><link rel=stylesheet href=/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css><meta property='og:title' content="编译和链接"><meta property='og:description' content="编译和链接"><meta property='og:url' content='https://sfw003.github.io/p/compile-and-link/'><meta property='og:site_name' content='石某人'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='编译和链接'><meta property='article:published_time' content='2025-04-12T00:00:00+00:00'><meta property='article:modified_time' content='2025-04-12T00:00:00+00:00'><meta name=twitter:title content="编译和链接"><meta name=twitter:description content="编译和链接"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_a0516c4ce0480f39.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar></a></figure><div class=site-meta><h1 class=site-name><a href=/>石某人</a></h1><h2 class=site-description>成为一名强大的程序员</h2></div></header><ol class=menu-social><li><a href=https://blog.csdn.net/ProcedureStone target=_blank title=CSDN rel=me><svg class="icon icon-tabler icon-tabler-brand-csdn" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12c0 4.97 4.03 9 9 9s9-4.03 9-9-4.03-9-9-9-9 4.03-9 9z"/><path d="M12 8c-2.21.0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/><path d="M12 12m-2 0a2 2 0 104 0 2 2 0 10-4 0"/></svg></a></li><li><a href=https://gitee.com/sfw003 target=_blank title=Gitee rel=me><svg class="icon icon-tabler icon-tabler-brand-gitee" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2c5.523.0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z"/><path d="M12 6c-3.314.0-6 2.686-6 6s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6z"/><path d="M12 10c-1.105.0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2z"/></svg></a></li><li><a href=https://github.com/sfw003 target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>友情链接</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#什么是编译链接>什么是编译链接？</a></li><li><a href=#编译>编译</a><ol><li><a href=#预处理>预处理</a><ol><li><a href=#头文件的展开>头文件的展开</a></li><li><a href=#define定义的宏替换>#define定义的宏替换</a></li><li><a href=#删除注释>删除注释</a></li></ol></li><li><a href=#编译-1>编译</a></li><li><a href=#汇编>汇编</a></li></ol></li><li><a href=#链接>链接</a><ol><li><a href=#静态链接>静态链接</a></li><li><a href=#动态链接>动态链接</a></li></ol></li><li><a href=#linux>linux</a><ol><li><a href=#gccg>gcc/g++</a></li><li><a href=#linux下制作动静态库>linux下制作动静态库</a><ol><li><a href=#linux静态库>linux静态库</a></li><li><a href=#linux动态库>linux动态库</a></li></ol></li></ol></li><li><a href=#windows>windows</a><ol><li><a href=#msvc>MSVC</a></li><li><a href=#windows-sdk>windows SDK</a></li><li><a href=#windows制作动静态库>windows制作动静态库</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/c++/>C++</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/compile-and-link/>编译和链接</a></h2><h3 class=article-subtitle>编译和链接</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Apr 12, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 2 分钟</time></div></footer></div></header><section class=article-content><h2 id=什么是编译链接>什么是编译链接？</h2><p>编译则是将编译型语言（如c/c++）翻译为计算机可以识别的二进制文件，即目标文件。</p><p>链接则是一个打包的过程，将所有的目标文件以及系统组件组合成一个可执行文件。</p><p>c/c++编译链接过程如下：</p><p><img src=/p/compile-and-link/image/image-20250412214538192.png width=1331 height=311 srcset="/p/compile-and-link/image/image-20250412214538192_hu_2cd31e34de39535d.png 480w, /p/compile-and-link/image/image-20250412214538192_hu_acc16930fab9772a.png 1024w" loading=lazy alt=image-20250412214538192 class=gallery-image data-flex-grow=427 data-flex-basis=1027px></p><h2 id=编译>编译</h2><p>编译过程分为3部分：预处理（预编译），编译，汇编，整个编译过程由编译器负责。</p><h3 id=预处理>预处理</h3><h4 id=头文件的展开>头文件的展开</h4><h4 id=define定义的宏替换>#define定义的宏替换</h4><h4 id=删除注释>删除注释</h4><h3 id=编译-1>编译</h3><h3 id=汇编>汇编</h3><h2 id=链接>链接</h2><p>C/C++的链接方式主要分为 <strong>静态链接</strong> 和 <strong>动态链接</strong></p><h3 id=静态链接>静态链接</h3><p>在编译时将库代码（<code>.a</code>/<code>.lib</code>）完全嵌入到可执行文件中</p><p>特点：</p><ul><li><p>文件体积大，相同库代码在不同程序中重复存在</p></li><li><p>更新需重新编译整个程序</p></li><li><p>独立性强</p></li></ul><h3 id=动态链接>动态链接</h3><p>运行时加载共享库（<code>.so</code>/<code>.dll</code>），代码在内存中共享</p><p>特点：</p><ul><li>节省磁盘和内存空间，多个程序共用同一库</li><li>支持热更新，库更新后无需重新编译程序</li><li>依赖环境配置，需确保运行时库路径正确</li></ul><p>如何理解？</p><p><img src=/p/compile-and-link/image/image-20250412213818280.png width=551 height=571 srcset="/p/compile-and-link/image/image-20250412213818280_hu_3c504564613543ab.png 480w, /p/compile-and-link/image/image-20250412213818280_hu_427dc5841cc2de0f.png 1024w" loading=lazy alt=image-20250412213818280 class=gallery-image data-flex-grow=96 data-flex-basis=231px></p><p>疑问：</p><p>假设动态库里有一个函数 Print(), 在生成动态库的过程中，Print函数的虚拟地址是被硬编码到动态库里。</p><p>这导致了一个问题，当进程使用Print(), 动态库首先被加载到物理内存里然后通过页表与虚拟地址相映射。但是由于Print函数的虚拟地址被硬编码到动态库，因此通过页表映射的Print函数虚拟地址是<strong>固定的</strong>。</p><p>那问题来了，这个虚拟地址已经被占了呢？那就出问题了。为了解决这个问题，动态库内的函数不在使用<strong>绝对地址</strong>，而是<strong>相对地址</strong>，即偏移量。</p><p>此时dy.so通过页表映射的虚拟地址不固定，之后要想找到Print函数，只需用动态库的起始地址 + Print函数的偏移量。</p><hr><p>下面看看具体的操作系统下c++的编译和链接</p><h2 id=linux>linux</h2><h3 id=gccg>gcc/g++</h3><p>GCC（GNU Compiler Collection）是Linux下C/C++开发的核心工具链，</p><h3 id=linux下制作动静态库>linux下制作动静态库</h3><p>linux的静态库为.a文件，动态库为.so文件</p><ul><li><p>静态库：通过<code>ar -rc</code>打包目标文件生成<code>.a</code></p></li><li><p>动态库：使用<code>gcc -shared -fPIC</code>编译生成位置无关代码（PIC）的<code>.so</code></p></li></ul><h4 id=linux静态库>linux静态库</h4><p>现在有两个文件：test.h, test.c，如下。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>study</span><span class=err>#</span> <span class=n>cat</span> <span class=n>test</span><span class=p>.</span><span class=n>h</span>
+</span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=kt>void</span> <span class=n>Print</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>root</span><span class=err>@</span><span class=nl>iZbp1inz4ol3gjahpjal9qZ</span><span class=p>:</span><span class=o>~/</span><span class=n>study</span><span class=err>#</span> <span class=n>cat</span> <span class=n>test</span><span class=p>.</span><span class=n>c</span>
+</span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&#34;test.h&#34;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=kt>void</span> <span class=n>Print</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>printf</span><span class=p>(</span><span class=s>&#34;66666666</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/compile-and-link/image/1b1e2d3bcb83494f13fae1292e2f31d9.png width=1370 height=545 srcset="/p/compile-and-link/image/1b1e2d3bcb83494f13fae1292e2f31d9_hu_6465704b98a78e4a.png 480w, /p/compile-and-link/image/1b1e2d3bcb83494f13fae1292e2f31d9_hu_4462f465061056fc.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=251 data-flex-basis=603px></p><p>执行上述命令后，结果如下：lib目录里存储制作的静态库。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>root@iZbp1inz4ol3gjahpjal9qZ:~/study# make
+</span></span><span class=line><span class=cl>gcc -o test.o -c test.c 
+</span></span><span class=line><span class=cl>ar -rc libtest.a test.o
+</span></span><span class=line><span class=cl>root@iZbp1inz4ol3gjahpjal9qZ:~/study# make put
+</span></span><span class=line><span class=cl>mkdir -p lib/include
+</span></span><span class=line><span class=cl>mkdir -p lib/mylib
+</span></span><span class=line><span class=cl>cp *.h lib/include
+</span></span><span class=line><span class=cl>cp *.a lib/mylib
+</span></span><span class=line><span class=cl>root@iZbp1inz4ol3gjahpjal9qZ:~/study# make clean
+</span></span><span class=line><span class=cl>rm -f *.o *.a
+</span></span><span class=line><span class=cl>root@iZbp1inz4ol3gjahpjal9qZ:~/study# ls
+</span></span><span class=line><span class=cl>lib  Makefile  test.c  test.h
+</span></span><span class=line><span class=cl>root@iZbp1inz4ol3gjahpjal9qZ:~/study# tree lib
+</span></span><span class=line><span class=cl>lib
+</span></span><span class=line><span class=cl>├── include
+</span></span><span class=line><span class=cl>│   └── test.h
+</span></span><span class=line><span class=cl>└── mylib
+</span></span><span class=line><span class=cl>    └── libtest.a
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=m>2</span> directories, <span class=m>2</span> files
+</span></span></code></pre></td></tr></table></div></div><p><strong>使用静态库</strong></p><p>现在我们创建main.c来测试我们的静态库。如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>root@iZbp1inz4ol3gjahpjal9qZ:~/study# cat main.c
+</span></span><span class=line><span class=cl><span class=c1>#include &#34;test.h&#34;</span>
+</span></span><span class=line><span class=cl>int main<span class=o>()</span>
+</span></span><span class=line><span class=cl><span class=o>{</span>
+</span></span><span class=line><span class=cl>    Print<span class=o>()</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> 0<span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>root@iZbp1inz4ol3gjahpjal9qZ:~/study# gcc -o main main.c
+</span></span><span class=line><span class=cl>main.c:1:10: fatal error: test.h: No such file or directory
+</span></span><span class=line><span class=cl>    <span class=m>1</span> <span class=p>|</span> <span class=c1>#include &#34;test.h&#34;</span>
+</span></span><span class=line><span class=cl>      <span class=p>|</span>          ^~~~~~~~
+</span></span><span class=line><span class=cl>compilation terminated.
+</span></span></code></pre></td></tr></table></div></div><p>这里出现了一个报错，找不到头文件。原因很简单，test.h与main.c不在同一级目录下，此时我们有3种做法：</p><ol><li>告诉编译器，除了在当前目录下、系统目录下找，如果找不到，就去指定目录下找。参数<code>-I [路径】</code>
+<code>gcc main.c -o main -I ./lib/include</code></li><li>include头文件时，带相对路径或绝对路径
+<code>include "lib/include/test.h"</code></li><li>安装到系统里，即将头文件和库移到<code>/usr/inlcude 和/usr/lib64</code>, 如果不想移，也可以建立软链接，再将软链接放到<code>/usr/inlcude 和/usr/lib64</code></li></ol><p>这里采用第一种，结果如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>root@iZbp1inz4ol3gjahpjal9qZ:~/study# gcc -o main main.c -I lib/include
+</span></span><span class=line><span class=cl>/usr/bin/ld: /tmp/ccGShNRL.o: in <span class=k>function</span> <span class=sb>`</span>main<span class=s1>&#39;:
+</span></span></span><span class=line><span class=cl><span class=s1>main.c:(.text+0xe): undefined reference to `Print&#39;</span>
+</span></span><span class=line><span class=cl>collect2: error: ld returned <span class=m>1</span> <span class=nb>exit</span> status
+</span></span></code></pre></td></tr></table></div></div><p>报错显示找不到Print函数，属于链接报错。原因是你只告诉了.h的路径，并没有告诉.a文件的路径.
+因此完整的命令如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>gcc main.c -o main -I ./lib/include/ -L ./lib/mylib -ltest
+</span></span></code></pre></td></tr></table></div></div><p>其中<code>-L [库的路径]-l[库名]</code></p><p><strong>注意库名要掐头去尾且最好与-l连在一起</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>root@iZbp1inz4ol3gjahpjal9qZ:~/study# tree lib
+</span></span><span class=line><span class=cl>lib
+</span></span><span class=line><span class=cl>├── include
+</span></span><span class=line><span class=cl>│   └── test.h
+</span></span><span class=line><span class=cl>└── mylib
+</span></span><span class=line><span class=cl>    └── libtest.a
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=m>2</span> directories, <span class=m>2</span> files
+</span></span><span class=line><span class=cl>root@iZbp1inz4ol3gjahpjal9qZ:~/study# gcc -o main main.c -I lib/include -L lib/mylib -ltest
+</span></span><span class=line><span class=cl>root@iZbp1inz4ol3gjahpjal9qZ:~/study# 
+</span></span></code></pre></td></tr></table></div></div><h4 id=linux动态库>linux动态库</h4><p>linux下有个命令可以看到程序动态链接了哪些库 &mdash; ldd
+以上文的main程序为例</p><p><img src=/p/compile-and-link/image/d90e93924400c15dcef28613ae5dd2d1.png width=818 height=125 srcset="/p/compile-and-link/image/d90e93924400c15dcef28613ae5dd2d1_hu_63cfda79315a461.png 480w, /p/compile-and-link/image/d90e93924400c15dcef28613ae5dd2d1_hu_4d3c8dac4ba0bf9a.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=654 data-flex-basis=1570px></p><p>现在有2个文件：dytest.h dytest.c</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>[</span>sfw@VM-24-12-centos 3_10<span class=o>]</span>$ cat dytest.c
+</span></span><span class=line><span class=cl><span class=c1>#include &#34;dytest.h&#34;</span>
+</span></span><span class=line><span class=cl>void Print<span class=o>()</span>
+</span></span><span class=line><span class=cl><span class=o>{</span>
+</span></span><span class=line><span class=cl>	printf<span class=o>(</span><span class=s2>&#34;dytest链接正常\n&#34;</span><span class=o>)</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>sfw@VM-24-12-centos 3_10<span class=o>]</span>$ cat dytest.h
+</span></span><span class=line><span class=cl><span class=c1>#pragma once</span>
+</span></span><span class=line><span class=cl><span class=c1>#include &lt;stdio.h&gt;</span>
+</span></span><span class=line><span class=cl>void Print<span class=o>()</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/compile-and-link/image/6670b8b5da9069471bf74542ebd4fea5.png width=1123 height=526 srcset="/p/compile-and-link/image/6670b8b5da9069471bf74542ebd4fea5_hu_4dfbaf5f31359486.png 480w, /p/compile-and-link/image/6670b8b5da9069471bf74542ebd4fea5_hu_793d1476bcd22700.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=213 data-flex-basis=512px></p><p>执行上述命令后便会生成lib目录，libtest.so便是我们制作的动态库
+<img src=/p/compile-and-link/image/ee5f48069eafa0cc09695afb626a1fbc.png width=510 height=200 srcset="/p/compile-and-link/image/ee5f48069eafa0cc09695afb626a1fbc_hu_5d37ff89df813cc7.png 480w, /p/compile-and-link/image/ee5f48069eafa0cc09695afb626a1fbc_hu_be413c9582c8c6ff.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=255 data-flex-basis=612px></p><p>创建main.c进行测试
+<img src=/p/compile-and-link/image/0c69887b45104f561befb7cd3f7c52a1.png width=540 height=213 srcset="/p/compile-and-link/image/0c69887b45104f561befb7cd3f7c52a1_hu_2fddfd9b03ce0aa1.png 480w, /p/compile-and-link/image/0c69887b45104f561befb7cd3f7c52a1_hu_f6d58d745b55a955.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=253 data-flex-basis=608px></p><p>同样和静态库一样：<code>gcc main.c -o main -I ./lib/include/ -L ./lib/mylib/ -ltest</code>
+最后便会出现下面的错误
+<img src=/p/compile-and-link/image/de40ae10e75dc7ace6797b0f919c3da1.png width=1622 height=265 srcset="/p/compile-and-link/image/de40ae10e75dc7ace6797b0f919c3da1_hu_5b24f97b1b013124.png 480w, /p/compile-and-link/image/de40ae10e75dc7ace6797b0f919c3da1_hu_2d6b2bd98151134.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=612 data-flex-basis=1468px>
+此时我们用ldd命令来查看，会看到not found,找不到库，可我们明明已经告诉编译器库在哪里，为什么还是找不到？原因是我们告诉了编译器，但现在已经是可执行程序，需要通过<strong>加载器</strong>来进行链接，但我们并没有告诉加载器，库在哪里。
+<img src=/p/compile-and-link/image/a4d97fc7a33561f121d006221b9cd51d.png width=820 height=162 srcset="/p/compile-and-link/image/a4d97fc7a33561f121d006221b9cd51d_hu_f8aac3036ec19ac5.png 480w, /p/compile-and-link/image/a4d97fc7a33561f121d006221b9cd51d_hu_4a1824672226cab9.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=506 data-flex-basis=1214px>
+解决这个问题的方法很多，这里介绍3种：</p><ol><li>安装到系统里，即<code>/usr/lib64</code></li><li>添加路径到环境变量<code>LD_LTBRAY_PATH</code>
+<code>export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/sfw/study/3_10/lib/mylib</code>
+<strong>地址写到库所在目录就可以了，因为库的名字早就写在可执行程序中</strong>
+但是这种方法，在重启时，环境变量更新，便会失效。除非，你写到系统配置文件里。</li><li>在<code>/etc/ld.so.conf.d</code>里面建立动态库路径，然后ldconfig</li></ol><blockquote><p>/etc/ld.so.conf.d 目录是 Linux 下的动态链接器配置目录。在这个目录下，可以放置一系列以 .conf 结尾的文件，这些文件包含了动态链接器的库文件搜索路径配置。每个文件通常包含一组路径，告诉动态链接器在运行时去哪里搜索共享库文件。
+操作如下：(下面操作需要root权限）
+<img src=/p/compile-and-link/image/9c95bdbe1939ebe964000dc2463c57f0.png width=1528 height=457 srcset="/p/compile-and-link/image/9c95bdbe1939ebe964000dc2463c57f0_hu_3a3b78370b92d6ae.png 480w, /p/compile-and-link/image/9c95bdbe1939ebe964000dc2463c57f0_hu_da5b41db2a8a300e.png 1024w" loading=lazy alt=在这里插入图片描述 class=gallery-image data-flex-grow=334 data-flex-basis=802px></p></blockquote><h2 id=windows>windows</h2><h3 id=msvc>MSVC</h3><p>windows下的c/c++工具链是 MSVC，MSVC包括以下几个工具</p><ul><li><p>cl.exe：一个控制 Microsoft C++ (MSVC) C 和 C++ 编译器和链接器的工具</p></li><li><p>link.exe：链接器</p></li><li><p>其他（debugger……）</p></li></ul><blockquote><p>误解：cl.exe 这里的cl是编译器compiler和链接器linker的两个单词首字母的缩写，是不是表示cl.exe即是编译器又是链接器？</p><p>不是，根据官方文档：<strong>除非使用 /c 选项，否则 CL 会在编译后自动调用链接器link.exe</strong>。cl.exe本身只是编译器。</p></blockquote><h3 id=windows-sdk>windows SDK</h3><h3 id=windows制作动静态库>windows制作动静态库</h3></section><footer class=article-footer><section class=article-tags><a href=/tags/%E7%BC%96%E8%AF%91%E5%92%8C%E9%93%BE%E6%8E%A5/>编译和链接</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/c-11/><div class=article-details><h2 class=article-title>C++11</h2></div></a></article><article><a href=/p/c-series/><div class=article-details><h2 class=article-title>C++ 开发系列</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=sfw003/sfwblogtalks issue-term=title crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2025 石某人</section><section class=powerby>本站所有文章均为原创，转载请注明出处。<br>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

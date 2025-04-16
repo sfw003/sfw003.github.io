@@ -1,0 +1,785 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux进程概念 on 石某人</title><link>https://sfw003.github.io/tags/linux%E8%BF%9B%E7%A8%8B%E6%A6%82%E5%BF%B5/</link><description>Recent content in Linux进程概念 on 石某人</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>石某人</copyright><lastBuildDate>Thu, 03 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://sfw003.github.io/tags/linux%E8%BF%9B%E7%A8%8B%E6%A6%82%E5%BF%B5/index.xml" rel="self" type="application/rss+xml"/><item><title>Linux 进程</title><link>https://sfw003.github.io/p/linux-process/</link><pubDate>Thu, 03 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/linux-process/</guid><description>&lt;p>绘图文件，在&lt;a class="link" href="https://sfw003.github.io/p/linux-series/#linux进程管理" >linux系列文章:进程管理&lt;/a>&lt;/p>
+&lt;h2 id="进程和pcb">进程和PCB
+&lt;/h2>&lt;p>什么是进程？
+课本上的定义有很多，如：进程是程序的一次执行，是加载到内存的程序，是&lt;strong>系统进行资源分配和调度的一个独立单位&lt;/strong>。&lt;/p>
+&lt;p>我们不必去纠结定义，只需知道2点：如何描述进程？如何管理进程？&lt;/p>
+&lt;p>描述=提取进程属性，管理=对进程的属性进行管理
+由此首先要引出一个概念：进程的PCB&lt;/p>
+&lt;p>PCB(process control block) 是什么？一句话：&lt;strong>进程属性的集合&lt;/strong>，是一个结构体。此时进程就被拆分为2个部分：属性和数据，如下图：&lt;/p>
+&lt;p>linux下的进程信息存储在&lt;code>/proc&lt;/code>目录下&lt;/p>
+&lt;h3 id="linux下的pcb">linux下的PCB
+&lt;/h3>&lt;p>在linux操作系统下的PCB：&lt;strong>task_struct（结构体）&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>task_struct的内容分类：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>标识符&lt;/strong>: 描述本进程的唯一标示符，用来区别其他进程。&lt;/li>
+&lt;li>&lt;strong>状态&lt;/strong>: 任务状态，退出代码，退出信号等。&lt;/li>
+&lt;li>&lt;strong>优先级&lt;/strong>: 相对于其他进程的优先级。&lt;/li>
+&lt;li>程序计数器: 程序中即将被执行的下一条指令的地址。&lt;/li>
+&lt;li>内存指针: 包括程序代码和进程相关数据的指针，还有和其他进程共享的内存块的指针&lt;/li>
+&lt;li>上下文数据: 进程执行时处理器的寄存器中的数据[休学例子，要加图CPU，寄存器]。&lt;/li>
+&lt;li>I／O状态信息: 包括显示的I/O请求,分配给进程的I／O设备和被进程使用的文件列表。&lt;/li>
+&lt;li>记账信息: 可能包括处理器时间总和，使用的时钟数总和，时间限制，记账号等。&lt;/li>
+&lt;li>……&lt;/li>
+&lt;/ol>&lt;/blockquote>
+&lt;h3 id="进程状态">进程状态
+&lt;/h3>&lt;p>在操作系统学科中，描述了一&lt;strong>个进程活动期间至少具备3种状态&lt;/strong>，即进程的三态模型。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/linux-process/image/image-20250410115534591.png"
+width="483"
+height="315"
+srcset="https://sfw003.github.io/p/linux-process/image/image-20250410115534591_hu_bec84f15f212fa14.png 480w, https://sfw003.github.io/p/linux-process/image/image-20250410115534591_hu_309684bf5fa1ab87.png 1024w"
+loading="lazy"
+alt="image-20250410115534591"
+class="gallery-image"
+data-flex-grow="153"
+data-flex-basis="368px"
+>&lt;/p>
+&lt;p>但是这几种状态不够应对实际的情况。如果有大量处于阻塞状态的进程，将长时间占据物理内存空间，造成浪费。因此我们新增一种状态——&lt;strong>挂起状态&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>挂起状态：进程没有占用物理内存空间的状态（关键词：物理内存）&lt;/p>
+&lt;p>理解：此时进程的数据会被移到磁盘空间中&lt;/p>&lt;/blockquote>
+&lt;p>其中挂起状态又分为2种：阻塞挂起和就绪挂起&lt;/p>
+&lt;ul>
+&lt;li>阻塞挂起状态：进程在外存，等待事件&lt;/li>
+&lt;li>就绪挂起状态：进程在外存，事件就绪&lt;/li>
+&lt;/ul>
+&lt;p>因此现在有 运行、就绪、阻塞、阻塞挂起、就绪挂起共5种状态，如果再具体一点，还可以加入进程&lt;strong>创建状态&lt;/strong>和进程&lt;strong>结束状态&lt;/strong>，共7种。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/linux-process/image/image-20250410141859878.png"
+width="721"
+height="318"
+srcset="https://sfw003.github.io/p/linux-process/image/image-20250410141859878_hu_9faf517a3ac888f3.png 480w, https://sfw003.github.io/p/linux-process/image/image-20250410141859878_hu_de4865f7672b1bc1.png 1024w"
+loading="lazy"
+alt="image-20250410141859878"
+class="gallery-image"
+data-flex-grow="226"
+data-flex-basis="544px"
+>&lt;/p>
+&lt;p>在linux系统中，关于进程状态的定义如下，&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">task_state_array&lt;/span>&lt;span class="p">[]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* states in TASK_REPORT: */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;R (running)&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="cm">/* 0x00 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;S (sleeping)&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="cm">/* 0x01 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;D (disk sleep)&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="cm">/* 0x02 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;T (stopped)&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="cm">/* 0x04 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;t (tracing stop)&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="cm">/* 0x08 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;X (dead)&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="cm">/* 0x10 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;Z (zombie)&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="cm">/* 0x20 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;P (parked)&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="cm">/* 0x40 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* states beyond TASK_REPORT: */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s">&amp;#34;I (idle)&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="cm">/* 0x80 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="磁盘睡眠--d">磁盘睡眠 &amp;ndash; D
+&lt;/h4>&lt;p>D状态，磁盘睡眠，进程的磁盘睡眠状态（Disk Sleep State）通常是指进程处于等待磁盘I/O操作完成的状态。这种状态通常出现在进程请求进行磁盘读取或写入操作时，但磁盘尚未完成相应的I/O操作，因此进程被阻塞，等待磁盘响应。在这种状态下，进程不会消耗CPU时间，而是被挂起，直到磁盘I/O操作完成。&lt;/p>
+&lt;p>也就是挂起状态。&lt;/p>
+&lt;h4 id="暂停和跟踪暂停--t和t">暂停和跟踪暂停 &amp;ndash; T和t
+&lt;/h4>&lt;p>Linux操作系统的有个信号&lt;code>kill -19&lt;/code>， 可以使进程暂停。T状态即进程处于暂停状态。注意不要于S状态混淆，S状态一定是进程在等待某种资源，但T状态不一定在等待某种资源。&lt;/p>
+&lt;p>那T和t有什么区别呢？&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Stopped（停止）状态：
+进程处于停止状态通常是由于接收到了一个信号，例如SIGSTOP（Ctrl-Z产生的SIGTSTP信号）或者SIGTSTP（通常由shell的暂停命令引发）。这种状态下的进程被挂起，暂时停止执行，但可以通过发送SIGCONT信号来恢复执行。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Tracing Stop（跟踪停止）状态：
+进程处于跟踪停止状态通常是由于调试器（如GDB）或者ptrace系统调用的作用。在这种状态下，进程被调试器所追踪，通常是因为调试器在进行单步执行、观察或者修改进程的内存等操作。这种状态下的进程暂时停止执行，直到调试器允许其继续执行。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="僵尸进程--z">僵尸进程 &amp;ndash; Z
+&lt;/h4>&lt;p>当一个进程（子进程）完成执行后，它的退出状态需要被父进程获取。如果父进程没有主动获取子进程的退出状态，那么子进程就会变成僵尸进程，相当于一个人处于生死之间。&lt;/p>
+&lt;h5 id="父子进程-">父子进程 *
+&lt;/h5>&lt;p>这里提到了父子进程，那什么是父进程、子进程？如何创建子进程？&lt;/p>
+&lt;p>下方代码实现：父进程一直运行，子进程执行3次后结束&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;sys/types.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;unistd.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdlib.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;我是进程：pid = %d，ppid = %d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="err">，&lt;/span>&lt;span class="nf">getpid&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="err">，&lt;/span>&lt;span class="nf">getppid&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">pid_t&lt;/span> &lt;span class="n">id&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nf">fork&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">cnt&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">cnt&lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;我是子进程，pid =%d，ppid =%d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="err">，&lt;/span>&lt;span class="nf">getpid&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="err">，&lt;/span>&lt;span class="nf">getppid&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">sleep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;我是父进程，pid = %d，ppid = %d&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="err">，&lt;/span>&lt;span class="nf">getpid&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="err">，&lt;/span>&lt;span class="nf">getppid&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">sleep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>结果如下：子进程的状态由S+ &amp;ndash;&amp;gt; Z+， Z即处于僵尸状态&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/linux-process/image/a67747920f70f6aabf6712cac48bde5b.png"
+width="2201"
+height="913"
+srcset="https://sfw003.github.io/p/linux-process/image/a67747920f70f6aabf6712cac48bde5b_hu_b9ad2643e4cc1121.png 480w, https://sfw003.github.io/p/linux-process/image/a67747920f70f6aabf6712cac48bde5b_hu_c493505028f33825.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="241"
+data-flex-basis="578px"
+>&lt;/p>
+&lt;p>僵尸进程虽然不会直接对系统造成严重影响，但长时间存在的僵尸进程会对系统的正常运行产生一些间接的危害，包括：可能导致资源耗尽，影响进程管理，降低系统稳定性，因此需要父进程处理僵尸进程。
+父进程通常需要调用类似于wait()或waitpid()的系统调用来等待子进程的退出，并获取其退出状态。&lt;/p>
+&lt;p>&lt;strong>当然如果父进程也结束，系统会自动把子进程释放。&lt;/strong>&lt;/p>
+&lt;h4 id="孤儿进程">孤儿进程
+&lt;/h4>&lt;p>僵尸进程是子进程结束，但父进程未结束。如何父进程先结束，子进程后结束呢？那么子进程便会变为孤儿进程，并被&lt;strong>托孤&lt;/strong>给1号进程，即操作系统。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/linux-process/image/13689dfc900f45c81ca9d116a4d55c2b.png"
+width="2426"
+height="779"
+srcset="https://sfw003.github.io/p/linux-process/image/13689dfc900f45c81ca9d116a4d55c2b_hu_dd4aaa17e13875a5.png 480w, https://sfw003.github.io/p/linux-process/image/13689dfc900f45c81ca9d116a4d55c2b_hu_62ec059c2a70d62e.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="311"
+data-flex-basis="747px"
+>&lt;/p>
+&lt;h3 id="进程优先级">进程优先级
+&lt;/h3>&lt;p>&lt;img src="https://sfw003.github.io/p/linux-process/image/de81281fa20b148bfabb0f27df8892cb.png"
+width="1050"
+height="311"
+srcset="https://sfw003.github.io/p/linux-process/image/de81281fa20b148bfabb0f27df8892cb_hu_67425e7cac0b994f.png 480w, https://sfw003.github.io/p/linux-process/image/de81281fa20b148bfabb0f27df8892cb_hu_8686293bd529bf14.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="337"
+data-flex-basis="810px"
+>
+PRI（Priority）：PRI 表示进程的静态优先级或调度优先级。俗点说就是程序被CPU执行的先后顺序，&lt;strong>此值越小,进程的优先级别越高。&lt;/strong>
+NI（Nice Value）：NI 表示进程的 Nice 值，是一个表示进程调度优先级的数值。它的作用是改变PRI的值。&lt;/p>
+&lt;p>通过PRI和NI可以调整进程的优先级，计算公式如下：&lt;/p>
+&lt;p>&lt;code>PRI(new)=PRI(old)+nice&lt;/code> '&lt;/p>
+&lt;p>这样，当nice值为负值的时候，那么该程序将会优先级值将变小，即其优先级会变高，则其越快被执行所以，调整进程优先级，在Linux下，就是调整进程nice值&lt;/p>
+&lt;p>注意：nice 的范围在 【-20， 19】
+PRI(old) 最小是80，如果原来的PRI &amp;lt; 80， 则会直接从80开始算：
+因此：PRI 范围【60， 99】，但在计算新的PRI时，最小从80开始
+举例：原来 ： PRI = 60 NI = 0;
+更改：令PRI = 100
+结果：PRI = 99 NI = 19&lt;/p>
+&lt;p>那如何更改nice值呢？&lt;/p>
+&lt;p>在Linux系统中，&lt;code>nice&lt;/code>命令用于启动一个新的进程，并设置其优先级。而&lt;code>renice&lt;/code>命令用于修改已经运行的进程的优先级。&lt;/p>
+&lt;p>&lt;code>nice&lt;/code>命令的使用：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">nice &lt;span class="o">[&lt;/span>OPTION&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>COMMAND &lt;span class="o">[&lt;/span>ARG&lt;span class="o">]&lt;/span>...&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>nice&lt;/code>命令通过改变进程的优先级来影响其调度。数值越大，优先级越低。默认情况下，优先级是0。&lt;/p>
+&lt;p>例如，运行一个命令并设置其优先级：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">nice -n &amp;lt;优先级&amp;gt; &amp;lt;命令&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>例如，将&lt;code>ls&lt;/code>命令的优先级降低为10：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">nice -n &lt;span class="m">10&lt;/span> ls
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>renice&lt;/code>命令的使用：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">renice &lt;span class="o">[&lt;/span>优先级&lt;span class="o">]&lt;/span> -p &amp;lt;进程ID&amp;gt; &lt;span class="o">[&lt;/span>&amp;lt;进程ID&amp;gt;...&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>renice&lt;/code>命令用于修改已经运行的进程的优先级。可以指定一个或多个进程ID来修改它们的优先级。&lt;/p>
+&lt;p>例如，将进程ID为1234的进程的优先级设置为10：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">renice &lt;span class="m">10&lt;/span> -p &lt;span class="m">1234&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="进程地址空间">进程地址空间
+&lt;/h2>&lt;p>进程地址空间是操作系统为每个进程分配的&lt;strong>虚拟内存&lt;/strong>区域，它让每个进程有独立的地址范围，隔离了物理内存，提高了安全性和管理效率。&lt;/p>
+&lt;h3 id="进程地址空间分布">进程地址空间分布
+&lt;/h3>&lt;p>linux下进程地址空间如下：内核空间和用户空间按1 : 3&lt;/p>
+&lt;blockquote>
+&lt;p>Linux系统与Windows系统在进程地址空间设计上存在显著差异，而不同编程语言的进程地址空间本质上是统一的（受操作系统管理）&lt;/p>
+&lt;p>&lt;strong>Windows&lt;/strong>：默认采用 &lt;strong>2:2模式&lt;/strong>（用户空间和内核空间各占2GB）但可通过设置 &lt;code>Large-Address-Aware&lt;/code> 标志调整为 &lt;strong>3:1模式&lt;/strong>&lt;/p>
+&lt;p>但是它们的用户空间都包含&lt;strong>代码段、数据段、堆、栈&lt;/strong>等&lt;/p>&lt;/blockquote>
+&lt;img src="image/ff03787b23fd4675af25b9cfd03ac888-1744267679242-12.png" alt="在这里插入图片描述" style="zoom:67%;" />
+&lt;p>验证一下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="k">using&lt;/span> &lt;span class="k">namespace&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="n">g_A&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="n">g_B&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">100&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">const&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;ab&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">static&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">s_A&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">A&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">B&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">C&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">m_A&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">m_B&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">m_C&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;字符常量：a : %p&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">a&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;静态变量：s_A : &amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">s_A&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;全局变量：未初始化g_A : &amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">g_A&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;全局变量：已初始化g_B : &amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">g_B&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;栈区：A : &amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">A&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;栈区：B : &amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">B&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;栈区：C : &amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">C&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;堆区：m_A : &amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">m_A&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;堆区：m_B : &amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">m_B&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;堆区：m_C : &amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">m_C&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>结果如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">ubuntu g++:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">字符常量：a : 0x5649d4534009
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">静态变量：s_A : 0x5649d4536014
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">全局变量：未初始化g_A : 0x5649d4536154 未初始化地址 &amp;gt; 已初始化地址 符合
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">全局变量：已初始化g_B : 0x5649d4536010
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">栈区：A : 0x7ffc892fb3cc A到B栈区的地址是增长的, 不符合
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">栈区：B : 0x7ffc892fb3d0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">栈区：C : 0x7ffc892fb3d4
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">堆区：m_A : 0x5649d5eadeb0 堆区的地址是增长的，符合
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">堆区：m_B : 0x5649d5eaded0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">堆区：m_C : 0x5649d5eadef0
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这里栈区的地址是增长的，不是应该是减少吗？我再测试一下windows下vs2019&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">windows vs2019
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">字符常量：a : 00639B30
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">静态变量：s_A : 0063C004
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">全局变量：未初始化g_A : 0063C3E0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">全局变量：已初始化g_B : 0063C000
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">栈区：A : 004FFBA8 A到B栈区的地址是下降的, 符合
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">栈区：B : 004FFB9C
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">栈区：C : 004FFB90
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">堆区：m_A : 0069FD68 堆区的地址是增长的，符合
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">堆区：m_B : 0069FD98
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">堆区：m_C : 006A0118
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这是什么情况？linux栈区是向高地址分配？windows的栈区是向低地址分配？这个问题我之前查阅的时候，得到答案是&lt;strong>局部变量按编译器自己方式进行分配&lt;/strong>。&lt;/p>
+&lt;p>？？？&lt;/p>
+&lt;p>我对此很懵逼，后来我才理解。这里需要引入一个概念：&lt;strong>函数栈帧&lt;/strong>&lt;/p>
+&lt;blockquote>
+&lt;p>函数栈帧（stack frame）就是函数调用过程中在程序的调用栈（call stack）所开辟的空间，这些空间是用来存放：&lt;/p>
+&lt;ul>
+&lt;li>函数参数和函数返回值&lt;/li>
+&lt;li>临时变量（包括函数的非静态的局部变量以及编译器自动生产的其他临时变量）&lt;/li>
+&lt;li>保存上下文信息（包括在函数调用前后需要保持不变的寄存器）。&lt;/li>
+&lt;/ul>&lt;/blockquote>
+&lt;p>&lt;img src="https://sfw003.github.io/p/linux-process/image/image-20250410151621357.png"
+width="629"
+height="310"
+srcset="https://sfw003.github.io/p/linux-process/image/image-20250410151621357_hu_e3f23c9aa3c8da97.png 480w, https://sfw003.github.io/p/linux-process/image/image-20250410151621357_hu_86eea16cdff95133.png 1024w"
+loading="lazy"
+alt="image-20250410151621357"
+class="gallery-image"
+data-flex-grow="202"
+data-flex-basis="486px"
+>&lt;/p>
+&lt;h3 id="虚拟地址和页表">虚拟地址和页表
+&lt;/h3>&lt;p>前面提到，进程地址空间是操作系统为每个进程分配的&lt;strong>虚拟内存&lt;/strong>区域，这么说，在进程中使用的地址都是虚拟地址，如何证明？来看下面一段代码&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;sys/types.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;unistd.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">g_val&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">100&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pid_t&lt;/span> &lt;span class="n">id&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fork&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">g_val&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">200&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;子进程：g_val = %d, &amp;amp;g_val = %p&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">g_val&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">g_val&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;父进程：g_val = %d, &amp;amp;g_val = %p&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">g_val&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">g_val&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">结果：&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">父进程：&lt;/span>&lt;span class="n">g_val&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">100&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">g_val&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mh">0x55631bc26010&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">子进程：&lt;/span>&lt;span class="n">g_val&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">200&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">g_val&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mh">0x55631bc26010&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>子进程更改数据后，会发生写时拷贝，因此子进程和父进程的g_val值不一样，符合预期，但是为什么发生了写时拷贝，父子进程的g_val地址还是相同？
+&lt;strong>显然这里的地址一定不是真实的地址。&lt;/strong>&lt;/p>
+&lt;p>那虚拟地址如何于物理地址联系呢？通过&lt;strong>页表&lt;/strong>与物理地址映射。
+&lt;img src="https://sfw003.github.io/p/linux-process/image/eda7e0b75e26465fab9eff9a5dd59436.png"
+width="2143"
+height="853"
+srcset="https://sfw003.github.io/p/linux-process/image/eda7e0b75e26465fab9eff9a5dd59436_hu_9e17fac47ca098f4.png 480w, https://sfw003.github.io/p/linux-process/image/eda7e0b75e26465fab9eff9a5dd59436_hu_90a3d99dc2c50dd5.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="251"
+data-flex-basis="602px"
+>
+回到fork里的问题：为什么父子进程不同的值有着相同的地址？因为这里的地址是虚拟地址。子进程只需更改子进程页表。&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/linux-process/image/555567ce5c0a4980a01cf811f77b86ef.png"
+width="1109"
+height="402"
+srcset="https://sfw003.github.io/p/linux-process/image/555567ce5c0a4980a01cf811f77b86ef_hu_3e81e21566451f09.png 480w, https://sfw003.github.io/p/linux-process/image/555567ce5c0a4980a01cf811f77b86ef_hu_2b19323ebfafc9e8.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="275"
+data-flex-basis="662px"
+>&lt;/p>
+&lt;h2 id="进程控制">进程控制
+&lt;/h2>&lt;p>前文提到linux下进程有7种状态，如果从进程控制的角度，我们关心&lt;/p>
+&lt;ol>
+&lt;li>进程如何创建&lt;/li>
+&lt;li>进程运行结束，结果是否正确？&lt;/li>
+&lt;li>进程异常，如何终止？&lt;/li>
+&lt;/ol>
+&lt;h3 id="创建进程">创建进程
+&lt;/h3>&lt;p>系统创建进程的流程如下：&lt;/p>
+&lt;ol>
+&lt;li>申请一个空白的PCB，初始化PCB；&lt;/li>
+&lt;li>为进程分配运行时所必需的资源；&lt;/li>
+&lt;li>将PCB 插入到就绪队列，等待进程调度；&lt;/li>
+&lt;/ol>
+&lt;p>用户如何创建进程？&lt;/p>
+&lt;ul>
+&lt;li>运行一个可执行程序&lt;/li>
+&lt;li>fork创建子进程&lt;/li>
+&lt;/ul>
+&lt;h3 id="进程等待">进程等待
+&lt;/h3>&lt;p>当一个进程（子进程）完成执行后，它的退出状态需要被父进程获取。如果父进程没有主动获取子进程的退出状态，那么子进程就会变成僵尸进程。&lt;strong>僵尸进程无法被信号 kill -9 杀死，如果放着不管，就会造成内存泄漏&lt;/strong>。
+如何解决呢？此时需要父进程通过进程等待的方式，回收子进程资源，获取子进程退出信息。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&amp;lt;sys/types.h&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&amp;lt;sys/wait.h&amp;gt;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">pid_t&lt;/span> &lt;span class="nf">wait&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">status&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">返回值：&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">成功返回被等待进程&lt;/span>&lt;span class="n">pid&lt;/span>&lt;span class="err">，失败返回&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="err">。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">参数：&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">输出型参数，获取子进程退出状态&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="err">不关心则可以设置成为&lt;/span>&lt;span class="nb">NULL&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">pid_&lt;/span> &lt;span class="n">t&lt;/span> &lt;span class="n">waitpid&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pid_t&lt;/span> &lt;span class="n">pid&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">status&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">options&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">返回值：&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">当正常返回的时候&lt;/span>&lt;span class="n">waitpid返回收集到的子进程的进程ID&lt;/span>&lt;span class="err">；&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">如果设置了选项&lt;/span>&lt;span class="n">WNOHANG&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="err">而调用中&lt;/span>&lt;span class="n">waitpid发现没有已退出的子进程可收集&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="err">则返回&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="err">；&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">如果调用中出错&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="err">则返回&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="err">这时&lt;/span>&lt;span class="n">errno会被设置成相应的值以指示错误所在&lt;/span>&lt;span class="err">；&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">参数：&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pid&lt;/span>&lt;span class="err">：&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Pid&lt;/span>&lt;span class="o">=-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="err">等待任一个子进程。与&lt;/span>&lt;span class="n">wait等效&lt;/span>&lt;span class="err">。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Pid&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="mf">0.&lt;/span>&lt;span class="err">等待其进程&lt;/span>&lt;span class="n">ID与pid相等的子进程&lt;/span>&lt;span class="err">。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nl">status&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">WIFEXITED&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">status&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="err">若为正常终止子进程返回的状态，则为真。（查看进程是否是正常退出）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">WEXITSTATUS&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">status&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="err">若&lt;/span>&lt;span class="n">WIFEXITED非零&lt;/span>&lt;span class="err">，提取子进程退出码。（查看进程的退出码）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nl">options&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nl">WNOHANG&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="err">若&lt;/span>&lt;span class="n">pid指定的子进程没有结束&lt;/span>&lt;span class="err">，则&lt;/span>&lt;span class="n">waitpid&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="err">函数返回&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="err">，不予以等待。若正常结束，则返回该子进&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">程的&lt;/span>&lt;span class="n">ID&lt;/span>&lt;span class="err">。&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>使用案例：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;unistd.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;sys/types.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;sys/wait.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="k">using&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">using&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">cout&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pid_t&lt;/span> &lt;span class="n">id&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fork&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;create a child process, pid = &amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">getpid&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">sleep&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">//经过3秒后，wait子进程
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">int&lt;/span> &lt;span class="n">status&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pid_t&lt;/span> &lt;span class="n">id&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">wait&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">status&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">id&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;wait a process pid = &amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">id&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34; status = &amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">status&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">结果：&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">create&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">child&lt;/span> &lt;span class="n">process&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">230665&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">create&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">child&lt;/span> &lt;span class="n">process&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">230667&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">create&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">child&lt;/span> &lt;span class="n">process&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">230668&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">create&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">child&lt;/span> &lt;span class="n">process&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">230669&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">create&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">child&lt;/span> &lt;span class="n">process&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">230666&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">wait&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">process&lt;/span> &lt;span class="n">pid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">230665&lt;/span> &lt;span class="n">status&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">wait&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">process&lt;/span> &lt;span class="n">pid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">230666&lt;/span> &lt;span class="n">status&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">256&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">wait&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">process&lt;/span> &lt;span class="n">pid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">230667&lt;/span> &lt;span class="n">status&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">512&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">wait&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">process&lt;/span> &lt;span class="n">pid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">230668&lt;/span> &lt;span class="n">status&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">768&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">wait&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="n">process&lt;/span> &lt;span class="n">pid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">230669&lt;/span> &lt;span class="n">status&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1024&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>使用&lt;code>while :; do ps ajx | head -1 &amp;amp;&amp;amp; ps ajx | grep t1; sleep 1; done&lt;/code>来监控
+发现5个僵尸进程，被wait回收了&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">root&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="nl">iZbp1inz4ol3gjahpjal9qZ&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~&lt;/span>&lt;span class="err">#&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="o">:&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="k">do&lt;/span> &lt;span class="n">ps&lt;/span> &lt;span class="n">ajx&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">head&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">ps&lt;/span> &lt;span class="n">ajx&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="n">grep&lt;/span> &lt;span class="n">t1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">sleep&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">done&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PPID&lt;/span> &lt;span class="n">PID&lt;/span> &lt;span class="n">PGID&lt;/span> &lt;span class="n">SID&lt;/span> &lt;span class="n">TTY&lt;/span> &lt;span class="n">TPGID&lt;/span> &lt;span class="n">STAT&lt;/span> &lt;span class="n">UID&lt;/span> &lt;span class="n">TIME&lt;/span> &lt;span class="n">COMMAND&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">229980&lt;/span> &lt;span class="mi">230652&lt;/span> &lt;span class="mi">230651&lt;/span> &lt;span class="mi">229980&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="mi">230651&lt;/span> &lt;span class="n">S&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="n">grep&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">auto&lt;/span> &lt;span class="n">t&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PPID&lt;/span> &lt;span class="n">PID&lt;/span> &lt;span class="n">PGID&lt;/span> &lt;span class="n">SID&lt;/span> &lt;span class="n">TTY&lt;/span> &lt;span class="n">TPGID&lt;/span> &lt;span class="n">STAT&lt;/span> &lt;span class="n">UID&lt;/span> &lt;span class="n">TIME&lt;/span> &lt;span class="n">COMMAND&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">229980&lt;/span> &lt;span class="mi">230657&lt;/span> &lt;span class="mi">230656&lt;/span> &lt;span class="mi">229980&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="mi">230656&lt;/span> &lt;span class="n">S&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="n">grep&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">auto&lt;/span> &lt;span class="n">t&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PPID&lt;/span> &lt;span class="n">PID&lt;/span> &lt;span class="n">PGID&lt;/span> &lt;span class="n">SID&lt;/span> &lt;span class="n">TTY&lt;/span> &lt;span class="n">TPGID&lt;/span> &lt;span class="n">STAT&lt;/span> &lt;span class="n">UID&lt;/span> &lt;span class="n">TIME&lt;/span> &lt;span class="n">COMMAND&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">229980&lt;/span> &lt;span class="mi">230662&lt;/span> &lt;span class="mi">230661&lt;/span> &lt;span class="mi">229980&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="mi">230661&lt;/span> &lt;span class="n">S&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="n">grep&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">auto&lt;/span> &lt;span class="n">t&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PPID&lt;/span> &lt;span class="n">PID&lt;/span> &lt;span class="n">PGID&lt;/span> &lt;span class="n">SID&lt;/span> &lt;span class="n">TTY&lt;/span> &lt;span class="n">TPGID&lt;/span> &lt;span class="n">STAT&lt;/span> &lt;span class="n">UID&lt;/span> &lt;span class="n">TIME&lt;/span> &lt;span class="n">COMMAND&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">229863&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">S&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">.&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">t1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230665&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230666&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230667&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230668&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230669&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">229980&lt;/span> &lt;span class="mi">230673&lt;/span> &lt;span class="mi">230672&lt;/span> &lt;span class="mi">229980&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="mi">230672&lt;/span> &lt;span class="n">S&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="n">grep&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">auto&lt;/span> &lt;span class="n">t&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PPID&lt;/span> &lt;span class="n">PID&lt;/span> &lt;span class="n">PGID&lt;/span> &lt;span class="n">SID&lt;/span> &lt;span class="n">TTY&lt;/span> &lt;span class="n">TPGID&lt;/span> &lt;span class="n">STAT&lt;/span> &lt;span class="n">UID&lt;/span> &lt;span class="n">TIME&lt;/span> &lt;span class="n">COMMAND&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">229863&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">S&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">.&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">t1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230665&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230666&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230667&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230668&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230669&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">229980&lt;/span> &lt;span class="mi">230678&lt;/span> &lt;span class="mi">230677&lt;/span> &lt;span class="mi">229980&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="mi">230677&lt;/span> &lt;span class="n">S&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="n">grep&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">auto&lt;/span> &lt;span class="n">t&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PPID&lt;/span> &lt;span class="n">PID&lt;/span> &lt;span class="n">PGID&lt;/span> &lt;span class="n">SID&lt;/span> &lt;span class="n">TTY&lt;/span> &lt;span class="n">TPGID&lt;/span> &lt;span class="n">STAT&lt;/span> &lt;span class="n">UID&lt;/span> &lt;span class="n">TIME&lt;/span> &lt;span class="n">COMMAND&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">229863&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">S&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">.&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">t1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230665&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230666&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230667&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230668&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">230669&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="mi">229863&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="mi">230664&lt;/span> &lt;span class="n">Z&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">t1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">defunct&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">229980&lt;/span> &lt;span class="mi">230683&lt;/span> &lt;span class="mi">230682&lt;/span> &lt;span class="mi">229980&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="mi">230682&lt;/span> &lt;span class="n">S&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="n">grep&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">auto&lt;/span> &lt;span class="n">t&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PPID&lt;/span> &lt;span class="n">PID&lt;/span> &lt;span class="n">PGID&lt;/span> &lt;span class="n">SID&lt;/span> &lt;span class="n">TTY&lt;/span> &lt;span class="n">TPGID&lt;/span> &lt;span class="n">STAT&lt;/span> &lt;span class="n">UID&lt;/span> &lt;span class="n">TIME&lt;/span> &lt;span class="n">COMMAND&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">229980&lt;/span> &lt;span class="mi">230688&lt;/span> &lt;span class="mi">230687&lt;/span> &lt;span class="mi">229980&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="mi">230687&lt;/span> &lt;span class="n">S&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="n">grep&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">auto&lt;/span> &lt;span class="n">t&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PPID&lt;/span> &lt;span class="n">PID&lt;/span> &lt;span class="n">PGID&lt;/span> &lt;span class="n">SID&lt;/span> &lt;span class="n">TTY&lt;/span> &lt;span class="n">TPGID&lt;/span> &lt;span class="n">STAT&lt;/span> &lt;span class="n">UID&lt;/span> &lt;span class="n">TIME&lt;/span> &lt;span class="n">COMMAND&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="mi">229980&lt;/span> &lt;span class="mi">230693&lt;/span> &lt;span class="mi">230692&lt;/span> &lt;span class="mi">229980&lt;/span> &lt;span class="n">pts&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="mi">230692&lt;/span> &lt;span class="n">S&lt;/span>&lt;span class="o">+&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="mo">00&lt;/span> &lt;span class="n">grep&lt;/span> &lt;span class="o">--&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">auto&lt;/span> &lt;span class="n">t&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="进程退出信息">进程退出信息
+&lt;/h4>&lt;p>wait和waitpid，都有一个status参数，该参数是一个输出型参数，由操作系统填充。&lt;/p>
+&lt;ul>
+&lt;li>如果传递NULL，表示不关心子进程的退出状态信息。&lt;/li>
+&lt;li>否则，操作系统会根据该参数，将子进程的退出信息反馈给父进程。&lt;/li>
+&lt;/ul>
+&lt;p>status不能简单的当作整形来看待，可以当作位图来看待，具体细节如下图（只研究status低16比特位）：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="n">status&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">pid_t&lt;/span> &lt;span class="n">id&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">wait&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">status&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://sfw003.github.io/p/linux-process/image/f7fdad997b8c4ea2b447c1da47509574.png"
+width="572"
+height="173"
+srcset="https://sfw003.github.io/p/linux-process/image/f7fdad997b8c4ea2b447c1da47509574_hu_45e7345645b5e0bd.png 480w, https://sfw003.github.io/p/linux-process/image/f7fdad997b8c4ea2b447c1da47509574_hu_6409d2ee8488c9c6.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="330"
+data-flex-basis="793px"
+>&lt;/p>
+&lt;p>正常退出看退出码，异常退出看信号。status作为子进程的退出信息，通过位图的方式将退出码和信号的信息存储在比特位中。&lt;/p>
+&lt;p>你可以通过status的值来分析它的退出信息，如果你嫌麻烦，可以使用2个宏&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">WIFEXITED&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">status&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="err">若为正常终止子进程返回的状态，则为真。（查看进程是否是正常退出）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">WEXITSTATUS&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">status&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="err">若&lt;/span>&lt;span class="n">WIFEXITED非零&lt;/span>&lt;span class="err">，提取子进程退出码。（查看进程的退出码）&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="进程替换">进程替换
+&lt;/h3>&lt;p>当进程调用一种exec函数时,该进程的用户空间代码和数据完全被新程序替换,从新程序的启动进程程开始执行。调用exec并不创建新进程,所以调用exec前后该进程的id并未改变。
+&lt;img src="https://sfw003.github.io/p/linux-process/image/beceee3e513e439a92bbe947a21a4ef5.png"
+width="1075"
+height="414"
+srcset="https://sfw003.github.io/p/linux-process/image/beceee3e513e439a92bbe947a21a4ef5_hu_30eae4c798b0a663.png 480w, https://sfw003.github.io/p/linux-process/image/beceee3e513e439a92bbe947a21a4ef5_hu_2d881f97b7ea6c06.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="259"
+data-flex-basis="623px"
+>&lt;/p>
+&lt;p>函数关系：
+事实上,只有execve是真正的系统调用,其它五个函数最终都调用 execve,所以execve在man手册 第2节,其它函数在man手册第3节。这些函数之间的关系如下图所示
+&lt;img src="https://sfw003.github.io/p/linux-process/image/43aaece3d5db4ea288b061cb78c2edad.png"
+width="972"
+height="468"
+srcset="https://sfw003.github.io/p/linux-process/image/43aaece3d5db4ea288b061cb78c2edad_hu_25bfe1cf88231b84.png 480w, https://sfw003.github.io/p/linux-process/image/43aaece3d5db4ea288b061cb78c2edad_hu_1b06b07f30c2b3b1.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="207"
+data-flex-basis="498px"
+>&lt;/p></description></item></channel></rss>

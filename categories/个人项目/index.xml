@@ -1,0 +1,1005 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>个人项目 on 石某人</title><link>https://sfw003.github.io/categories/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/</link><description>Recent content in 个人项目 on 石某人</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>石某人</copyright><lastBuildDate>Sat, 12 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://sfw003.github.io/categories/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/index.xml" rel="self" type="application/rss+xml"/><item><title>个人项目</title><link>https://sfw003.github.io/p/project-dic/</link><pubDate>Tue, 01 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/project-dic/</guid><description>&lt;p>存放个人项目&lt;/p></description></item><item><title>手写输入法</title><link>https://sfw003.github.io/p/handwrite-input-method/</link><pubDate>Sat, 12 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/handwrite-input-method/</guid><description>&lt;h1 id="智能手写输入法">智能手写输入法
+&lt;/h1>&lt;p>&lt;img src="https://sfw003.github.io/p/handwrite-input-method/image/image-20241212130425503.png"
+width="721"
+height="481"
+srcset="https://sfw003.github.io/p/handwrite-input-method/image/image-20241212130425503_hu_9b2b4646683905f2.png 480w, https://sfw003.github.io/p/handwrite-input-method/image/image-20241212130425503_hu_c8f85fa32a985f62.png 1024w"
+loading="lazy"
+alt="image-20241212130425503"
+class="gallery-image"
+data-flex-grow="149"
+data-flex-basis="359px"
+>&lt;/p>
+&lt;h1 id="设计思路">设计思路
+&lt;/h1>&lt;h2 id="模块划分">模块划分
+&lt;/h2>&lt;p>【金山文档 | WPS云文档】 手写输入法模块划分
+&lt;a class="link" href="https://kdocs.cn/l/cbaoXUi8YmWw" target="_blank" rel="noopener"
+>https://kdocs.cn/l/cbaoXUi8YmWw&lt;/a>&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/handwrite-input-method/image/image-20241211211755335.png"
+width="2583"
+height="756"
+srcset="https://sfw003.github.io/p/handwrite-input-method/image/image-20241211211755335_hu_4760580790a9045b.png 480w, https://sfw003.github.io/p/handwrite-input-method/image/image-20241211211755335_hu_6274bbd536c8e489.png 1024w"
+loading="lazy"
+alt="image-20241211211755335"
+class="gallery-image"
+data-flex-grow="341"
+data-flex-basis="820px"
+>&lt;/p>
+&lt;p>models&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>StrokeModel&lt;/strong>: 管理笔画数据，提供数据的增删改查功能。&lt;/li>
+&lt;li>&lt;strong>CandidateModel&lt;/strong>: 管理候选词数据，提供候选词的选择和更新功能。&lt;/li>
+&lt;li>&lt;strong>ConfigModel&lt;/strong>: 管理配置数据，如用户设置、手写识别参数等。&lt;/li>
+&lt;/ul>
+&lt;p>delegates&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>StrokeDelegate&lt;/strong>: 负责笔画的渲染。&lt;/li>
+&lt;li>&lt;strong>CandidateDelegate&lt;/strong>: 负责候选词的渲染。&lt;/li>
+&lt;/ul>
+&lt;p>views&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>HandWriteView&lt;/strong>: 手写板视图，处理用户输入和笔画显示。&lt;/li>
+&lt;li>&lt;strong>CandidateView&lt;/strong>: 候选词视图，显示识别结果的候选词。&lt;/li>
+&lt;li>&lt;strong>SettingsPopupDialog&lt;/strong>: 设置弹窗，提供用户配置界面。&lt;/li>
+&lt;li>&lt;strong>ToolPopupDialog&lt;/strong>：手动选择标点、数字、字母、语言弹窗&lt;/li>
+&lt;/ul>
+&lt;p>controllers&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>RecognitionController&lt;/strong>: 负责与识别引擎的交互，处理识别结果。&lt;/li>
+&lt;li>&lt;strong>TSFController&lt;/strong>: 负责与文本服务框架（TSF）的交互，管理输入法状态。&lt;/li>
+&lt;/ul>
+&lt;p>core&lt;/p>
+&lt;ul>
+&lt;li>Recognition：提供识别服务
+&lt;ul>
+&lt;li>&lt;strong>RecognitionModel&lt;/strong>: 识别服务，提供手写识别的核心算法。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>IPC: 用于和TSF服务通信
+&lt;ul>
+&lt;li>&lt;strong>IPCServer&lt;/strong>: 使用命名管道进行双向通信&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Common: 公共组件，提供通用的工具类和数据结构。
+&lt;ul>
+&lt;li>&lt;strong>data.h&lt;/strong>：核心数据结构。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>dictionary&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>dictionary.db&lt;/strong>: Sqlite数据库，里面存储汉字-拼音表，汉字-常见词组表&lt;/li>
+&lt;li>&lt;strong>DictionaryManager&lt;/strong>：词典管理类&lt;/li>
+&lt;li>&lt;strong>LocalDictionary&lt;/strong>：本地词典（使用dictionary.db）&lt;/li>
+&lt;li>&lt;strong>OnlineDictionary&lt;/strong>：在线词典（使用第三方平台词典）&lt;/li>
+&lt;/ul>
+&lt;h2 id="手写区域">手写区域
+&lt;/h2>&lt;p>笔迹数据存储&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">StrokeStyle&lt;/span> &lt;span class="c1">// 笔迹样式
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QColor&lt;/span> &lt;span class="n">color&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">Qt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">black&lt;/span>&lt;span class="p">};&lt;/span> &lt;span class="c1">// 笔迹颜色（默认颜色: 黑）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">width&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">};&lt;/span> &lt;span class="c1">// 笔迹大小（默认大小: 2px）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">bool&lt;/span> &lt;span class="k">operator&lt;/span>&lt;span class="o">==&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">StrokeStyle&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">other&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">const&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">color&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">other&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">color&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="n">width&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">other&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">width&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">StrokeData&lt;/span> &lt;span class="c1">// 笔迹数据
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QVector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">QPoint&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">points&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 笔迹点集
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">StrokeStyle&lt;/span> &lt;span class="n">style&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 笔迹样式
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">qint64&lt;/span> &lt;span class="n">timestamp&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 时间戳（目前未用到）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">StrokeData&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">default&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">StrokeData&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">StrokeStyle&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">style&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>手写区域采用 Qt 的 Model-View 架构。&lt;/p>
+&lt;p>view：通过继承 &lt;code>QAbstractItemView&lt;/code> 实现自定义视图控件。设计了基类 &lt;code>HandWriteView&lt;/code> 及其两个子类 &lt;code>SingleHandWriting&lt;/code>（单字手写）和 &lt;code>LongSentenceHandWriting&lt;/code>（长句手写），实现了不同模式下的手写功能。&lt;/p>
+&lt;p>delegate: 通过继承&lt;code>QStyledItemDelegate&lt;/code> 实现自定义代理。设计了类&lt;code>StrokeDelegate&lt;/code>，实现&lt;code>paint&lt;/code>函数，进行局部重绘，减少整个手写试图的重绘次数。&lt;/p>
+&lt;p>model: 因为笔迹用通过继承&lt;code>QAbstractListModel&lt;/code> 实现自定义模型，数据采用&lt;code>QVector&amp;lt;StrokeDate&amp;gt;&lt;/code>存储。&lt;/p>
+&lt;h3 id="时序图">时序图
+&lt;/h3>&lt;p>&lt;img src="https://sfw003.github.io/p/handwrite-input-method/image/image-20241211215033811.png"
+width="1060"
+height="538"
+srcset="https://sfw003.github.io/p/handwrite-input-method/image/image-20241211215033811_hu_182c8f4de0c4ef82.png 480w, https://sfw003.github.io/p/handwrite-input-method/image/image-20241211215033811_hu_7bc2b7e21887a203.png 1024w"
+loading="lazy"
+alt="image-20241211215033811"
+class="gallery-image"
+data-flex-grow="197"
+data-flex-basis="472px"
+>&lt;/p>
+&lt;p>基本流程：&lt;/p>
+&lt;ol>
+&lt;li>用户用鼠标在HandWriteView上绘制，先后触发 mousePressEvent, mouseMoveEvent, mouseReleaseEvent，采集笔迹给StrokeModel&lt;/li>
+&lt;li>每次笔迹(点)更新，通知StrokeDelegate进行笔迹渲染，展示给用户&lt;/li>
+&lt;li>当一次完整笔迹采集后，发送信号StrokeDateChange给RecognitionContoller调用识别引擎进行识别&lt;/li>
+&lt;/ol>
+&lt;p>通过单字手写按钮、长句手写按钮可以将进行不同手写模式的切换&lt;/p>
+&lt;h3 id="详细设计">详细设计
+&lt;/h3>&lt;p>手写输入法有2种模式：单字手写和长句手写&lt;/p>
+&lt;ul>
+&lt;li>在单字手写模式下，手写区域为正方形，米字格&lt;/li>
+&lt;li>在长句手写模式下，手写区域为矩形，网格。&lt;/li>
+&lt;/ul>
+&lt;p>二者的区别在于paintEvent绘制背景。 因此我设计了一个基类HandWriteView，2个子类SingleHandWriting和LongSentenceHandWriting&lt;/p>
+&lt;p>基类 HandWriteView&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>UI 组件管理&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>撤销按钮：支持笔画回退&lt;/li>
+&lt;li>清空按钮：清除所有笔画&lt;/li>
+&lt;li>提示文本：显示当前状态信息&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>笔迹处理&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>笔画捕获：处理鼠标事件实现笔迹采集&lt;/li>
+&lt;li>笔迹渲染：实时绘制用户输入的笔画&lt;/li>
+&lt;li>状态管理：跟踪书写状态，控制按钮启用/禁用&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>事件处理&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>mousePressEvent：开始笔画&lt;/li>
+&lt;li>mouseMoveEvent：继续笔画&lt;/li>
+&lt;li>mouseReleaseEvent：结束笔画&lt;/li>
+&lt;li>paintEvent：渲染视图&lt;/li>
+&lt;li>resizeEvent：处理尺寸变化&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>子类特化&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>SingleHandWriting&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>实现米字格背景&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>LongSentenceHandWriting&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>实现网格背景&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="笔迹识别">笔迹识别
+&lt;/h2>&lt;p>我希望我的笔迹识别能够支持多种识别引擎。因此采用策略模式设置了一个抽象类IRecognitionEngine&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">IRecognitionEngine&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">QObject&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Q_OBJECT&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">explicit&lt;/span> &lt;span class="n">IRecognitionEngine&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">QObject&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">parent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">QObject&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">parent&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">virtual&lt;/span> &lt;span class="o">~&lt;/span>&lt;span class="n">IRecognitionEngine&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">default&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 初始化引擎
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">bool&lt;/span> &lt;span class="nf">initialize&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 处理笔画数据
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">processStrokes&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QVector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">StrokeData&lt;/span>&lt;span class="o">&amp;gt;&amp;amp;&lt;/span> &lt;span class="n">strokes&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 清理资源
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">cleanup&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nl">signals&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="n">recognitionCompleted&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QStringList&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">candidates&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 笔迹识别完成信号
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">recognitionError&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">error&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c1">// 笔迹识别错误信号
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>目前我只设置了一种识别引擎：windows的墨迹识别 window LNK&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">WindowsTabletEngine&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">IRecognitionEngine&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Q_OBJECT&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">explicit&lt;/span> &lt;span class="n">WindowsTabletEngine&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">QObject&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">parent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">~&lt;/span>&lt;span class="n">WindowsTabletEngine&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">bool&lt;/span> &lt;span class="nf">initialize&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">override&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">processStrokes&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QVector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">StrokeData&lt;/span>&lt;span class="o">&amp;gt;&amp;amp;&lt;/span> &lt;span class="n">strokes&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">override&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">cleanup&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">override&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">setRecognitionMode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">RecognitionMode&lt;/span> &lt;span class="n">mode&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">override&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 辅助方法
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">winrt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Windows&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">UI&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Input&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Inking&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">InkStroke&lt;/span> &lt;span class="n">createInkStroke&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">StrokeData&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">strokeData&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 处理坐标转换
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">winrt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Windows&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">UI&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Input&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Inking&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">InkStrokeContainer&lt;/span> &lt;span class="n">handleCoordinateConversion&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QVector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">StrokeData&lt;/span>&lt;span class="o">&amp;gt;&amp;amp;&lt;/span> &lt;span class="n">strokes&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 处理错误
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">handleRecognitionError&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">message&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 数据补充
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">dataSupplement&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">RecognitionResult&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">RecognitionMode&lt;/span> &lt;span class="n">mode&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 识别器容器
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">winrt&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Windows&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">UI&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Input&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Inking&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">InkRecognizerContainer&lt;/span> &lt;span class="n">m_recognizerContainer&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 识别目标
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">RecognitionMode&lt;/span> &lt;span class="n">m_recognitionTarget&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="时序图-1">时序图
+&lt;/h3>&lt;p>&lt;img src="https://sfw003.github.io/p/handwrite-input-method/image/image-20241211214020664.png"
+width="1031"
+height="540"
+srcset="https://sfw003.github.io/p/handwrite-input-method/image/image-20241211214020664_hu_3792421ce77c6453.png 480w, https://sfw003.github.io/p/handwrite-input-method/image/image-20241211214020664_hu_156ead823f509b8b.png 1024w"
+loading="lazy"
+alt="image-20241211214020664"
+class="gallery-image"
+data-flex-grow="190"
+data-flex-basis="458px"
+>&lt;/p>
+&lt;h3 id="详细设计-1">详细设计
+&lt;/h3>&lt;p>笔迹识别函数processStrokes包括3部分：&lt;/p>
+&lt;ul>
+&lt;li>qt笔迹 &amp;ndash;&amp;gt; windows LNK（handleCoordinateConversion）&lt;/li>
+&lt;li>异步识别&lt;/li>
+&lt;li>结果补充(如果候选词&amp;lt;9则补充，同时加入拼音和4个词组)（dataSupplement）&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">InkStrokeContainer&lt;/span> &lt;span class="n">WindowsTabletEngine&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">handleCoordinateConversion&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QVector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">StrokeData&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">strokes&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">InkStrokeContainer&lt;/span> &lt;span class="n">strokeContainer&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">InkStrokeBuilder&lt;/span> &lt;span class="n">builder&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// qt坐标转换为winrt坐标
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">m_recognitionTarget&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">RecognitionMode&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">SingleChar&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 单字模式：将所有笔画的点合并成一个笔画
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">IVector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Windows&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Foundation&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Point&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">allpoints&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">single_threaded_vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Windows&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Foundation&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Point&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="k">auto&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="nl">stroke&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="n">strokes&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QPoint&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="nl">point&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="n">stroke&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">points&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">float&lt;/span> &lt;span class="n">scaledX&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">point&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">float&lt;/span> &lt;span class="n">scaledY&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">point&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">allpoints&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">Append&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Windows&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Foundation&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Point&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">scaledX&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">scaledY&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">auto&lt;/span> &lt;span class="n">inkStroke&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">builder&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">CreateStroke&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">allpoints&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">strokeContainer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">AddStroke&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">inkStroke&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="nf">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">m_recognitionTarget&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">RecognitionMode&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">MultiChar&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="k">auto&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nl">stroke&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="n">strokes&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 自由书写模式：保持原有的多笔画结构
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">IVector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Windows&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Foundation&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Point&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">points&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">single_threaded_vector&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Windows&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Foundation&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Point&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QPoint&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="nl">point&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="n">stroke&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">points&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">float&lt;/span> &lt;span class="n">scaledX&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">point&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">float&lt;/span> &lt;span class="n">scaledY&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">point&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">y&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">points&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">Append&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Windows&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Foundation&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">Point&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">scaledX&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">scaledY&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">auto&lt;/span> &lt;span class="n">inkStroke&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">builder&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">CreateStroke&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">points&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">strokeContainer&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">AddStroke&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">inkStroke&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">strokeContainer&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>结果补充&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">void&lt;/span> &lt;span class="n">WindowsTabletEngine&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">dataSupplement&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">RecognitionResult&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">RecognitionMode&lt;/span> &lt;span class="n">mode&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">mode&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">RecognitionMode&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">SingleChar&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#ifdef USE_LIBRARY
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span> &lt;span class="c1">// 1. 如果候选字少于9个，补充相似字
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">candidates&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">9&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QString&lt;/span> &lt;span class="n">firstChar&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">candidates&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">first&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">DictionaryManager&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">instance&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="n">getSimilarCharacters&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">firstChar&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">9&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">candidates&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">(),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">result&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QStringList&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">similar&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 添加相似字到候选列表
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">candidates&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">append&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">similar&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 确保不超过9个
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">candidates&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">9&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">candidates&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">removeLast&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 2. 为所有候选字获取拼音
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">pinyins&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">clear&lt;/span>&lt;span class="p">();&lt;/span> &lt;span class="c1">// 确保拼音列表为空
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">pendingPinyinRequests&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">candidates&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="nl">character&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">candidates&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">DictionaryManager&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">instance&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="n">getPinyin&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">result&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">pendingPinyinRequests&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">this&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">char_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">pinyin&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">pinyins&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">character&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">pinyin&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">--&lt;/span>&lt;span class="n">pendingPinyinRequests&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 当所有拼音都获取完毕后，获取相关词组
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">pendingPinyinRequests&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 3. 获取相关词组
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">DictionaryManager&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">instance&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="n">getRelatedWords&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">candidates&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">first&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">[&lt;/span>&lt;span class="k">this&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">&amp;amp;&lt;/span>&lt;span class="n">result&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QStringList&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">words&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">relatedWords&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">words&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 这里可以发送完成信号（上述步骤都是异步获取，当获取完成后，发送信号通知）
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">emit&lt;/span> &lt;span class="nf">recognitionCompleted&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">result&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#endif
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span> &lt;span class="nf">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">mode&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">RecognitionMode&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">MultiChar&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">candidates&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="mi">9&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">result&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">candidates&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">append&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">QString&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">fromLocal8Bit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34; &amp;#34;&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">emit&lt;/span> &lt;span class="n">recognitionCompleted&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">result&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="词典">词典
+&lt;/h2>&lt;p>词典用来补充数据，为识别出的字提供拼音、词组服务。词典分为在线词典和本地词典，对于这种双模式词典设计，我使用策略、单例、工厂模式的组合。&lt;/p>
+&lt;p>策略模式：采用在线词典和本地词典双重实现&lt;/p>
+&lt;p>工厂模式：使用词典管理器统一管理不同词典实现&lt;/p>
+&lt;p>单例模式：词典管理器采用单例设计，确保全局唯一访问点&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/handwrite-input-method/image/image-20241212124604757.png"
+width="2061"
+height="612"
+srcset="https://sfw003.github.io/p/handwrite-input-method/image/image-20241212124604757_hu_da745297493ba6e3.png 480w, https://sfw003.github.io/p/handwrite-input-method/image/image-20241212124604757_hu_ebcb156b3ef56bfe.png 1024w"
+loading="lazy"
+alt="image-20241212124604757"
+class="gallery-image"
+data-flex-grow="336"
+data-flex-basis="808px"
+>&lt;/p>
+&lt;h3 id="详细设计-2">详细设计
+&lt;/h3>&lt;p>词典接口（IDictionary）&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>定义统一的词典操作接口&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>包含拼音查询、相似字查询、相关词组查询等基本功能&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>提供可用性检查机制&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">IDictionary&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">virtual&lt;/span> &lt;span class="o">~&lt;/span>&lt;span class="n">IDictionary&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">default&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 核心接口
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">getPinyin&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">callback&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">getSimilarCharacters&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">count&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QStringList&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">callback&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">getRelatedWords&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">count&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QStringList&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">callback&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 状态检查
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">virtual&lt;/span> &lt;span class="kt">bool&lt;/span> &lt;span class="nf">isAvailable&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>本地词典（LocalDictionary）&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>基于 SQLite 数据库实现&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>包含字符表和词组表两个基本表结构&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>提供快速的本地查询能力&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">LocalDictionary&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">IDictionary&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">LocalDictionary&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">~&lt;/span>&lt;span class="n">LocalDictionary&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">getPinyin&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">callback&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">override&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">getSimilarCharacters&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">count&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QStringList&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">callback&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">override&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">getRelatedWords&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">count&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QStringList&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">callback&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">override&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">bool&lt;/span> &lt;span class="nf">isAvailable&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="k">override&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">bool&lt;/span> &lt;span class="n">initDatabase&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QSqlDatabase&lt;/span> &lt;span class="n">m_db&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">bool&lt;/span> &lt;span class="n">m_isInitialized&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在线词典（OnlineDictionary）（未测试）&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>通过网络 API 实现（采用百度只能云）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>提供更丰富的词典数据&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>支持数据的实时更新&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>包含请求缓存机制，优化性能&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="n">OnlineDictionary&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="n">public&lt;/span> &lt;span class="n">QObject&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">public&lt;/span> &lt;span class="n">IDictionary&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Q_OBJECT&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">public&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">explicit&lt;/span> &lt;span class="n">OnlineDictionary&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">QObject&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">parent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">nullptr&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">~&lt;/span>&lt;span class="n">OnlineDictionary&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">IDictionary&lt;/span> &lt;span class="err">接口实现&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">void&lt;/span> &lt;span class="n">getPinyin&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">void&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">callback&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">override&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">void&lt;/span> &lt;span class="n">getSimilarCharacters&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="ne">int&lt;/span> &lt;span class="n">count&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">void&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QStringList&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">callback&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">override&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">void&lt;/span> &lt;span class="n">getRelatedWords&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="ne">int&lt;/span> &lt;span class="n">count&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">void&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QStringList&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">callback&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="n">override&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="ne">bool&lt;/span> &lt;span class="n">isAvailable&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">override&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">API配置&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">void&lt;/span> &lt;span class="n">setApiKey&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">appId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">secretKey&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">void&lt;/span> &lt;span class="n">setTimeout&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="ne">int&lt;/span> &lt;span class="n">milliseconds&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">signals&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">void&lt;/span> &lt;span class="n">error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">errorMessage&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">private&lt;/span> &lt;span class="n">slots&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">void&lt;/span> &lt;span class="n">handleNetworkReply&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">QNetworkReply&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">reply&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">void&lt;/span> &lt;span class="n">handleTimeout&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">private&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">API请求相关&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QString&lt;/span> &lt;span class="n">generateSignature&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QUrlQuery&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">query&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">const&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QNetworkReply&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">sendRequest&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">endpoint&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">QUrlQuery&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">query&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">缓存相关&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">struct&lt;/span> &lt;span class="n">CacheEntry&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QVariant&lt;/span> &lt;span class="n">data&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">qint64&lt;/span> &lt;span class="n">timestamp&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QVariant&lt;/span> &lt;span class="n">getCachedData&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">key&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">const&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">void&lt;/span> &lt;span class="n">cacheData&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">key&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">QVariant&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">data&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">void&lt;/span> &lt;span class="n">cleanCache&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">private&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">网络相关&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QNetworkAccessManager&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">m_networkManager&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">map&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">QNetworkReply&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="p">::&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">void&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QJsonDocument&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&amp;gt;&lt;/span> &lt;span class="n">m_pendingReplies&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QTimer&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">m_timeoutTimer&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="ne">int&lt;/span> &lt;span class="n">m_timeout&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="n">API配置&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QString&lt;/span> &lt;span class="n">m_appId&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QString&lt;/span> &lt;span class="n">m_secretKey&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QString&lt;/span> &lt;span class="n">m_baseUrl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="ne">bool&lt;/span> &lt;span class="n">m_isInitialized&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span> &lt;span class="err">缓存&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QMap&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">QString&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">CacheEntry&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">m_cache&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">static&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="ne">int&lt;/span> &lt;span class="n">CACHE_DURATION&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3600&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="err">缓存时间（秒）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">static&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="ne">int&lt;/span> &lt;span class="n">CACHE_MAX_SIZE&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1000&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="o">//&lt;/span> &lt;span class="err">最大缓存条目数&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>词典管理器（DictionaryManager）&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>统一管理在线和本地词典&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>提供智能切换机制&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>处理词典查询的优先级策略&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">DictionaryManager&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">static&lt;/span> &lt;span class="n">DictionaryManager&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">instance&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 获取拼音
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">getPinyin&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">callback&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 获取相似字
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">getSimilarCharacters&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">count&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QStringList&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">callback&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 获取相关词
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">getRelatedWords&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">character&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">int&lt;/span> &lt;span class="n">count&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">function&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">void&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QStringList&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">callback&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 配置方法
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">setOnlineApiKey&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">appId&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">QString&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">secretKey&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 设置是否优先使用在线词典
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">void&lt;/span> &lt;span class="nf">setPreferOnline&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">bool&lt;/span> &lt;span class="n">prefer&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">DictionaryManager&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">DictionaryManager&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">DictionaryManager&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">delete&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">DictionaryManager&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="k">operator&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">DictionaryManager&lt;/span>&lt;span class="o">&amp;amp;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">delete&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">IDictionary&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="nf">getPreferredDictionary&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">OnlineDictionary&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">m_onlineDictionary&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">LocalDictionary&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">m_localDictionary&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">bool&lt;/span> &lt;span class="n">m_preferOnline&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="候选词区域">候选词区域
+&lt;/h2>&lt;p>候选词区域负责展示和管理用户可选择的候选字词。采用 Qt 的 Model-View 架构。&lt;/p>
+&lt;p>view：系统提供两种候选词视图模式:单字模式(SingleCharCandidateView)，长句模式(LongSentenceCandidateView),里面设置成员&lt;code>QTableView&lt;/code>&lt;/p>
+&lt;p>delegate: 通过继承&lt;code>QStyledItemDelegate&lt;/code>实现自定义代理。对TableItem设置的&lt;strong>动态属性&lt;/strong>进行样式绘制。&lt;/p>
+&lt;p>model：通过继承&lt;code>QAbstractTableModel&lt;/code>实现自定义模型。存储候选词数据，接受笔迹识别控制器传输的候选词数据。&lt;/p>
+&lt;h3 id="时序图-2">时序图
+&lt;/h3>&lt;p>&lt;img src="https://sfw003.github.io/p/handwrite-input-method/image/image-20241211215501576.png"
+width="1255"
+height="540"
+srcset="https://sfw003.github.io/p/handwrite-input-method/image/image-20241211215501576_hu_3a51b7437c3ed61c.png 480w, https://sfw003.github.io/p/handwrite-input-method/image/image-20241211215501576_hu_569b950e5b5093ec.png 1024w"
+loading="lazy"
+alt="image-20241211215501576"
+class="gallery-image"
+data-flex-grow="232"
+data-flex-basis="557px"
+>&lt;/p>
+&lt;h3 id="详细设计-3">详细设计
+&lt;/h3>&lt;p>候选词区域有2种模式：单字手写和长句手写&lt;/p>
+&lt;ul>
+&lt;li>在单字手写模式下，候选词区域(SingleCharCandidateView)由4部分组成，从上到下
+&lt;ul>
+&lt;li>提示窗口（QWidget* m_hintWidget）：显示鼠标hover的候选词，如果是汉字，添加拼音&lt;/li>
+&lt;li>单字候选词（QTableView* m_mainCandidateView）：3x3表格，显示单字&lt;/li>
+&lt;li>词组候选词（QTableView* m_phraseCandidateView）：2x2表，显示词组&lt;/li>
+&lt;li>4个工具按钮：标点、数字、字母、语言&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">SingleCharCandidateView&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="k">public&lt;/span> &lt;span class="n">CandidateView&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Q_OBJECT&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">protected&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="c1">// 事件过滤器(过滤鼠标事件，未TableItem添加动态属性)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">bool&lt;/span> &lt;span class="n">eventFilter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">QObject&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">watched&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">QEvent&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">event&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">override&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QWidget&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">m_hintWidget&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="k">nullptr&lt;/span>&lt;span class="p">};&lt;/span> &lt;span class="c1">// 提示窗口
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">QLabel&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">m_hintLabel&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="k">nullptr&lt;/span>&lt;span class="p">};&lt;/span> &lt;span class="c1">// 提示文本
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">QLabel&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">m_pinyinLabel&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="k">nullptr&lt;/span>&lt;span class="p">};&lt;/span>&lt;span class="c1">// 提示拼音
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">QTableView&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">m_mainCandidateView&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="k">nullptr&lt;/span>&lt;span class="p">};&lt;/span> &lt;span class="c1">// 3x3候选词表格
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">QTableView&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">m_phraseCandidateView&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="k">nullptr&lt;/span>&lt;span class="p">};&lt;/span> &lt;span class="c1">// 2x2词组表格
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>在长句手写模式下，候选词区域(LongSentenceCandidateView)由2部分，从上到下
+&lt;ul>
+&lt;li>候选词（QTableView* m_candidateView）：1x9的表格，显示识别的长句&lt;/li>
+&lt;li>4个工具按钮：标点、数字、字母、语言&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">class LongSentenceCandidateView : public CandidateView
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Q_OBJECT
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">public:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> // ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">protected:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> // 事件过滤器(过滤鼠标事件，未TableItem添加动态属性)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> bool eventFilter(QObject* watched, QEvent* event) override;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">private:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> // ...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">private:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> QTableView* m_candidateView{nullptr}; // 1x9候选词表格
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">};
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="手写上屏">手写上屏
+&lt;/h2>&lt;p>&lt;img src="https://sfw003.github.io/p/handwrite-input-method/image/image-20241211212731512.png"
+width="919"
+height="199"
+srcset="https://sfw003.github.io/p/handwrite-input-method/image/image-20241211212731512_hu_72b8090cd47603c2.png 480w, https://sfw003.github.io/p/handwrite-input-method/image/image-20241211212731512_hu_f571d6b32f1f8474.png 1024w"
+loading="lazy"
+alt="image-20241211212731512"
+class="gallery-image"
+data-flex-grow="461"
+data-flex-basis="1108px"
+>&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>采用分离式设计：Qt程序负责手写识别，TSF模块负责文本服务&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>使用命名管道（IPC）实现两个模块间的通信&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>TSF模块以COM组件形式实现，注册为系统输入法&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>基本流程：手写输入 -&amp;gt; Qt识别 -&amp;gt; IPC传输 -&amp;gt; TSF接收 -&amp;gt; 创建EditSession -&amp;gt; 插入文本&lt;/p>
+&lt;p>&lt;strong>该功能我没有测试通过，我成功了注册了输入法，实现了qt程序和tsf模块的通信，但是在创建编辑会话这一步，我无法将文本插入进去&lt;/strong>&lt;/p>
+&lt;p>具体的模块划分&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/handwrite-input-method/image/image-20241212130702519.png"
+width="707"
+height="592"
+srcset="https://sfw003.github.io/p/handwrite-input-method/image/image-20241212130702519_hu_4349e801bd3afab5.png 480w, https://sfw003.github.io/p/handwrite-input-method/image/image-20241212130702519_hu_7501e988a22aefe5.png 1024w"
+loading="lazy"
+alt="image-20241212130702519"
+class="gallery-image"
+data-flex-grow="119"
+data-flex-basis="286px"
+>&lt;/p>
+&lt;p>核心组件：&lt;/p>
+&lt;p>TextService类：实现TSF核心接口&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>ITfTextInputProcessor：输入法处理器接口&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>ITfThreadMgrEventSink：线程管理事件接口&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>ITfTextEditSink：文本编辑事件接口&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>EditSession类：实现文本编辑会话负责实际的文本插入操作管理文本选区和光标位置&lt;/p>
+&lt;/li>
+&lt;/ul></description></item><item><title>one thread one loop reactor-server</title><link>https://sfw003.github.io/p/one-thread-one-loop-reactor-server/</link><pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/one-thread-one-loop-reactor-server/</guid><description>&lt;p>&lt;a class="link" href="https://gitee.com/sfw003/reactor-server" target="_blank" rel="noopener"
+>one thread one loop reactor-server&lt;/a>&lt;/p></description></item><item><title>高并发内存池</title><link>https://sfw003.github.io/p/high-concurrent-memory-pool/</link><pubDate>Wed, 02 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/high-concurrent-memory-pool/</guid><description>&lt;p>&lt;a class="link" href="https://gitee.com/sfw003/high-concurrency-memory-pool" target="_blank" rel="noopener"
+>高并发内存池&lt;/a>&lt;/p></description></item></channel></rss>

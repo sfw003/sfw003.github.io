@@ -1,7 +1,0 @@
-<?xml version="1.0" standalone="no"?>
-<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-csdn" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M3 12c0 4.97 4.03 9 9 9s9 -4.03 9 -9s-4.03 -9 -9 -9s-9 4.03 -9 9z" />
-  <path d="M12 8c-2.21 0 -4 1.79 -4 4s1.79 4 4 4s4 -1.79 4 -4s-1.79 -4 -4 -4z" />
-  <path d="M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-</svg>

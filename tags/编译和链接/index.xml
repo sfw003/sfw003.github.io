@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>编译和链接 on 石某人</title><link>https://sfw003.github.io/tags/%E7%BC%96%E8%AF%91%E5%92%8C%E9%93%BE%E6%8E%A5/</link><description>Recent content in 编译和链接 on 石某人</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>石某人</copyright><lastBuildDate>Sat, 12 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://sfw003.github.io/tags/%E7%BC%96%E8%AF%91%E5%92%8C%E9%93%BE%E6%8E%A5/index.xml" rel="self" type="application/rss+xml"/><item><title>编译和链接</title><link>https://sfw003.github.io/p/compile-and-link/</link><pubDate>Sat, 12 Apr 2025 00:00:00 +0000</pubDate><guid>https://sfw003.github.io/p/compile-and-link/</guid><description>&lt;h2 id="什么是编译链接">什么是编译链接？
+&lt;/h2>&lt;p>编译则是将编译型语言（如c/c++）翻译为计算机可以识别的二进制文件，即目标文件。&lt;/p>
+&lt;p>链接则是一个打包的过程，将所有的目标文件以及系统组件组合成一个可执行文件。&lt;/p>
+&lt;p>c/c++编译链接过程如下：&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/compile-and-link/image/image-20250412214538192.png"
+width="1331"
+height="311"
+srcset="https://sfw003.github.io/p/compile-and-link/image/image-20250412214538192_hu_2cd31e34de39535d.png 480w, https://sfw003.github.io/p/compile-and-link/image/image-20250412214538192_hu_acc16930fab9772a.png 1024w"
+loading="lazy"
+alt="image-20250412214538192"
+class="gallery-image"
+data-flex-grow="427"
+data-flex-basis="1027px"
+>&lt;/p>
+&lt;h2 id="编译">编译
+&lt;/h2>&lt;p>编译过程分为3部分：预处理（预编译），编译，汇编，整个编译过程由编译器负责。&lt;/p>
+&lt;h3 id="预处理">预处理
+&lt;/h3>&lt;h4 id="头文件的展开">头文件的展开
+&lt;/h4>&lt;h4 id="define定义的宏替换">#define定义的宏替换
+&lt;/h4>&lt;h4 id="删除注释">删除注释
+&lt;/h4>&lt;h3 id="编译-1">编译
+&lt;/h3>&lt;h3 id="汇编">汇编
+&lt;/h3>&lt;h2 id="链接">链接
+&lt;/h2>&lt;p>C/C++的链接方式主要分为 &lt;strong>静态链接&lt;/strong> 和 &lt;strong>动态链接&lt;/strong>&lt;/p>
+&lt;h3 id="静态链接">静态链接
+&lt;/h3>&lt;p>在编译时将库代码（&lt;code>.a&lt;/code>/&lt;code>.lib&lt;/code>）完全嵌入到可执行文件中&lt;/p>
+&lt;p>特点：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>文件体积大，相同库代码在不同程序中重复存在&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>更新需重新编译整个程序&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>独立性强&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="动态链接">动态链接
+&lt;/h3>&lt;p>运行时加载共享库（&lt;code>.so&lt;/code>/&lt;code>.dll&lt;/code>），代码在内存中共享&lt;/p>
+&lt;p>特点：&lt;/p>
+&lt;ul>
+&lt;li>节省磁盘和内存空间，多个程序共用同一库&lt;/li>
+&lt;li>支持热更新，库更新后无需重新编译程序&lt;/li>
+&lt;li>依赖环境配置，需确保运行时库路径正确&lt;/li>
+&lt;/ul>
+&lt;p>如何理解？&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/compile-and-link/image/image-20250412213818280.png"
+width="551"
+height="571"
+srcset="https://sfw003.github.io/p/compile-and-link/image/image-20250412213818280_hu_3c504564613543ab.png 480w, https://sfw003.github.io/p/compile-and-link/image/image-20250412213818280_hu_427dc5841cc2de0f.png 1024w"
+loading="lazy"
+alt="image-20250412213818280"
+class="gallery-image"
+data-flex-grow="96"
+data-flex-basis="231px"
+>&lt;/p>
+&lt;p>疑问：&lt;/p>
+&lt;p>假设动态库里有一个函数 Print(), 在生成动态库的过程中，Print函数的虚拟地址是被硬编码到动态库里。&lt;/p>
+&lt;p>这导致了一个问题，当进程使用Print(), 动态库首先被加载到物理内存里然后通过页表与虚拟地址相映射。但是由于Print函数的虚拟地址被硬编码到动态库，因此通过页表映射的Print函数虚拟地址是&lt;strong>固定的&lt;/strong>。&lt;/p>
+&lt;p>那问题来了，这个虚拟地址已经被占了呢？那就出问题了。为了解决这个问题，动态库内的函数不在使用&lt;strong>绝对地址&lt;/strong>，而是&lt;strong>相对地址&lt;/strong>，即偏移量。&lt;/p>
+&lt;p>此时dy.so通过页表映射的虚拟地址不固定，之后要想找到Print函数，只需用动态库的起始地址 + Print函数的偏移量。&lt;/p>
+&lt;hr>
+&lt;p>下面看看具体的操作系统下c++的编译和链接&lt;/p>
+&lt;h2 id="linux">linux
+&lt;/h2>&lt;h3 id="gccg">gcc/g++
+&lt;/h3>&lt;p>GCC（GNU Compiler Collection）是Linux下C/C++开发的核心工具链，&lt;/p>
+&lt;h3 id="linux下制作动静态库">linux下制作动静态库
+&lt;/h3>&lt;p>linux的静态库为.a文件，动态库为.so文件&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>静态库：通过&lt;code>ar -rc&lt;/code>打包目标文件生成&lt;code>.a&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>动态库：使用&lt;code>gcc -shared -fPIC&lt;/code>编译生成位置无关代码（PIC）的&lt;code>.so&lt;/code>&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="linux静态库">linux静态库
+&lt;/h4>&lt;p>现在有两个文件：test.h, test.c，如下。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="n">root&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="nl">iZbp1inz4ol3gjahpjal9qZ&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~/&lt;/span>&lt;span class="n">study&lt;/span>&lt;span class="err">#&lt;/span> &lt;span class="n">cat&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">h&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="n">Print&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">root&lt;/span>&lt;span class="err">@&lt;/span>&lt;span class="nl">iZbp1inz4ol3gjahpjal9qZ&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="o">~/&lt;/span>&lt;span class="n">study&lt;/span>&lt;span class="err">#&lt;/span> &lt;span class="n">cat&lt;/span> &lt;span class="n">test&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">c&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;#34;test.h&amp;#34;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>&lt;span class="kt">void&lt;/span> &lt;span class="n">Print&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">printf&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;66666666&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://sfw003.github.io/p/compile-and-link/image/1b1e2d3bcb83494f13fae1292e2f31d9.png"
+width="1370"
+height="545"
+srcset="https://sfw003.github.io/p/compile-and-link/image/1b1e2d3bcb83494f13fae1292e2f31d9_hu_6465704b98a78e4a.png 480w, https://sfw003.github.io/p/compile-and-link/image/1b1e2d3bcb83494f13fae1292e2f31d9_hu_4462f465061056fc.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="251"
+data-flex-basis="603px"
+>&lt;/p>
+&lt;p>执行上述命令后，结果如下：lib目录里存储制作的静态库。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">root@iZbp1inz4ol3gjahpjal9qZ:~/study# make
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">gcc -o test.o -c test.c
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ar -rc libtest.a test.o
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">root@iZbp1inz4ol3gjahpjal9qZ:~/study# make put
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mkdir -p lib/include
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mkdir -p lib/mylib
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cp *.h lib/include
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cp *.a lib/mylib
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">root@iZbp1inz4ol3gjahpjal9qZ:~/study# make clean
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rm -f *.o *.a
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">root@iZbp1inz4ol3gjahpjal9qZ:~/study# ls
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">lib Makefile test.c test.h
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">root@iZbp1inz4ol3gjahpjal9qZ:~/study# tree lib
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">lib
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── include
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ └── test.h
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">└── mylib
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> └── libtest.a
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="m">2&lt;/span> directories, &lt;span class="m">2&lt;/span> files
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>使用静态库&lt;/strong>&lt;/p>
+&lt;p>现在我们创建main.c来测试我们的静态库。如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">root@iZbp1inz4ol3gjahpjal9qZ:~/study# cat main.c
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#include &amp;#34;test.h&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">int main&lt;span class="o">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Print&lt;span class="o">()&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> 0&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>root@iZbp1inz4ol3gjahpjal9qZ:~/study# gcc -o main main.c
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">main.c:1:10: fatal error: test.h: No such file or directory
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="m">1&lt;/span> &lt;span class="p">|&lt;/span> &lt;span class="c1">#include &amp;#34;test.h&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">|&lt;/span> ^~~~~~~~
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">compilation terminated.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这里出现了一个报错，找不到头文件。原因很简单，test.h与main.c不在同一级目录下，此时我们有3种做法：&lt;/p>
+&lt;ol>
+&lt;li>告诉编译器，除了在当前目录下、系统目录下找，如果找不到，就去指定目录下找。参数&lt;code>-I [路径】&lt;/code>
+&lt;code>gcc main.c -o main -I ./lib/include&lt;/code>&lt;/li>
+&lt;li>include头文件时，带相对路径或绝对路径
+&lt;code>include &amp;quot;lib/include/test.h&amp;quot;&lt;/code>&lt;/li>
+&lt;li>安装到系统里，即将头文件和库移到&lt;code>/usr/inlcude 和/usr/lib64&lt;/code>, 如果不想移，也可以建立软链接，再将软链接放到&lt;code>/usr/inlcude 和/usr/lib64&lt;/code>&lt;/li>
+&lt;/ol>
+&lt;p>这里采用第一种，结果如下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">root@iZbp1inz4ol3gjahpjal9qZ:~/study# gcc -o main main.c -I lib/include
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/usr/bin/ld: /tmp/ccGShNRL.o: in &lt;span class="k">function&lt;/span> &lt;span class="sb">`&lt;/span>main&lt;span class="s1">&amp;#39;:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1">main.c:(.text+0xe): undefined reference to `Print&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">collect2: error: ld returned &lt;span class="m">1&lt;/span> &lt;span class="nb">exit&lt;/span> status
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>报错显示找不到Print函数，属于链接报错。原因是你只告诉了.h的路径，并没有告诉.a文件的路径.
+因此完整的命令如下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gcc main.c -o main -I ./lib/include/ -L ./lib/mylib -ltest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其中&lt;code>-L [库的路径]-l[库名]&lt;/code>&lt;/p>
+&lt;p>&lt;strong>注意库名要掐头去尾且最好与-l连在一起&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">root@iZbp1inz4ol3gjahpjal9qZ:~/study# tree lib
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">lib
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">├── include
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">│ └── test.h
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">└── mylib
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> └── libtest.a
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="m">2&lt;/span> directories, &lt;span class="m">2&lt;/span> files
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">root@iZbp1inz4ol3gjahpjal9qZ:~/study# gcc -o main main.c -I lib/include -L lib/mylib -ltest
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">root@iZbp1inz4ol3gjahpjal9qZ:~/study#
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="linux动态库">linux动态库
+&lt;/h4>&lt;p>linux下有个命令可以看到程序动态链接了哪些库 &amp;mdash; ldd
+以上文的main程序为例&lt;/p>
+&lt;p>&lt;img src="https://sfw003.github.io/p/compile-and-link/image/d90e93924400c15dcef28613ae5dd2d1.png"
+width="818"
+height="125"
+srcset="https://sfw003.github.io/p/compile-and-link/image/d90e93924400c15dcef28613ae5dd2d1_hu_63cfda79315a461.png 480w, https://sfw003.github.io/p/compile-and-link/image/d90e93924400c15dcef28613ae5dd2d1_hu_4d3c8dac4ba0bf9a.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="654"
+data-flex-basis="1570px"
+>&lt;/p>
+&lt;p>现在有2个文件：dytest.h dytest.c&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>sfw@VM-24-12-centos 3_10&lt;span class="o">]&lt;/span>$ cat dytest.c
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#include &amp;#34;dytest.h&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">void Print&lt;span class="o">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> printf&lt;span class="o">(&lt;/span>&lt;span class="s2">&amp;#34;dytest链接正常\n&amp;#34;&lt;/span>&lt;span class="o">)&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>sfw@VM-24-12-centos 3_10&lt;span class="o">]&lt;/span>$ cat dytest.h
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#pragma once&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#include &amp;lt;stdio.h&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">void Print&lt;span class="o">()&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://sfw003.github.io/p/compile-and-link/image/6670b8b5da9069471bf74542ebd4fea5.png"
+width="1123"
+height="526"
+srcset="https://sfw003.github.io/p/compile-and-link/image/6670b8b5da9069471bf74542ebd4fea5_hu_4dfbaf5f31359486.png 480w, https://sfw003.github.io/p/compile-and-link/image/6670b8b5da9069471bf74542ebd4fea5_hu_793d1476bcd22700.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="213"
+data-flex-basis="512px"
+>&lt;/p>
+&lt;p>执行上述命令后便会生成lib目录，libtest.so便是我们制作的动态库
+&lt;img src="https://sfw003.github.io/p/compile-and-link/image/ee5f48069eafa0cc09695afb626a1fbc.png"
+width="510"
+height="200"
+srcset="https://sfw003.github.io/p/compile-and-link/image/ee5f48069eafa0cc09695afb626a1fbc_hu_5d37ff89df813cc7.png 480w, https://sfw003.github.io/p/compile-and-link/image/ee5f48069eafa0cc09695afb626a1fbc_hu_be413c9582c8c6ff.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="255"
+data-flex-basis="612px"
+>&lt;/p>
+&lt;p>创建main.c进行测试
+&lt;img src="https://sfw003.github.io/p/compile-and-link/image/0c69887b45104f561befb7cd3f7c52a1.png"
+width="540"
+height="213"
+srcset="https://sfw003.github.io/p/compile-and-link/image/0c69887b45104f561befb7cd3f7c52a1_hu_2fddfd9b03ce0aa1.png 480w, https://sfw003.github.io/p/compile-and-link/image/0c69887b45104f561befb7cd3f7c52a1_hu_f6d58d745b55a955.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="253"
+data-flex-basis="608px"
+>&lt;/p>
+&lt;p>同样和静态库一样：&lt;code>gcc main.c -o main -I ./lib/include/ -L ./lib/mylib/ -ltest&lt;/code>
+最后便会出现下面的错误
+&lt;img src="https://sfw003.github.io/p/compile-and-link/image/de40ae10e75dc7ace6797b0f919c3da1.png"
+width="1622"
+height="265"
+srcset="https://sfw003.github.io/p/compile-and-link/image/de40ae10e75dc7ace6797b0f919c3da1_hu_5b24f97b1b013124.png 480w, https://sfw003.github.io/p/compile-and-link/image/de40ae10e75dc7ace6797b0f919c3da1_hu_2d6b2bd98151134.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="612"
+data-flex-basis="1468px"
+>
+此时我们用ldd命令来查看，会看到not found,找不到库，可我们明明已经告诉编译器库在哪里，为什么还是找不到？原因是我们告诉了编译器，但现在已经是可执行程序，需要通过&lt;strong>加载器&lt;/strong>来进行链接，但我们并没有告诉加载器，库在哪里。
+&lt;img src="https://sfw003.github.io/p/compile-and-link/image/a4d97fc7a33561f121d006221b9cd51d.png"
+width="820"
+height="162"
+srcset="https://sfw003.github.io/p/compile-and-link/image/a4d97fc7a33561f121d006221b9cd51d_hu_f8aac3036ec19ac5.png 480w, https://sfw003.github.io/p/compile-and-link/image/a4d97fc7a33561f121d006221b9cd51d_hu_4a1824672226cab9.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="506"
+data-flex-basis="1214px"
+>
+解决这个问题的方法很多，这里介绍3种：&lt;/p>
+&lt;ol>
+&lt;li>安装到系统里，即&lt;code>/usr/lib64&lt;/code>&lt;/li>
+&lt;li>添加路径到环境变量&lt;code>LD_LTBRAY_PATH&lt;/code>
+&lt;code>export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/sfw/study/3_10/lib/mylib&lt;/code>
+&lt;strong>地址写到库所在目录就可以了，因为库的名字早就写在可执行程序中&lt;/strong>
+但是这种方法，在重启时，环境变量更新，便会失效。除非，你写到系统配置文件里。&lt;/li>
+&lt;li>在&lt;code>/etc/ld.so.conf.d&lt;/code>里面建立动态库路径，然后ldconfig&lt;/li>
+&lt;/ol>
+&lt;blockquote>
+&lt;p>/etc/ld.so.conf.d 目录是 Linux 下的动态链接器配置目录。在这个目录下，可以放置一系列以 .conf 结尾的文件，这些文件包含了动态链接器的库文件搜索路径配置。每个文件通常包含一组路径，告诉动态链接器在运行时去哪里搜索共享库文件。
+操作如下：(下面操作需要root权限）
+&lt;img src="https://sfw003.github.io/p/compile-and-link/image/9c95bdbe1939ebe964000dc2463c57f0.png"
+width="1528"
+height="457"
+srcset="https://sfw003.github.io/p/compile-and-link/image/9c95bdbe1939ebe964000dc2463c57f0_hu_3a3b78370b92d6ae.png 480w, https://sfw003.github.io/p/compile-and-link/image/9c95bdbe1939ebe964000dc2463c57f0_hu_da5b41db2a8a300e.png 1024w"
+loading="lazy"
+alt="在这里插入图片描述"
+class="gallery-image"
+data-flex-grow="334"
+data-flex-basis="802px"
+>&lt;/p>&lt;/blockquote>
+&lt;h2 id="windows">windows
+&lt;/h2>&lt;h3 id="msvc">MSVC
+&lt;/h3>&lt;p>windows下的c/c++工具链是 MSVC，MSVC包括以下几个工具&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>cl.exe：一个控制 Microsoft C++ (MSVC) C 和 C++ 编译器和链接器的工具&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>link.exe：链接器&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>其他（debugger……）&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>误解：cl.exe 这里的cl是编译器compiler和链接器linker的两个单词首字母的缩写，是不是表示cl.exe即是编译器又是链接器？&lt;/p>
+&lt;p>不是，根据官方文档：&lt;strong>除非使用 /c 选项，否则 CL 会在编译后自动调用链接器link.exe&lt;/strong>。cl.exe本身只是编译器。&lt;/p>&lt;/blockquote>
+&lt;h3 id="windows-sdk">windows SDK
+&lt;/h3>&lt;h3 id="windows制作动静态库">windows制作动静态库
+&lt;/h3></description></item></channel></rss>
